@@ -29,7 +29,7 @@ const TabScreen = () => {
 };
 
 const StackScreen = () => {
-  const isLoggedIn = true;
+  const isLoggedIn = false;
   return (
     <Stack.Navigator>
       {isLoggedIn ? (
