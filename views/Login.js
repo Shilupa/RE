@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Input from '../components/input';
+import LoginForm from '../components/LoginForm';
 
 const Login = ({navigation}) => {
   return (
@@ -19,12 +20,7 @@ const Login = ({navigation}) => {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.container}
       >
-        <Input
-          title={'UserName'}
-          secureTextEntry={false}
-          placeholder={'user name'}
-          value={''}
-        ></Input>
+        <LoginForm />
       </KeyboardAvoidingView>
     </TouchableOpacity>
   );

@@ -31,7 +31,11 @@ const TabScreen = () => {
 const StackScreen = () => {
   const isLoggedIn = false;
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
       {isLoggedIn ? (
         <>
           <Stack.Screen
