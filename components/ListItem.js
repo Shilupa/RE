@@ -8,6 +8,10 @@ const ListItem = ({singleMedia, navigation}) => {
   const item = singleMedia;
   return (
     <View style={styles.column} elevation={5}>
+      <View style={styles.userInfo}>
+        <Text>Picture</Text>
+        <Text>Bella</Text>
+      </View>
       <TouchableOpacity
         onPress={() => {
           navigation.navigate('Single', item);
@@ -25,17 +29,11 @@ const ListItem = ({singleMedia, navigation}) => {
         </View>
       </TouchableOpacity>
       <Card.Divider />
-      <View style={styles.rowBigbox}>
-        <View style={styles.userInfo}>
-          <Text>Picture</Text>
-          <Text>Bella</Text>
-        </View>
-        <View style={styles.userInteraction}>
-          <Icon name="chat" />
-          <Icon name="chat" />
-          <Icon name="chat" />
-          <Icon name="chat" />
-        </View>
+      <View style={styles.userInteraction}>
+        <Icon name="thumb-up-off-alt" />
+        <Icon name="thumb-down-off-alt" />
+        <Icon name="chat" />
+        <Icon name="favorite-border" />
       </View>
     </View>
   );
@@ -58,14 +56,14 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   userInfo: {
-    width: '30%',
+    width: '50%',
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    padding: 10,
   },
   userInteraction: {
-    width: '55%',
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
+    padding: 10,
   },
   image: {
     flex: 1,
