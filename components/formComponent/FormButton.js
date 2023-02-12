@@ -8,7 +8,7 @@ const FormButton = (props) => {
       <Button
         type="outline"
         title={props.text}
-        onPress={props.handleSubmit(props.register)}
+        onPress={props.handleSubmit(props.submit)}
       />
     </SafeAreaView>
   );

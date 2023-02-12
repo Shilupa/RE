@@ -34,7 +34,7 @@ const RegisterForm = () => {
         )}
         name="username"
       />
-      <FormButton text="Register" register={register} handleSubmit={handleSubmit} />
+      <FormButton text="Register" submit={register} handleSubmit={handleSubmit} />
     </SafeAreaView>
   );
 };
