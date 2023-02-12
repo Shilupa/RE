@@ -11,7 +11,11 @@ const Stack = createNativeStackNavigator();
 
 const TabScreen = () => {
   return (
-    <Tab.Navigator>
+    <Tab.Navigator
+      screenOptions={{
+        tabBarActiveTintColor: '#19a119',
+      }}
+    >
       <Tab.Screen
         name="Home"
         component={Home}
