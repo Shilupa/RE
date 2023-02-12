@@ -1,7 +1,7 @@
 import {Platform, StyleSheet, SafeAreaView} from 'react-native';
 import PropTypes from 'prop-types';
 
-const Home = ({navigation}) => {
+const Login = ({navigation}) => {
   return <SafeAreaView style={styles.container}></SafeAreaView>;
 };
 
@@ -13,8 +13,8 @@ const styles = StyleSheet.create({
   },
 });
 
-Home.propTypes = {
+Login.propTypes = {
   navigation: PropTypes.object,
 };
 
-export default Home;
+export default Login;
