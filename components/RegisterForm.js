@@ -1,7 +1,7 @@
 import {Card} from '@rneui/themed';
 import React, {useContext} from 'react';
 import {Controller, useForm} from 'react-hook-form';
-import {Alert, ScrollView} from 'react-native';
+import {Alert, ScrollView, StyleSheet, View} from 'react-native';
 import {SafeAreaView} from 'react-native';
 import {MainContext} from '../contexts/MainContext';
 import {useUser} from '../hooks/ApiHooks';
@@ -96,7 +96,7 @@ const RegisterForm = () => {
 
   return (
     <SafeAreaView>
-      <Card>
+      <View style={styles.container}>
         <LeafSvg />
         <Card.Title style={{color: 'green', fontSize: 28, fontWeight: 'bold'}}>
           Create Your Account
@@ -113,6 +113,7 @@ const RegisterForm = () => {
           }}
           render={({field: {onChange, onBlur, value}}) => (
             <FormInput
+              style={styles.FormInput}
               placeholder="Username"
               onBlur={onBlur}
               onChange={onChange}
@@ -184,6 +185,7 @@ const RegisterForm = () => {
           render={({field: {onChange, onBlur, value}}) => (
             <FormInput
               placeholder="Email"
+              label="Email"
               onBlur={onBlur}
               onChange={onChange}
               value={value}
@@ -213,9 +215,20 @@ const RegisterForm = () => {
           submit={register}
           handleSubmit={handleSubmit}
         />
-      </Card>
+      </View>
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  FormInput: {
+    color: 'red',
+    backgroundColor: '#00FF00',
+  },
+  container: {
+    marginStart: 20,
+    marginEnd: 20,
+  },
+});
 
 export default RegisterForm;
