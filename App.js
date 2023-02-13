@@ -3,11 +3,12 @@ import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
 import {MainProvider} from './contexts/MainContext';
 import Navigator from './navigators/Navigator';
+import Login from './views/Login';
 
 const App = () => {
   return (
     <MainProvider>
-      <RegisterForm />
+      <Login />
       <StatusBar style="auto" />
     </MainProvider>
   );

@@ -1,8 +1,9 @@
 import {Card} from '@rneui/themed';
-import React from 'react';
+import React, {useContext} from 'react';
 import {Controller, useForm} from 'react-hook-form';
-import {Alert} from 'react-native';
+import {Alert, ScrollView} from 'react-native';
 import {SafeAreaView} from 'react-native';
+import {MainContext} from '../contexts/MainContext';
 import {useUser} from '../hooks/ApiHooks';
 import FormButton from './formComponent/FormButton';
 import FormInput from './formComponent/FormInput';
@@ -10,6 +11,7 @@ import LeafSvg from './LeafSvg';
 
 const RegisterForm = () => {
   const {postUser, checkUsername} = useUser();
+  const {toggleForm, setToggleForm} = useContext(MainContext);
   const {
     control,
     handleSubmit,
@@ -60,7 +62,13 @@ const RegisterForm = () => {
       : ((message = result), (notify = 'Welcome!'));
 
     Alert.alert(notify, message, [
-      {text: 'OK', onPress: () => console.log('OK Pressed')},
+      {
+        text: 'OK',
+        onPress: () => {
+          console.log('OK Pressed');
+          setToggleForm(true);
+        },
+      },
     ]);
   };
 
@@ -93,6 +101,7 @@ const RegisterForm = () => {
         <Card.Title style={{color: 'green', fontSize: 28, fontWeight: 'bold'}}>
           Create Your Account
         </Card.Title>
+        <ScrollView>
         <Controller
           control={control}
           rules={{
@@ -205,6 +214,7 @@ const RegisterForm = () => {
           submit={register}
           handleSubmit={handleSubmit}
         />
+        </ScrollView>
       </Card>
     </SafeAreaView>
   );
