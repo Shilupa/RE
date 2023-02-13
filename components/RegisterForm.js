@@ -101,7 +101,6 @@ const RegisterForm = () => {
         <Card.Title style={{color: 'green', fontSize: 28, fontWeight: 'bold'}}>
           Create Your Account
         </Card.Title>
-        <ScrollView>
         <Controller
           control={control}
           rules={{
@@ -214,7 +213,6 @@ const RegisterForm = () => {
           submit={register}
           handleSubmit={handleSubmit}
         />
-        </ScrollView>
       </Card>
     </SafeAreaView>
   );
