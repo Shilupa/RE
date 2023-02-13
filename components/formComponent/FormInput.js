@@ -4,7 +4,6 @@ import {Card, Button, Input} from '@rneui/themed';
 import {SafeAreaView} from 'react-native';
 
 const FormInput = (props) => {
-  console.log('From FormInput', props);
   return (
     <SafeAreaView>
       <Input
@@ -13,7 +12,8 @@ const FormInput = (props) => {
         onChangeText={props.onChange}
         value={props.value}
         autoCapitalize={props.autoCapitalize}
-        errorMessage={props.errors.username && props.errors.username.message}
+        errorMessage={props.error}
+        secureTextEntry={props.secureTextEntry}
       />
     </SafeAreaView>
   );
