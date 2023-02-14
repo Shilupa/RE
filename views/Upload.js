@@ -6,11 +6,13 @@ import {
   View,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import {useState} from 'react';
+import {useContext, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import FormInput from '../components/formComponent/FormInput';
 import {Dropdown} from 'react-native-element-dropdown';
 import FormButton from '../components/formComponent/FormButton';
+import {useUser} from '../hooks/ApiHooks';
+import {MainContext} from '../contexts/MainContext';
 
 const Upload = ({navigation}) => {
   const category = [
@@ -39,7 +41,7 @@ const Upload = ({navigation}) => {
     formState: {errors},
   } = useForm({
     defaultValues: {title: '', description: ''},
-    mode: 'onChange',
+    mode: 'onBlur',
   });
   return (
     <ScrollView>
@@ -56,51 +58,46 @@ const Upload = ({navigation}) => {
       <Controller
         control={control}
         rules={{
-          required: {
-            value: true,
-            message: 'is required',
-          },
+          required: {value: true, message: 'This is required'},
           minLength: {
             value: 3,
-            message: 'Title min length is 3 characters.',
+            message: 'min 3 characters.',
           },
         }}
         render={({field: {onChange, onBlur, value}}) => (
           <FormInput
+            style={styles.FormInput}
             placeholder="Enter a title for the item"
-            onBlur={onBlur}
-            onChangeText={onChange}
-            value={value}
-            errorMessage={errors.title && errors.title.message}
             label="Title"
+            onBlur={onBlur}
+            onChange={onChange}
+            value={value}
+            error={errors.title && errors.title.message}
           />
         )}
-        name="title"
-      ></Controller>
+        name="Title"
+      />
       <Controller
         control={control}
         rules={{
           required: {
             value: true,
-            message: 'is required',
-          },
-          minLength: {
-            value: 3,
-            message: 'Title min length is 3 characters.',
+            message: 'min 5 characters',
           },
         }}
         render={({field: {onChange, onBlur, value}}) => (
           <FormInput
+            label="Description"
             placeholder="Enter a description for the item"
             onBlur={onBlur}
-            onChangeText={onChange}
+            onChange={onChange}
             value={value}
-            errorMessage={errors.description && errors.description.message}
-            label="Description"
+            error={errors.description && errors.description.message}
+            numberOfLines={10}
           />
         )}
-        name="title"
-      ></Controller>
+        name="description"
+      />
       <View style={styles.container}>
         <Dropdown
           style={[styles.dropdown, isFocus && {borderColor: 'blue'}]}
@@ -108,12 +105,10 @@ const Upload = ({navigation}) => {
           selectedTextStyle={styles.selectedTextStyle}
           inputSearchStyle={styles.inputSearchStyle}
           data={category}
-          search
           maxHeight={300}
           labelField="label"
           valueField="value"
           placeholder={!isFocus ? 'Select a category' : '...'}
-          searchPlaceholder="Search..."
           value={value}
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
@@ -170,6 +165,7 @@ const styles = StyleSheet.create({
   placeholderStyle: {
     fontSize: 16,
     paddingLeft: 10,
+    color: 'grey',
   },
   selectedTextStyle: {
     fontSize: 16,

@@ -18,6 +18,7 @@ const FormInput = (props) => {
         errorMessage={props.error}
         secureTextEntry={props.secureTextEntry}
         labelStyle={{fontSize: 10, paddingLeft: 10, marginTop: 10}}
+        multiline={true}
       />
     </SafeAreaView>
   );
