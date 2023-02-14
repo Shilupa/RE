@@ -14,8 +14,6 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
-
 const styles = StyleSheet.create({
   text: {
     backgroundColor: 'blue',
@@ -25,3 +23,5 @@ const styles = StyleSheet.create({
     width: 200,
   },
 });
+
+export default LoginForm;
