@@ -8,8 +8,8 @@ import Login from './views/Login';
 const App = () => {
   return (
     <MainProvider>
-      <Login />
       <StatusBar style="auto" />
+      <Login />
     </MainProvider>
   );
 };

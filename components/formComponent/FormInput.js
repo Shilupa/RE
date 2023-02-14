@@ -1,15 +1,22 @@
 import React from 'react';
-import {Card, Button, Input} from '@rneui/themed';
+import {Input} from '@rneui/themed';
 import PropTypes from 'prop-types';
 
 import {SafeAreaView, StyleSheet, TextInput} from 'react-native';
+import {inputBackground, primaryColour} from '../../utils/variables';
+import {useFonts} from 'expo-font';
 
 const FormInput = (props) => {
+  const [recycleFonts] = useFonts({
+    Montserrat: require('../../assets/fonts/Montserrat-Regular.ttf'),
+  });
+
   return (
     <SafeAreaView>
       <Input
-        inputContainerStyle={{borderBottomWidth: 0}}
-        style={styles.input}
+        inputContainerStyle={{borderBottomWidth: 0, width: '70%'}}
+        labelStyle={styles.label}
+        inputStyle={styles.input}
         placeholder={props.placeholder}
         onBlur={props.onBlur}
         label={props.label}
@@ -25,10 +32,18 @@ const FormInput = (props) => {
 
 const styles = StyleSheet.create({
   input: {
-    backgroundColor: '#e5e5e5',
-    borderRadius: 10,
+    backgroundColor: inputBackground,
+    borderRadius: 0,
     paddingLeft: 20,
-    fontFamily: '',
+    fontFamily: 'Montserrat-Regular',
+    fontSize: 16,
+  },
+  label: {
+    paddingStart: 16,
+    fontWeight: '100',
+    fontSize: 12,
+    color: primaryColour,
+    marginBottom: -3,
   },
 });
 
