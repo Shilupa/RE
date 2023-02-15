@@ -9,13 +9,10 @@ import {
   View,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import Input from '../components/input';
 import LoginForm from '../components/LoginForm';
-import {Button, Card} from '@rneui/base';
 import RegisterForm from '../components/RegisterForm';
-import {useContext, useState} from 'react';
+import {useContext} from 'react';
 import {MainContext} from '../contexts/MainContext';
-import {rosybrown} from 'color-name';
 import {primaryColour} from '../utils/variables';
 
 const Login = () => {
@@ -34,7 +31,7 @@ const Login = () => {
         <ScrollView>
           {toggleForm ? <LoginForm /> : <RegisterForm />}
           <View style={styles.signInView}>
-            <Text>
+            <Text style={styles.accountText}>
               {toggleForm
                 ? "You don't have an account yet?"
                 : 'You already have an account. '}
@@ -60,11 +57,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     paddingTop: Platform.OS === 'android' ? 0 : 0,
   },
+
+  accountText: {
+    color: 'grey',
+  },
+
   signInView: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
   },
+
   signInText: {
     color: primaryColour,
     fontWeight: '400',
