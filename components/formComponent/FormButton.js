@@ -8,8 +8,7 @@ const FormButton = (props) => {
       <Button
         containerStyle={{
           width: '80%',
-          marginHorizontal: 50,
-          marginVertical: 10,
+          height: 40,
           alignSelf: 'center',
         }}
         type="solid"

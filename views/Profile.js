@@ -1,21 +1,45 @@
 import {Platform, StyleSheet, SafeAreaView, View, Image} from 'react-native';
 import PropTypes from 'prop-types';
 import {Tab, TabView, Text, Button} from '@rneui/themed';
-import {useState} from 'react';
+import {useTag} from '../hooks/ApiHooks';
+import {uploadsUrl} from '../utils/variables';
+import React, {useContext, useEffect, useState} from 'react';
+import {MainContext} from '../contexts/MainContext';
+import MyFiles from './MyFiles';
 
 const Profile = ({navigation}) => {
+  const {getFilesByTag} = useTag();
+  const {setIsLoggedIn, user, setUser} = useContext(MainContext);
+  const [avatar, setAvatar] = useState('');
   const [index, setIndex] = useState(0);
+
+  const loadAvatar = async () => {
+    try {
+      const avatarArray = await getFilesByTag('avatar_' + user.user_id);
+      setAvatar(avatarArray.pop().filename);
+    } catch (error) {
+      console.error('user avatar fetch failed', error.message);
+    }
+  };
+
+  useEffect(() => {
+    loadAvatar();
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.userProfile}>
         <Image
           style={styles.image}
           source={{
-            uri: 'https://placekitten.com/g/200/300',
+            uri: uploadsUrl + avatar,
           }}
         ></Image>
-        <Text style={{textAlign: 'center', fontSize: 18}}>User name </Text>
-        <Text style={{textAlign: 'center', fontSize: 12}}>Email </Text>
+        <Text style={{textAlign: 'center', fontSize: 18}}>
+          {' '}
+          {user.username}{' '}
+        </Text>
+        <Text style={{textAlign: 'center', fontSize: 12}}> {user.email} </Text>
         <Button
           containerStyle={{
             width: '40%',
@@ -48,9 +72,9 @@ const Profile = ({navigation}) => {
         />
       </Tab>
       <TabView value={index} onChange={setIndex} animationType="spring">
-        <TabView.Item
-          style={{backgroundColor: 'blue', width: '100%'}}
-        ></TabView.Item>
+        <TabView.Item>
+          <MyFiles />
+        </TabView.Item>
         <TabView.Item
           style={{backgroundColor: 'green', width: '100%'}}
         ></TabView.Item>
