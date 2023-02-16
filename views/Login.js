@@ -7,17 +7,12 @@ import {
   Text,
   ScrollView,
   View,
-  Text,
-  ScrollView,
-  View,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import LoginForm from '../components/LoginForm';
-import {Button, Card} from '@rneui/base';
 import RegisterForm from '../components/RegisterForm';
-import {useContext, useState} from 'react';
+import {useContext} from 'react';
 import {MainContext} from '../contexts/MainContext';
-import {rosybrown} from 'color-name';
 import {primaryColour} from '../utils/variables';
 
 const Login = () => {

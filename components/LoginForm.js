@@ -9,9 +9,12 @@ import {MainContext} from '../contexts/MainContext';
 import {useAuthentication} from '../hooks/ApiHooks';
 import FormButton from './formComponent/FormButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useFonts,
-PlayfairDisplay_600SemiBold,
+import {
+  useFonts,
+  PlayfairDisplay_600SemiBold,
 } from '@expo-google-fonts/playfair-display';
+
+// Main LoinForm function
 const LoginForm = () => {
   const {setIsLoggedIn, setUser} = useContext(MainContext);
   const {postLogin} = useAuthentication();
@@ -45,10 +48,9 @@ const LoginForm = () => {
     }
   };
 
-  let [fontsLoaded] = useFonts({
+  const [fontsLoaded] = useFonts({
     PlayfairDisplay_600SemiBold,
   });
-
 
   if (!fontsLoaded) {
     return null;
@@ -138,11 +140,6 @@ const styles = StyleSheet.create({
     marginTop: '10%',
     width: '85%',
   },
-
-  // View for Sign in button
-  buttonView: {
-    marginTop: '10%',
-    width: '100%',
 
   // View for Sign in button
   buttonView: {
