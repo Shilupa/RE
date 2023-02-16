@@ -65,7 +65,7 @@ const StackScreen = () => {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerShown: false,
+        headerShown: true,
       }}
     >
       {isLoggedIn ? (

@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
-import List from '../components/List';
+import SecondaryList from '../components/SecondaryList';
 
 const MyFiles = ({navigation}) => {
-  return <List navigation={navigation} myFilesOnly={true} />;
+  return <SecondaryList navigation={navigation} myFilesOnly={true} />;
 };
 
 MyFiles.propTypes = {

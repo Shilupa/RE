@@ -4,6 +4,14 @@ const uploadsUrl = 'https://media.mw.metropolia.fi/wbma/uploads/';
 const appId = 'abjfjabjdvcuayvavsuc';
 
 const primaryColour = '#2DCC70';
+const primaryColourDark = '#238D50';
 const inputBackground = '#F2F3F7';
 
-export {baseUrl, uploadsUrl, appId, primaryColour, inputBackground};
+export {
+  baseUrl,
+  uploadsUrl,
+  appId,
+  primaryColour,
+  primaryColourDark,
+  inputBackground,
+};

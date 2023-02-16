@@ -1,14 +1,18 @@
 import React from 'react';
-import {Card, Button, Input} from '@rneui/themed';
+import {Input} from '@rneui/themed';
 import PropTypes from 'prop-types';
-import {SafeAreaView, StyleSheet, TextInput} from 'react-native';
+
+import {SafeAreaView, StyleSheet} from 'react-native';
+import {inputBackground, primaryColourDark} from '../../utils/variables';
 
 const FormInput = (props) => {
   return (
     <SafeAreaView>
       <Input
-        inputContainerStyle={{borderBottomWidth: 0}}
-        style={styles.input}
+        inputContainerStyle={styles.inputContainerStyle}
+        labelStyle={styles.labelStyle}
+        inputStyle={styles.inputStyle}
+        errorStyle={styles.errorStyle}
         placeholder={props.placeholder}
         onBlur={props.onBlur}
         label={props.label}
@@ -17,25 +21,50 @@ const FormInput = (props) => {
         autoCapitalize={props.autoCapitalize}
         errorMessage={props.error}
         secureTextEntry={props.secureTextEntry}
-        labelStyle={{fontSize: 10, paddingLeft: 10, marginTop: 10}}
-        multiline={true}
       />
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  input: {
-    backgroundColor: '#e5e5e5',
-    borderRadius: 10,
+  // Styling of input box itself
+  inputStyle: {
+    backgroundColor: inputBackground,
+    borderRadius: 8,
     paddingLeft: 20,
-    fontFamily: '',
-    height: 50,
+    fontSize: 16,
+  },
+
+  // Text on top of input box
+  labelStyle: {
+    paddingStart: 16,
+    fontWeight: '100',
+    fontSize: 12,
+    color: primaryColourDark,
+    marginBottom: -7,
+    zIndex: 1,
+  },
+
+  // disable underline in the input box
+  inputContainerStyle: {
+    borderBottomWidth: 0,
+  },
+
+  // error text in the input box
+  errorStyle: {
+    marginTop: -3,
   },
 });
 
 FormInput.propTypes = {
-  props: PropTypes.object,
+  placeholder: PropTypes.string,
+  onBlur: PropTypes.func,
+  label: PropTypes.string,
+  onChange: PropTypes.func,
+  value: PropTypes.string,
+  autoCapitalize: PropTypes.string,
+  error: PropTypes.string,
+  secureTextEntry: PropTypes.bool,
 };
 
 export default FormInput;

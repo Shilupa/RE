@@ -4,37 +4,94 @@ import {
   StyleSheet,
   View,
   Keyboard,
+  Alert,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import {useContext, useState} from 'react';
+import {useCallback, useContext, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import FormInput from '../components/formComponent/FormInput';
 import {Dropdown} from 'react-native-element-dropdown';
 import FormButton from '../components/formComponent/FormButton';
-import {useUser} from '../hooks/ApiHooks';
+import {useMedia, useTag, useUser} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 import * as ImagePicker from 'expo-image-picker';
 import {Image, Text} from '@rneui/themed';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {appId} from '../utils/variables';
+import {useFocusEffect} from '@react-navigation/native';
 
 const Upload = ({navigation}) => {
-  const [mediafile, setMediafile] = useState({});
   const [value, setValue] = useState(null);
   const [isFocus, setIsFocus] = useState(false);
+  const [mediafile, setMediafile] = useState({});
+  const [loading, setLoading] = useState(false);
+  const {postMedia} = useMedia();
+  const {postTag} = useTag();
+  const {update, setUpdate} = useContext(MainContext);
   const {
     control,
     handleSubmit,
-    trigger,
     formState: {errors},
+    trigger,
+    reset,
   } = useForm({
     defaultValues: {title: '', description: ''},
-    mode: 'onBlur',
+    mode: 'onChange',
   });
+
+  const uploadFile = async (data) => {
+    // create form data and post it
+    setLoading(true);
+    const formData = new FormData();
+    formData.append('title', data.title);
+    formData.append('description', data.description);
+    const filename = mediafile.uri.split('/').pop();
+    let fileExt = filename.split('.').pop();
+    if (fileExt === 'jpg') fileExt = 'jpeg';
+    const mimeType = mediafile.type + '/' + fileExt;
+    formData.append('file', {
+      uri: mediafile.uri,
+      name: filename,
+      type: mimeType,
+    });
+    console.log('form data', formData);
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      const result = await postMedia(formData, token);
+
+      const appTag = {
+        file_id: result.file_id,
+        tag: appId,
+      };
+      const tagResult = await postTag(appTag, token);
+      console.log('tag result', tagResult);
+
+      Alert.alert('Uploaded', 'File id: ' + result.file_id, [
+        {
+          text: 'OK',
+          onPress: () => {
+            console.log('OK Pressed');
+            // update 'update' state in context
+            setUpdate(!update);
+            // reset form
+            // reset();
+            // TODO: navigate to home
+            navigation.navigate('Home');
+          },
+        },
+      ]);
+    } catch (error) {
+      console.error('file upload failed', error);
+    } finally {
+      setLoading(false);
+    }
+  };
   const pickFile = async () => {
     try {
       // No permissions request is necessary for launching the image library
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.All,
-        allowsEditing: false,
+        allowsEditing: true,
         aspect: [4, 3],
         quality: 0.5,
       });
@@ -51,86 +108,102 @@ const Upload = ({navigation}) => {
     }
   };
 
-  const category = [
-    {
-      label: 'Select a category',
-      value: '',
-    },
-    {
-      label: 'Clothing',
-      value: 'Clothing',
-    },
-    {
-      label: 'Furniture',
-      value: 'Furniture',
-    },
-    {
-      label: 'Misc',
-      value: 'Misc',
-    },
-  ];
-
-  const renderLabel = () => {
-    return <Text style={[styles.label]}>Category</Text>;
+  const resetForm = () => {
+    setMediafile({});
+    reset();
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        console.log('leaving');
+        resetForm();
+      };
+    }, [])
+  );
+
+  // const category = [
+  //   {
+  //     label: 'Select a category',
+  //     value: '',
+  //   },
+  //   {
+  //     label: 'Clothing',
+  //     value: 'Clothing',
+  //   },
+  //   {
+  //     label: 'Furniture',
+  //     value: 'Furniture',
+  //   },
+  //   {
+  //     label: 'Misc',
+  //     value: 'Misc',
+  //   },
+  // ];
+
+  // const renderLabel = () => {
+  //   return <Text style={[styles.label]}>Category</Text>;
+  // };
 
   return (
     <ScrollView>
-      <TouchableOpacity onPress={() => Keyboard.dismiss()} activeOpacity={1}>
-        <View style={styles.box}>
-          <Image
-            style={styles.image}
-            source={{
-              uri: mediafile.uri || 'https://placekitten.com/g/200/300',
-            }}
-            onPress={pickFile}
-          ></Image>
-        </View>
-      </TouchableOpacity>
-      <Controller
-        control={control}
-        rules={{
-          required: {value: true, message: 'This is required'},
-          minLength: {
-            value: 3,
-            message: 'min 3 characters.',
-          },
-        }}
-        render={({field: {onChange, onBlur, value}}) => (
-          <FormInput
-            style={styles.FormInput}
-            placeholder="Enter a title for the item"
-            label="Title"
-            onBlur={onBlur}
-            onChange={onChange}
-            value={value}
-            error={errors.title && errors.title.message}
-          />
-        )}
-        name="title"
-      />
-      <Controller
-        control={control}
-        rules={{
-          required: {
-            value: true,
-            message: 'min 5 characters',
-          },
-        }}
-        render={({field: {onChange, onBlur, value}}) => (
-          <FormInput
-            label="Description"
-            placeholder="Enter a description for the item"
-            onBlur={onBlur}
-            onChange={onChange}
-            value={value}
-            error={errors.description && errors.description.message}
-            numberOfLines={10}
-          />
-        )}
-        name="description"
-      />
       <View style={styles.container}>
+        <TouchableOpacity onPress={() => Keyboard.dismiss()} activeOpacity={1}>
+          <View style={styles.box}>
+            <Image
+              style={styles.image}
+              source={{
+                uri:
+                  mediafile.uri ||
+                  'https://i0.wp.com/getstamped.co.uk/wp-content/uploads/WebsiteAssets/Placeholder.jpg',
+              }}
+              onPress={pickFile}
+            ></Image>
+          </View>
+        </TouchableOpacity>
+        <Controller
+          control={control}
+          rules={{
+            required: {value: true, message: 'This is required'},
+            minLength: {
+              value: 3,
+              message: 'min 3 characters.',
+            },
+          }}
+          render={({field: {onChange, onBlur, value}}) => (
+            <FormInput
+              placeholder="Enter a title for the item"
+              label="Title"
+              onBlur={onBlur}
+              onChange={onChange}
+              value={value}
+              error={errors.title && errors.title.message}
+            />
+          )}
+          name="title"
+        />
+        <Controller
+          control={control}
+          rules={{
+            required: {
+              value: true,
+              message: 'min 5 characters',
+            },
+          }}
+          render={({field: {onChange, onBlur, value}}) => (
+            <FormInput
+              label="Description"
+              placeholder="Enter a description for the item"
+              onBlur={onBlur}
+              onChange={onChange}
+              value={value}
+              error={errors.description && errors.description.message}
+              numberOfLines={10}
+            />
+          )}
+          name="description"
+        />
+        {/* <View style={styles.container}>
         {renderLabel()}
         <Dropdown
           style={[styles.dropdown]}
@@ -150,8 +223,13 @@ const Upload = ({navigation}) => {
             setIsFocus(false);
           }}
         />
+      </View> */}
+        <FormButton
+          text="Publish"
+          submit={uploadFile}
+          handleSubmit={handleSubmit}
+        />
       </View>
-      <FormButton text="Publish" submit={Upload} handleSubmit={handleSubmit} />
     </ScrollView>
   );
 };
@@ -159,6 +237,8 @@ const Upload = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
+    flex: 1,
+    marginTop: 10,
   },
   box: {
     marginTop: 10,
@@ -169,13 +249,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 200,
     borderRadius: 6,
-  },
-  input: {
-    width: '90%',
-    alignSelf: 'center',
-    margin: 10,
-    backgroundColor: '#e5e5e5',
-    borderRadius: 8,
+    marginBottom: 20,
   },
   dropdown: {
     height: 50,
@@ -185,9 +259,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     borderColor: 'transparent',
     marginTop: 10,
-  },
-  icon: {
-    marginRight: 5,
   },
   label: {
     position: 'absolute',
