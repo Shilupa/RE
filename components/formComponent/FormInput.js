@@ -58,13 +58,13 @@ const styles = StyleSheet.create({
 
 FormInput.propTypes = {
   placeholder: PropTypes.string,
-  onBlur: PropTypes.object,
+  onBlur: PropTypes.func,
   label: PropTypes.string,
-  onChange: PropTypes.object,
-  value: PropTypes.object,
-  autoCapitalize: PropTypes.object,
+  onChange: PropTypes.func,
+  value: PropTypes.string,
+  autoCapitalize: PropTypes.string,
   error: PropTypes.string,
-  secureTextEntry: PropTypes.object,
+  secureTextEntry: PropTypes.bool,
 };
 
 export default FormInput;

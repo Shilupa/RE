@@ -20,8 +20,8 @@ const FormButton = (props) => {
 
 FormButton.propTypes = {
   text: PropTypes.string,
-
-  submit: PropTypes.object,
+  handleSubmit: PropTypes.func,
+  submit: PropTypes.func,
 };
 
 const styles = StyleSheet.create({

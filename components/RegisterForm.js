@@ -187,8 +187,7 @@ const RegisterForm = () => {
             }}
             render={({field: {onChange, onBlur, value}}) => (
               <FormInput
-                placeholder="Email *"
-                label="Email"
+                label="Email *"
                 onBlur={onBlur}
                 onChange={onChange}
                 value={value}
