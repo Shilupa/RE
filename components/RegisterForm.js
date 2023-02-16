@@ -9,10 +9,18 @@ import {primaryColour} from '../utils/variables';
 import FormButton from './formComponent/FormButton';
 import FormInput from './formComponent/FormInput';
 import LeafSvg from './LeafSvg';
+import {
+  useFonts,
+  PlayfairDisplay_600SemiBold,
+} from '@expo-google-fonts/playfair-display';
 
 const RegisterForm = () => {
   const {postUser, checkUsername} = useUser();
   const {toggleForm, setToggleForm} = useContext(MainContext);
+  let [fontsLoaded] = useFonts({
+    PlayfairDisplay_600SemiBold,
+  });
+
   const {
     control,
     handleSubmit,
@@ -95,6 +103,9 @@ const RegisterForm = () => {
     }
   };
 
+  if (!fontsLoaded) {
+    return null;
+  }
   return (
     <SafeAreaView>
       <View style={styles.container}>
@@ -240,6 +251,7 @@ const styles = StyleSheet.create({
     color: primaryColour,
     fontSize: 28,
     fontWeight: 'bold',
+    fontFamily: 'PlayfairDisplay_600SemiBold',
   },
 
   // view for input box area

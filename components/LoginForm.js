@@ -6,8 +6,16 @@ import {Card} from '@rneui/themed';
 import {Controller, useForm} from 'react-hook-form';
 import FormInput from './formComponent/FormInput';
 import FormButton from './formComponent/FormButton';
+import {
+  useFonts,
+  PlayfairDisplay_600SemiBold,
+} from '@expo-google-fonts/playfair-display';
 
 const LoginForm = () => {
+  let [fontsLoaded] = useFonts({
+    PlayfairDisplay_600SemiBold,
+  });
+
   const {
     control,
     handleSubmit,
@@ -20,6 +28,9 @@ const LoginForm = () => {
     mode: 'onBlur',
   });
 
+  if (!fontsLoaded) {
+    return null;
+  }
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer}>
@@ -93,6 +104,7 @@ const styles = StyleSheet.create({
     color: primaryColour,
     fontSize: 28,
     fontWeight: 'bold',
+    fontFamily: 'PlayfairDisplay_600SemiBold',
   },
 
   // view for input box area
