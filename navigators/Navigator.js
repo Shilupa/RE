@@ -2,6 +2,8 @@ const {createBottomTabNavigator} = require('@react-navigation/bottom-tabs');
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {Icon} from '@rneui/themed';
+import {useContext} from 'react';
+import {MainContext} from '../contexts/MainContext';
 import Chats from '../views/Chats';
 import Home from '../views/Home';
 import Login from '../views/Login';
@@ -58,11 +60,12 @@ const TabScreen = () => {
 };
 
 const StackScreen = () => {
-  const isLoggedIn = true;
+  const {isLoggedIn} = useContext(MainContext);
+
   return (
     <Stack.Navigator
       screenOptions={{
-        headerShown: false,
+        headerShown: true,
       }}
     >
       {isLoggedIn ? (

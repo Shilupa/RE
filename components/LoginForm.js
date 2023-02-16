@@ -1,21 +1,20 @@
 import {StyleSheet, View} from 'react-native';
-import React from 'react';
+import React, {useContext} from 'react';
 import {primaryColour} from '../utils/variables';
 import LeafSvg from './LeafSvg';
 import {Card} from '@rneui/themed';
 import {Controller, useForm} from 'react-hook-form';
 import FormInput from './formComponent/FormInput';
+import {MainContext} from '../contexts/MainContext';
+import {useAuthentication} from '../hooks/ApiHooks';
 import FormButton from './formComponent/FormButton';
-import {
-  useFonts,
-  PlayfairDisplay_600SemiBold,
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useFonts,
+PlayfairDisplay_600SemiBold,
 } from '@expo-google-fonts/playfair-display';
-
 const LoginForm = () => {
-  let [fontsLoaded] = useFonts({
-    PlayfairDisplay_600SemiBold,
-  });
-
+  const {setIsLoggedIn, setUser} = useContext(MainContext);
+  const {postLogin} = useAuthentication();
   const {
     control,
     handleSubmit,
@@ -24,9 +23,32 @@ const LoginForm = () => {
     defaultValues: {
       username: '',
       password: '',
+      confirmPassword: '',
+      email: '',
+      full_name: '',
     },
     mode: 'onBlur',
   });
+
+  const logIn = async (loginData) => {
+    console.log('Login button pressed', loginData);
+    // const data = {username: 'ilkkamtk', password: 'q1w2e3r4'};
+    try {
+      const loginResult = await postLogin(loginData);
+      console.log('logIn', loginResult);
+      await AsyncStorage.setItem('userToken', loginResult.token);
+      setUser(loginResult.user);
+      setIsLoggedIn(true);
+    } catch (error) {
+      console.error('logIn', error);
+      // TODO: notify user about failed login attempt
+    }
+  };
+
+  let [fontsLoaded] = useFonts({
+    PlayfairDisplay_600SemiBold,
+  });
+
 
   if (!fontsLoaded) {
     return null;
@@ -82,7 +104,11 @@ const LoginForm = () => {
         />
       </View>
       <View style={styles.buttonView}>
-        <FormButton text="Sign In" handleSubmit={handleSubmit}></FormButton>
+        <FormButton
+          text="Sign In"
+          submit={logIn}
+          handleSubmit={handleSubmit}
+        ></FormButton>
       </View>
     </View>
   );
@@ -112,6 +138,11 @@ const styles = StyleSheet.create({
     marginTop: '10%',
     width: '85%',
   },
+
+  // View for Sign in button
+  buttonView: {
+    marginTop: '10%',
+    width: '100%',
 
   // View for Sign in button
   buttonView: {
