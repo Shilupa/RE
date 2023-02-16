@@ -31,9 +31,7 @@ const RegisterForm = () => {
     control,
     handleSubmit,
     reset,
-    reset,
     formState: {errors},
-    getValues,
     getValues,
   } = useForm({
     defaultValues: {
@@ -44,14 +42,7 @@ const RegisterForm = () => {
       full_name: '',
     },
     mode: 'onBlur',
-    defaultValues: {
-      username: '',
-      password: '',
-      confirmPassword: '',
-      email: '',
-      full_name: '',
-    },
-    mode: 'onBlur',
+
   });
 
   // Resets form on successful Account creation
