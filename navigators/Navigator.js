@@ -61,28 +61,21 @@ const TabScreen = () => {
 };
 
 const StackScreen = () => {
-  const {isLoggedIn} = useContext(MainContext);
-
   return (
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
       }}
     >
-      {isLoggedIn ? (
-        <>
-          <Stack.Screen
-            name="Tabs"
-            component={TabScreen}
-            screenOptions={{headerShown: false}}
-          />
-          <Stack.Screen name="Single" component={Single} />
-          {/* <Stack.Screen name="MyFiles" component={MyFiles} />
-          <Stack.Screen name="Modify" component={Modify} /> */}
-        </>
-      ) : (
+      <>
+        <Stack.Screen
+          name="Tabs"
+          component={TabScreen}
+          screenOptions={{headerShown: false}}
+        />
+        <Stack.Screen name="Single" component={Single} />
         <Stack.Screen name="Login" component={Login} />
-      )}
+      </>
     </Stack.Navigator>
   );
 };

@@ -1,37 +1,27 @@
-import {Platform, StyleSheet, SafeAreaView, View, Alert} from 'react-native';
+import {Platform, StyleSheet, SafeAreaView, View} from 'react-native';
 import List from '../components/List';
 import PropTypes from 'prop-types';
 import {Tab, TabView, Text, Card, Icon} from '@rneui/themed';
 import {useContext, useState} from 'react';
-import {primaryColour, primaryColourDark} from '../utils/variables';
+import {primaryColour} from '../utils/variables';
 import {MainContext} from '../contexts/MainContext';
 
 const Home = ({navigation}) => {
   const [index, setIndex] = useState(0);
-  const {setIsLoggedIn} = useContext(MainContext);
-
-  const logOut = () => {
-    Alert.alert('Log Out', 'Are you sure you want to log out?', [
-      {
-        text: 'Yes',
-        onPress: () => {
-          setIsLoggedIn(false);
-        },
-      },
-      {text: 'No'},
-    ]);
-  };
+  const {setIsLoggedIn} = false;
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.titleBar}>
         <Text style={styles.title}>Home</Text>
-        <Icon
-          style={styles.logOut}
-          onPress={logOut}
-          name="power-settings-new"
-          color="red"
-        />
+        {!setIsLoggedIn && (
+          <Icon
+            style={styles.logOut}
+            onPress={() => navigation.navigate('Login')}
+            name="login"
+            color="Green"
+          />
+        )}
       </View>
 
       <Tab

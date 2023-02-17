@@ -9,6 +9,7 @@ import {MainContext} from '../contexts/MainContext';
 import {useAuthentication} from '../hooks/ApiHooks';
 import FormButton from './formComponent/FormButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Navigation} from 'react-native-navigation';
 
 // Main LoinForm function
 const LoginForm = () => {
@@ -28,16 +29,18 @@ const LoginForm = () => {
 
   const logIn = async (loginData) => {
     console.log('Login button pressed', loginData);
-    // const data = {username: 'ilkkamtk', password: 'q1w2e3r4'};
+
     try {
       const loginResult = await postLogin(loginData);
       console.log('logIn', loginResult);
+
       await AsyncStorage.setItem('userToken', loginResult.token);
       setUser(loginResult.user);
+
       setIsLoggedIn(true);
+      Navigation.navigate('Home');
     } catch (error) {
       console.error('logIn', error);
-      // TODO: notify user about failed login attempt
     }
   };
 
