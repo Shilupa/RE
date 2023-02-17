@@ -9,10 +9,6 @@ import {MainContext} from '../contexts/MainContext';
 import {useAuthentication} from '../hooks/ApiHooks';
 import FormButton from './formComponent/FormButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {
-  useFonts,
-  PlayfairDisplay_600SemiBold,
-} from '@expo-google-fonts/playfair-display';
 
 // Main LoinForm function
 const LoginForm = () => {
@@ -24,11 +20,8 @@ const LoginForm = () => {
     formState: {errors},
   } = useForm({
     defaultValues: {
-      username: '',
-      password: '',
-      confirmPassword: '',
-      email: '',
-      full_name: '',
+      username: 'Suraj',
+      password: 'hahahaha',
     },
     mode: 'onBlur',
   });
@@ -48,13 +41,6 @@ const LoginForm = () => {
     }
   };
 
-  const [fontsLoaded] = useFonts({
-    PlayfairDisplay_600SemiBold,
-  });
-
-  if (!fontsLoaded) {
-    return null;
-  }
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer}>
@@ -132,7 +118,6 @@ const styles = StyleSheet.create({
     color: primaryColour,
     fontSize: 28,
     fontWeight: 'bold',
-    fontFamily: 'PlayfairDisplay_600SemiBold',
   },
 
   // view for input box area

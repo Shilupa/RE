@@ -1,5 +1,5 @@
-import React from 'react';
-import {uploadsUrl} from '../utils/variables';
+import React, {useContext} from 'react';
+import {primaryColour, uploadsUrl} from '../utils/variables';
 import PropTypes from 'prop-types';
 import {Card, Icon} from '@rneui/themed';
 import {
@@ -9,10 +9,14 @@ import {
   Image,
   Platform,
   SafeAreaView,
+  Alert,
 } from 'react-native';
+import {MainContext} from '../contexts/MainContext';
 
 const Single = ({route}) => {
   console.log(route.params);
+  const {setIsLoggedIn} = useContext(MainContext);
+
   const {
     title,
     description,
@@ -20,8 +24,31 @@ const Single = ({route}) => {
     /* time_added: timeAdded,
     user_id: userId, */
   } = route.params;
+
+  const logOut = () => {
+    Alert.alert('Log Out', 'Are you sure you want to log out?', [
+      {
+        text: 'Yes',
+        onPress: () => {
+          setIsLoggedIn(false);
+        },
+      },
+      {text: 'No'},
+    ]);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
+      <View style={styles.titleBar}>
+        <Text style={styles.title}>Item</Text>
+        <Icon
+          style={styles.logOut}
+          onPress={logOut}
+          name="power-settings-new"
+          color="red"
+        />
+      </View>
+
       <View style={styles.column} elevation={5}>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <Image
@@ -56,6 +83,23 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     paddingTop: Platform.OS === 'android' ? 30 : 0,
+  },
+  titleBar: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  title: {
+    marginVertical: 25,
+    marginHorizontal: 25,
+    fontSize: 25,
+    fontWeight: 'bold',
+    color: primaryColour,
+  },
+  logOut: {
+    marginVertical: 25,
+    marginHorizontal: 25,
+    color: primaryColour,
   },
   column: {
     flexDirection: 'column',

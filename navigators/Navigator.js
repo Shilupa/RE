@@ -20,6 +20,7 @@ const TabScreen = () => {
     <Tab.Navigator
       screenOptions={{
         tabBarActiveTintColor: '#19a119',
+        headerShown: false,
       }}
     >
       <Tab.Screen
@@ -65,7 +66,7 @@ const StackScreen = () => {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerShown: true,
+        headerShown: false,
       }}
     >
       {isLoggedIn ? (
@@ -73,7 +74,7 @@ const StackScreen = () => {
           <Stack.Screen
             name="Tabs"
             component={TabScreen}
-            options={{headerShown: false}}
+            screenOptions={{headerShown: false}}
           />
           <Stack.Screen name="Single" component={Single} />
           {/* <Stack.Screen name="MyFiles" component={MyFiles} />

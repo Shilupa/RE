@@ -38,8 +38,9 @@ const styles = StyleSheet.create({
   // Text on top of input box
   labelStyle: {
     paddingStart: 16,
-    fontWeight: '100',
+    fontWeight: '300',
     fontSize: 12,
+    fontStyle: 'bold',
     color: primaryColourDark,
     marginBottom: -7,
     zIndex: 1,

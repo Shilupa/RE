@@ -1,17 +1,45 @@
-import {Platform, StyleSheet, SafeAreaView} from 'react-native';
+import {Platform, StyleSheet, SafeAreaView, View, Alert} from 'react-native';
 import List from '../components/List';
 import PropTypes from 'prop-types';
-import {Tab, TabView, Text, Card} from '@rneui/themed';
-import {useState} from 'react';
+import {Tab, TabView, Text, Card, Icon} from '@rneui/themed';
+import {useContext, useState} from 'react';
+import {primaryColour, primaryColourDark} from '../utils/variables';
+import {MainContext} from '../contexts/MainContext';
 
 const Home = ({navigation}) => {
   const [index, setIndex] = useState(0);
+  const {setIsLoggedIn} = useContext(MainContext);
+
+  const logOut = () => {
+    Alert.alert('Log Out', 'Are you sure you want to log out?', [
+      {
+        text: 'Yes',
+        onPress: () => {
+          setIsLoggedIn(false);
+        },
+      },
+      {text: 'No'},
+    ]);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
+      <View style={styles.titleBar}>
+        <Text style={styles.title}>Home</Text>
+        <Icon
+          style={styles.logOut}
+          onPress={logOut}
+          name="power-settings-new"
+          color="red"
+        />
+      </View>
+
       <Tab
         value={index}
         scrollable={true}
-        onChange={(e) => setIndex(e)}
+        onChange={(e) => {
+          setIndex(e);
+        }}
         indicatorStyle={{
           backgroundColor: 'black',
           height: 3,
@@ -62,6 +90,23 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     paddingTop: Platform.OS === 'android' ? 30 : 0,
+  },
+  titleBar: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  title: {
+    marginVertical: 25,
+    marginHorizontal: 25,
+    fontSize: 25,
+    fontWeight: 'bold',
+    color: primaryColour,
+  },
+  logOut: {
+    marginVertical: 25,
+    marginHorizontal: 25,
+    color: primaryColour,
   },
 });
 

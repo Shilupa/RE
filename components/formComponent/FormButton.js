@@ -11,6 +11,7 @@ const FormButton = (props) => {
         buttonStyle={styles.buttonStyle}
         titleStyle={styles.titleStyle}
         containerStyle={styles.containerStyle}
+        type="solid"
         title={props.text}
         onPress={props.handleSubmit(props.submit)}
       />
@@ -31,7 +32,7 @@ const styles = StyleSheet.create({
     height: 50,
   },
 
-  titleStyle: {fontWeight: '100', fontSize: 20},
+  titleStyle: {fontWeight: '300', fontSize: 20},
 
   containerStyle: {
     marginHorizontal: '10%',
