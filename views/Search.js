@@ -1,35 +1,27 @@
-import {Platform, StyleSheet, SafeAreaView, View, Alert} from 'react-native';
+import {Platform, StyleSheet, SafeAreaView, View} from 'react-native';
 import PropTypes from 'prop-types';
 import {Icon, Text} from '@rneui/themed';
+
+import {primaryColour} from '../utils/variables';
 import {useContext} from 'react';
 import {MainContext} from '../contexts/MainContext';
-import {primaryColour} from '../utils/variables';
 
 const Search = ({navigation}) => {
-  const {setIsLoggedIn} = useContext(MainContext);
-
-  const logOut = () => {
-    Alert.alert('Log Out', 'Are you sure you want to log out?', [
-      {
-        text: 'Yes',
-        onPress: () => {
-          setIsLoggedIn(false);
-        },
-      },
-      {text: 'No'},
-    ]);
-  };
+  const {isLoggedIn} = useContext(MainContext);
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.titleBar}>
         <Text style={styles.title}>Discover</Text>
-        <Icon
-          style={styles.logOut}
-          onPress={logOut}
-          name="power-settings-new"
-          color="red"
-        />
+        {!isLoggedIn && (
+          <Icon
+            size={30}
+            style={styles.logOut}
+            onPress={() => navigation.navigate('Login')}
+            name="login"
+            color="Green"
+          />
+        )}
       </View>
     </SafeAreaView>
   );
@@ -41,6 +33,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     paddingTop: Platform.OS === 'android' ? 30 : 0,
   },
+
   titleBar: {
     width: '100%',
     flexDirection: 'row',

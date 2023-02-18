@@ -3,18 +3,19 @@ import React, {useContext} from 'react';
 import {primaryColour} from '../utils/variables';
 import LeafSvg from './LeafSvg';
 import {Card} from '@rneui/themed';
+import PropTypes from 'prop-types';
 import {Controller, useForm} from 'react-hook-form';
 import FormInput from './formComponent/FormInput';
 import {MainContext} from '../contexts/MainContext';
 import {useAuthentication} from '../hooks/ApiHooks';
 import FormButton from './formComponent/FormButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Navigation} from 'react-native-navigation';
 
 // Main LoinForm function
-const LoginForm = () => {
+const LoginForm = ({navigation}) => {
   const {setIsLoggedIn, setUser} = useContext(MainContext);
   const {postLogin} = useAuthentication();
+
   const {
     control,
     handleSubmit,
@@ -38,7 +39,7 @@ const LoginForm = () => {
       setUser(loginResult.user);
 
       setIsLoggedIn(true);
-      Navigation.navigate('Home');
+      navigation.navigate('Home');
     } catch (error) {
       console.error('logIn', error);
     }
@@ -105,6 +106,9 @@ const LoginForm = () => {
   );
 };
 
+LoginForm.propTypes = {
+  navigation: PropTypes.object,
+};
 const styles = StyleSheet.create({
   container: {
     flex: 1,

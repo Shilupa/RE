@@ -15,7 +15,7 @@ import {useContext} from 'react';
 import {MainContext} from '../contexts/MainContext';
 import {primaryColour} from '../utils/variables';
 
-const Login = () => {
+const Login = ({navigation}) => {
   const {toggleForm, setToggleForm} = useContext(MainContext);
 
   return (
@@ -29,7 +29,11 @@ const Login = () => {
         style={styles.container}
       >
         <ScrollView>
-          {toggleForm ? <LoginForm /> : <RegisterForm />}
+          {toggleForm ? (
+            <LoginForm navigation={navigation} />
+          ) : (
+            <RegisterForm />
+          )}
           <View style={styles.signInView}>
             <Text style={styles.accountText}>
               {toggleForm

@@ -8,14 +8,15 @@ import {MainContext} from '../contexts/MainContext';
 
 const Home = ({navigation}) => {
   const [index, setIndex] = useState(0);
-  const {setIsLoggedIn} = false;
+  const {isLoggedIn} = useContext(MainContext);
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.titleBar}>
         <Text style={styles.title}>Home</Text>
-        {!setIsLoggedIn && (
+        {!isLoggedIn && (
           <Icon
+            size={30}
             style={styles.logOut}
             onPress={() => navigation.navigate('Login')}
             name="login"
