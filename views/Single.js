@@ -13,7 +13,7 @@ import {
   ScrollView,
 } from 'react-native';
 import {MainContext} from '../contexts/MainContext';
-import {useTag, useUser} from '../hooks/ApiHooks';
+import {useFavourite, useTag, useUser} from '../hooks/ApiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Single = ({route}) => {
@@ -23,11 +23,17 @@ const Single = ({route}) => {
   const [owner, setOwner] = useState({});
   const [avatar, setAvatar] = useState('');
   const {getFilesByTag} = useTag();
+  const [favourites, setFavourites] = useState([]);
+  const [userFavouritesIt, setuserFavouritesIt] = useState(false);
+  const {user} = useContext(MainContext);
+  const {getFavouritesByFileId, postFavourite, deleteFavourite} =
+    useFavourite();
 
   const {
     title,
     description,
     filename,
+    file_id: fileId,
     time_added: timeAdded,
     user_id: userId,
   } = route.params;
@@ -56,6 +62,43 @@ const Single = ({route}) => {
     setOwner(owner);
   };
 
+  const getFavourites = async () => {
+    const favourites = await getFavouritesByFileId(fileId);
+    // console.log('likes', likes, 'user', user);
+    setFavourites(favourites);
+    // check if the current user id is included in the 'likes' array and
+    // set the 'userLikesIt' state accordingly
+    for (const favorite of favourites) {
+      if (favorite.user_id === user.user_id) {
+        setuserFavouritesIt(true);
+        break;
+      }
+    }
+  };
+
+  const favouriteFile = async () => {
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      await postFavourite(fileId, token);
+      setuserFavouritesIt(true);
+      getFavourites();
+    } catch (error) {
+      // note: you cannot like same file multiple times
+      // console.log(error);
+    }
+  };
+  const unfavouriteFile = async () => {
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      await deleteFavourite(fileId, token);
+      setuserFavouritesIt(false);
+      getFavourites();
+    } catch (error) {
+      // note: you cannot like same file multiple times
+      console.log(error);
+    }
+  };
+
   const logOut = () => {
     Alert.alert('Log Out', 'Are you sure you want to log out?', [
       {
@@ -80,6 +123,7 @@ const Single = ({route}) => {
   loadAvatar();
   useEffect(() => {
     getOwner();
+    getFavourites();
   }, []);
 
   return (
@@ -138,7 +182,11 @@ const Single = ({route}) => {
             <Text style={styles.iconText}>Dislike</Text>
           </View>
           <View style={styles.iconbox}>
-            <Icon name="favorite-border" size={20} />
+            {userFavouritesIt ? (
+              <Icon name="favorite" color="red" onPress={unfavouriteFile} />
+            ) : (
+              <Icon name="favorite-border" onPress={favouriteFile} />
+            )}
             <Text style={styles.iconText}>Favourite</Text>
           </View>
         </View>

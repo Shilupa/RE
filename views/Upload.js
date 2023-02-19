@@ -5,20 +5,21 @@ import {
   View,
   Keyboard,
   Alert,
+  Platform,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import {useCallback, useContext, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import FormInput from '../components/formComponent/FormInput';
-import {Dropdown} from 'react-native-element-dropdown';
 import FormButton from '../components/formComponent/FormButton';
 import {useMedia, useTag, useUser} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 import * as ImagePicker from 'expo-image-picker';
-import {Image, Text} from '@rneui/themed';
+import {Image, Text, Icon} from '@rneui/themed';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {appId} from '../utils/variables';
+import {appId, primaryColour} from '../utils/variables';
 import {useFocusEffect} from '@react-navigation/native';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const Upload = ({navigation}) => {
   const [value, setValue] = useState(null);
@@ -38,6 +39,15 @@ const Upload = ({navigation}) => {
     defaultValues: {title: '', description: ''},
     mode: 'onChange',
   });
+  const {getFilesByTag} = useTag();
+  const {setIsLoggedIn, isLoggedIn, user, setUser} = useContext(MainContext);
+  const [avatar, setAvatar] = useState();
+  const [index, setIndex] = useState();
+
+  console.log(isLoggedIn);
+  if (!isLoggedIn) {
+    navigation.navigate('Login');
+  }
 
   const uploadFile = async (data) => {
     // create form data and post it
@@ -145,65 +155,140 @@ const Upload = ({navigation}) => {
   //   return <Text style={[styles.label]}>Category</Text>;
   // };
 
+  const logOut = () => {
+    Alert.alert('Log Out', 'Are you sure you want to log out?', [
+      {
+        text: 'Yes',
+        onPress: () => {
+          setUser({});
+          setIsLoggedIn(false);
+          removeToken();
+          setIndex(0);
+          navigation.navigate('Home');
+        },
+      },
+      {text: 'No'},
+    ]);
+  };
+
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        <TouchableOpacity onPress={() => Keyboard.dismiss()} activeOpacity={1}>
-          <View style={styles.box}>
-            <Image
-              style={styles.image}
-              source={{
-                uri:
-                  mediafile.uri ||
-                  'https://i0.wp.com/getstamped.co.uk/wp-content/uploads/WebsiteAssets/Placeholder.jpg',
-              }}
-              onPress={pickFile}
-            ></Image>
-          </View>
-        </TouchableOpacity>
-        <Controller
-          control={control}
-          rules={{
-            required: {value: true, message: 'This is required'},
-            minLength: {
-              value: 3,
-              message: 'min 3 characters.',
-            },
-          }}
-          render={({field: {onChange, onBlur, value}}) => (
-            <FormInput
-              placeholder="Enter a title for the item"
-              label="Title"
-              onBlur={onBlur}
-              onChange={onChange}
-              value={value}
-              error={errors.title && errors.title.message}
-            />
-          )}
-          name="title"
-        />
-        <Controller
-          control={control}
-          rules={{
-            required: {
-              value: true,
-              message: 'min 5 characters',
-            },
-          }}
-          render={({field: {onChange, onBlur, value}}) => (
-            <FormInput
-              label="Description"
-              placeholder="Enter a description for the item"
-              onBlur={onBlur}
-              onChange={onChange}
-              value={value}
-              error={errors.description && errors.description.message}
-              numberOfLines={10}
-            />
-          )}
-          name="description"
-        />
-        {/* <View style={styles.container}>
+    <SafeAreaView style={styles.safearea}>
+      <View style={styles.titleBar}>
+        <Text style={styles.title}>Profile</Text>
+        {isLoggedIn && (
+          <Icon
+            size={30}
+            style={styles.logOut}
+            onPress={logOut}
+            name="power-settings-new"
+            color="red"
+          />
+        )}
+      </View>
+
+      <ScrollView>
+        <View style={styles.container}>
+          <TouchableOpacity
+            onPress={() => Keyboard.dismiss()}
+            activeOpacity={1}
+          >
+            <View style={styles.box}>
+              <Image
+                style={styles.image}
+                source={{
+                  uri:
+                    mediafile.uri ||
+                    'https://i0.wp.com/getstamped.co.uk/wp-content/uploads/WebsiteAssets/Placeholder.jpg',
+                }}
+                onPress={pickFile}
+              />
+            </View>
+          </TouchableOpacity>
+          <Controller
+            control={control}
+            rules={{
+              required: {value: true, message: 'This is required'},
+              minLength: {
+                value: 3,
+                message: 'min 3 characters.',
+              },
+            }}
+            render={({field: {onChange, onBlur, value}}) => (
+              <FormInput
+                placeholder="Enter a title for the item"
+                label="Title"
+                onBlur={onBlur}
+                onChange={onChange}
+                value={value}
+                error={errors.title && errors.title.message}
+              />
+            )}
+            name="title"
+          />
+          <Controller
+            control={control}
+            rules={{
+              required: {
+                value: true,
+                message: 'min 5 characters',
+              },
+            }}
+            render={({field: {onChange, onBlur, value}}) => (
+              <FormInput
+                label="Description"
+                placeholder="Enter a description for the item"
+                onBlur={onBlur}
+                onChange={onChange}
+                value={value}
+                error={errors.description && errors.description.message}
+                numberOfLines={5}
+              />
+            )}
+            name="description"
+          />
+          <Controller
+            control={control}
+            rules={{
+              required: {
+                value: true,
+                message: 'min 5 characters',
+              },
+            }}
+            render={({field: {onChange, onBlur, value}}) => (
+              <FormInput
+                label="Description"
+                placeholder="Enter a description for the item"
+                onBlur={onBlur}
+                onChange={onChange}
+                value={value}
+                error={errors.description && errors.description.message}
+                numberOfLines={5}
+              />
+            )}
+            name="description"
+          />
+          <Controller
+            control={control}
+            rules={{
+              required: {
+                value: true,
+                message: 'min 5 characters',
+              },
+            }}
+            render={({field: {onChange, onBlur, value}}) => (
+              <FormInput
+                label="Description"
+                placeholder="Enter a description for the item"
+                onBlur={onBlur}
+                onChange={onChange}
+                value={value}
+                error={errors.description && errors.description.message}
+                numberOfLines={5}
+              />
+            )}
+            name="description"
+          />
+          {/* <View style={styles.container}>
         {renderLabel()}
         <Dropdown
           style={[styles.dropdown]}
@@ -224,32 +309,41 @@ const Upload = ({navigation}) => {
           }}
         />
       </View> */}
-        <FormButton
-          text="Publish"
-          submit={uploadFile}
-          handleSubmit={handleSubmit}
-        />
-      </View>
-    </ScrollView>
+          <FormButton
+            text="Publish"
+            submit={uploadFile}
+            handleSubmit={handleSubmit}
+          />
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safearea: {
+    flex: 1,
+    backgroundColor: '#fff',
+    paddingTop: Platform.OS === 'android' ? 30 : 0,
+  },
   container: {
     padding: 16,
     flex: 1,
-    marginTop: 10,
   },
   box: {
     marginTop: 10,
-    width: '80%',
+    width: '70%',
     alignSelf: 'center',
+    borderColor: '#C0C0C0',
+    borderRadius: 6,
+    borderWidth: 1,
+    marginBottom: 10,
   },
   image: {
     flex: 1,
     height: 200,
     borderRadius: 6,
-    marginBottom: 20,
+    resizeMode: 'contain',
   },
   dropdown: {
     height: 50,
@@ -282,6 +376,18 @@ const styles = StyleSheet.create({
   inputSearchStyle: {
     height: 40,
     fontSize: 16,
+  },
+  titleBar: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  title: {
+    marginVertical: 25,
+    marginHorizontal: 25,
+    fontSize: 25,
+    fontWeight: 'bold',
+    color: primaryColour,
   },
 });
 

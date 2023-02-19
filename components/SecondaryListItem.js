@@ -8,7 +8,7 @@ const SecondaryListItem = ({singleMedia, navigation}) => {
     <View style={styles.column}>
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate('Home', item); // TODO : Fix navigation
+          navigation.navigate('ModifyItem', {file: item});
         }}
       >
         <Image

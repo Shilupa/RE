@@ -21,6 +21,8 @@ const FormInput = (props) => {
         autoCapitalize={props.autoCapitalize}
         errorMessage={props.error}
         secureTextEntry={props.secureTextEntry}
+        multiline={true}
+        numberOfLines={props.numberOfLines}
       />
     </SafeAreaView>
   );
@@ -33,6 +35,9 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingLeft: 20,
     fontSize: 16,
+    paddingTop: 6,
+    textAlign: 'left',
+    textAlignVertical: 'top',
   },
 
   // Text on top of input box
@@ -49,6 +54,7 @@ const styles = StyleSheet.create({
   // disable underline in the input box
   inputContainerStyle: {
     borderBottomWidth: 0,
+
   },
 
   // error text in the input box
@@ -66,6 +72,7 @@ FormInput.propTypes = {
   autoCapitalize: PropTypes.string,
   error: PropTypes.string,
   secureTextEntry: PropTypes.bool,
+  numberOfLines: PropTypes.number,
 };
 
 export default FormInput;
