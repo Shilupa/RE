@@ -18,8 +18,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const Profile = ({navigation}) => {
   const {getFilesByTag} = useTag();
   const {setIsLoggedIn, isLoggedIn, user, setUser} = useContext(MainContext);
-  const [avatar, setAvatar] = useState('');
-  const [index, setIndex] = useState(0);
+  const [avatar, setAvatar] = useState();
+  const [index, setIndex] = useState();
 
   console.log(isLoggedIn);
   if (!isLoggedIn) {
@@ -35,13 +35,9 @@ const Profile = ({navigation}) => {
     }
   };
 
-  useEffect(() => {
-    loadAvatar();
-  }, []);
-
   const removeToken = async () => {
     try {
-      await AsyncStorage.removeItem('userToken');
+      await AsyncStorage.clear();
     } catch (error) {
       console.log('removeToken: ', error.message);
     }
@@ -52,15 +48,20 @@ const Profile = ({navigation}) => {
       {
         text: 'Yes',
         onPress: () => {
+          setUser({});
           setIsLoggedIn(false);
           removeToken();
-          setUser({});
+          setIndex(0);
           navigation.navigate('Home');
         },
       },
       {text: 'No'},
     ]);
   };
+
+  useEffect(() => {
+    loadAvatar();
+  }, [isLoggedIn]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -79,7 +80,7 @@ const Profile = ({navigation}) => {
 
       <View style={styles.userProfile}>
         <Image
-          style={styles.image}
+          style={styles.avatar}
           source={{
             uri: uploadsUrl + avatar,
           }}
@@ -122,7 +123,7 @@ const Profile = ({navigation}) => {
       </Tab>
       <TabView value={index} onChange={setIndex} animationType="spring">
         <TabView.Item>
-          <MyFiles />
+          {isLoggedIn && <MyFiles navigation={navigation} />}
         </TabView.Item>
         <TabView.Item
           style={{backgroundColor: 'green', width: '100%'}}
@@ -160,7 +161,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignSelf: 'center',
   },
-  image: {
+  avatar: {
     resizeMode: 'cover',
     width: 150,
     height: 150,

@@ -8,7 +8,7 @@ const SecondaryListItem = ({singleMedia, navigation}) => {
     <View style={styles.column}>
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate('Single', item); // TODO : Fix navigation
+          navigation.navigate('Home', item); // TODO : Fix navigation
         }}
       >
         <Image
@@ -23,9 +23,9 @@ const SecondaryListItem = ({singleMedia, navigation}) => {
 const styles = StyleSheet.create({
   column: {
     backgroundColor: '#FAFBFB',
-    margin: 5,
+    margin: 6,
     borderRadius: 6,
-    width: '47%',
+    minWidth: 125,
   },
   image: {
     flex: 1,

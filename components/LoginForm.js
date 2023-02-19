@@ -22,8 +22,8 @@ const LoginForm = ({navigation}) => {
     formState: {errors},
   } = useForm({
     defaultValues: {
-      username: 'Suraj',
-      password: 'hahahaha',
+      username: 'bibekShrestha',
+      password: 'examplepass',
     },
     mode: 'onBlur',
   });
@@ -34,10 +34,8 @@ const LoginForm = ({navigation}) => {
     try {
       const loginResult = await postLogin(loginData);
       console.log('logIn', loginResult);
-
       await AsyncStorage.setItem('userToken', loginResult.token);
       setUser(loginResult.user);
-
       setIsLoggedIn(true);
       navigation.navigate('Home');
     } catch (error) {

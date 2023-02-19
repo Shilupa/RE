@@ -7,7 +7,7 @@ import {primaryColour} from '../utils/variables';
 import {MainContext} from '../contexts/MainContext';
 
 const Home = ({navigation}) => {
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState();
   const {isLoggedIn} = useContext(MainContext);
 
   return (

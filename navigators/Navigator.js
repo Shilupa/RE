@@ -6,6 +6,7 @@ import {Icon} from '@rneui/themed';
 import Chats from '../views/Chats';
 import Home from '../views/Home';
 import Login from '../views/Login';
+import ModifyItem from '../views/ModifyItem';
 import Profile from '../views/Profile';
 import Search from '../views/Search';
 import Single from '../views/Single';
@@ -74,6 +75,7 @@ const StackScreen = () => {
         />
         <Stack.Screen name="Single" component={Single} />
         <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Modify" component={ModifyItem} />
       </>
     </Stack.Navigator>
   );

@@ -3,14 +3,52 @@ import PropTypes from 'prop-types';
 import {uploadsUrl} from '../utils/variables';
 import {Icon} from '@rneui/themed';
 import {Card} from '@rneui/base';
+import {useContext, useEffect, useState} from 'react';
+import {MainContext} from '../contexts/MainContext';
+import {useTag, useUser} from '../hooks/ApiHooks';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ListItem = ({singleMedia, navigation}) => {
   const item = singleMedia;
+  const {getFilesByTag} = useTag();
+  const [avatar, setAvatar] = useState('');
+  const {getUserById} = useUser();
+  const [owner, setOwner] = useState({});
+
+  const loadAvatar = async () => {
+    try {
+      const avatarArray = await getFilesByTag('avatar_' + item.user_id);
+      setAvatar(avatarArray.pop().filename);
+    } catch (error) {
+      console.error('user avatar fetch failed', error.message);
+    }
+  };
+  const getOwner = async () => {
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      const owner = await getUserById(item.user_id, token);
+      console.log('owner', owner);
+      setOwner(owner);
+    } catch (error) {
+      console.error('owner set failed', item.user_id);
+    }
+  };
+
+  useEffect(() => {
+    loadAvatar();
+    getOwner();
+  }, [avatar]);
+
   return (
     <View style={styles.column} elevation={5}>
       <View style={styles.userInfo}>
-        <Text>Picture</Text>
-        <Text>Bella</Text>
+        <Image
+          style={styles.avatar}
+          source={{
+            uri: uploadsUrl + avatar,
+          }}
+        ></Image>
+        <Text>{owner.username}</Text>
       </View>
       <TouchableOpacity
         onPress={() => {
@@ -25,15 +63,27 @@ const ListItem = ({singleMedia, navigation}) => {
         </View>
         <View style={styles.box}>
           <Text style={styles.listTitle}>{item.title}</Text>
-          <Text>{item.description}</Text>
+          <Text numberOfLines={1}>{item.description}</Text>
         </View>
       </TouchableOpacity>
       <Card.Divider />
       <View style={styles.userInteraction}>
-        <Icon name="thumb-up-off-alt" />
-        <Icon name="thumb-down-off-alt" />
-        <Icon name="chat" />
-        <Icon name="favorite-border" />
+        <View style={styles.iconbox}>
+          <Icon name="thumb-up-off-alt" size={20} />
+          <Text style={styles.iconText}>Like</Text>
+        </View>
+        <View style={styles.iconbox}>
+          <Icon name="thumb-down-off-alt" size={20} />
+          <Text style={styles.iconText}>Dislike</Text>
+        </View>
+        <View style={styles.iconbox}>
+          <Icon name="chat" size={20} />
+          <Text style={styles.iconText}>Message</Text>
+        </View>
+        <View style={styles.iconbox}>
+          <Icon name="favorite-border" size={20} />
+          <Text style={styles.iconText}>Favourite</Text>
+        </View>
       </View>
     </View>
   );
@@ -59,6 +109,7 @@ const styles = StyleSheet.create({
     width: '50%',
     flexDirection: 'row',
     padding: 10,
+    alignItems: 'center',
   },
   userInteraction: {
     flexDirection: 'row',
@@ -74,6 +125,20 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 20,
     paddingBottom: 15,
+  },
+  avatar: {
+    resizeMode: 'contain',
+    width: 40,
+    height: 40,
+    borderRadius: 400 / 2,
+    alignSelf: 'center',
+    marginRight: 10,
+  },
+  iconbox: {
+    flexDirection: 'column',
+  },
+  iconText: {
+    fontSize: 12,
   },
 });
 
