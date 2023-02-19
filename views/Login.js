@@ -14,6 +14,7 @@ import RegisterForm from '../components/RegisterForm';
 import {useContext} from 'react';
 import {MainContext} from '../contexts/MainContext';
 import {primaryColour} from '../utils/variables';
+import {Icon} from '@rneui/themed';
 
 const Login = ({navigation}) => {
   const {toggleForm, setToggleForm} = useContext(MainContext);
@@ -28,6 +29,17 @@ const Login = ({navigation}) => {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.container}
       >
+        <View style={styles.titleBar}>
+          <Icon
+            size={30}
+            style={styles.title}
+            onPress={() => {
+              navigation.navigate('Home');
+            }}
+            name="home"
+            color="black"
+          />
+        </View>
         <ScrollView>
           {toggleForm ? (
             <LoginForm navigation={navigation} />
@@ -69,6 +81,18 @@ const styles = StyleSheet.create({
   signInText: {
     color: primaryColour,
     fontWeight: '400',
+  },
+  titleBar: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  title: {
+    marginTop: '15%',
+    marginHorizontal: '5%',
+    fontSize: 25,
+    fontWeight: 'bold',
+    color: primaryColour,
   },
 });
 

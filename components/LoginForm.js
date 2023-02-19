@@ -1,4 +1,4 @@
-import {StyleSheet, View} from 'react-native';
+import {SafeAreaView, StyleSheet, View} from 'react-native';
 import React, {useContext} from 'react';
 import {primaryColour} from '../utils/variables';
 import LeafSvg from './LeafSvg';
@@ -45,7 +45,7 @@ const LoginForm = ({navigation}) => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.logoContainer}>
         <LeafSvg />
         <Card.Title style={styles.welcomeText}>Welcome Back</Card.Title>
@@ -101,7 +101,7 @@ const LoginForm = ({navigation}) => {
           handleSubmit={handleSubmit}
         ></FormButton>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -116,7 +116,6 @@ const styles = StyleSheet.create({
   },
 
   logoContainer: {
-    marginTop: '20%',
     alignItems: 'center',
   },
 
@@ -129,13 +128,13 @@ const styles = StyleSheet.create({
 
   // view for input box area
   inputView: {
-    marginTop: '10%',
+    marginTop: '5%',
     width: '85%',
   },
 
   // View for Sign in button
   buttonView: {
-    marginTop: '10%',
+    marginTop: '5%',
     width: '100%',
   },
 });

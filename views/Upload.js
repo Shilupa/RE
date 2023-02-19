@@ -155,35 +155,10 @@ const Upload = ({navigation}) => {
   //   return <Text style={[styles.label]}>Category</Text>;
   // };
 
-  const logOut = () => {
-    Alert.alert('Log Out', 'Are you sure you want to log out?', [
-      {
-        text: 'Yes',
-        onPress: () => {
-          setUser({});
-          setIsLoggedIn(false);
-          removeToken();
-          setIndex(0);
-          navigation.navigate('Home');
-        },
-      },
-      {text: 'No'},
-    ]);
-  };
-
   return (
     <SafeAreaView style={styles.safearea}>
       <View style={styles.titleBar}>
         <Text style={styles.title}>Profile</Text>
-        {isLoggedIn && (
-          <Icon
-            size={30}
-            style={styles.logOut}
-            onPress={logOut}
-            name="power-settings-new"
-            color="red"
-          />
-        )}
       </View>
 
       <ScrollView>
@@ -246,48 +221,7 @@ const Upload = ({navigation}) => {
             )}
             name="description"
           />
-          <Controller
-            control={control}
-            rules={{
-              required: {
-                value: true,
-                message: 'min 5 characters',
-              },
-            }}
-            render={({field: {onChange, onBlur, value}}) => (
-              <FormInput
-                label="Description"
-                placeholder="Enter a description for the item"
-                onBlur={onBlur}
-                onChange={onChange}
-                value={value}
-                error={errors.description && errors.description.message}
-                numberOfLines={5}
-              />
-            )}
-            name="description"
-          />
-          <Controller
-            control={control}
-            rules={{
-              required: {
-                value: true,
-                message: 'min 5 characters',
-              },
-            }}
-            render={({field: {onChange, onBlur, value}}) => (
-              <FormInput
-                label="Description"
-                placeholder="Enter a description for the item"
-                onBlur={onBlur}
-                onChange={onChange}
-                value={value}
-                error={errors.description && errors.description.message}
-                numberOfLines={5}
-              />
-            )}
-            name="description"
-          />
+
           {/* <View style={styles.container}>
         {renderLabel()}
         <Dropdown
@@ -310,7 +244,7 @@ const Upload = ({navigation}) => {
         />
       </View> */}
           <FormButton
-            text="Publish"
+            text="Upload Item"
             submit={uploadFile}
             handleSubmit={handleSubmit}
           />
@@ -324,7 +258,6 @@ const styles = StyleSheet.create({
   safearea: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop: Platform.OS === 'android' ? 30 : 0,
   },
   container: {
     padding: 16,
@@ -383,8 +316,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   title: {
-    marginVertical: 25,
-    marginHorizontal: 25,
+    marginTop: '10%',
+    marginHorizontal: '10%',
     fontSize: 25,
     fontWeight: 'bold',
     color: primaryColour,
