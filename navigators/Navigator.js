@@ -2,7 +2,9 @@ const {createBottomTabNavigator} = require('@react-navigation/bottom-tabs');
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {Icon} from '@rneui/themed';
-
+import {useContext} from 'react';
+import {MainContext} from '../contexts/MainContext';
+import PropTypes from 'prop-types';
 import Chats from '../views/Chats';
 import Home from '../views/Home';
 import Login from '../views/Login';
@@ -17,10 +19,7 @@ const Stack = createNativeStackNavigator();
 
 const TabScreen = ({navigation}) => {
   const {isLoggedIn} = useContext(MainContext);
-  /**
-   * Navigates to login form if user is not Signed in
-   * If signed in then navigates to desired screen
-   */
+
   const navigateScreen = (destinationScreen) => {
     !isLoggedIn
       ? navigation.navigate('Login')
@@ -110,6 +109,10 @@ const Navigator = () => {
       <StackScreen />
     </NavigationContainer>
   );
+};
+
+TabScreen.propTypes = {
+  navigation: PropTypes.object,
 };
 
 export default Navigator;

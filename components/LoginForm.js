@@ -108,6 +108,7 @@ const LoginForm = ({navigation}) => {
 LoginForm.propTypes = {
   navigation: PropTypes.object,
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
