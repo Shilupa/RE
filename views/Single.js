@@ -9,13 +9,11 @@ import {
   Image,
   Platform,
   SafeAreaView,
-  Alert,
 } from 'react-native';
 import {MainContext} from '../contexts/MainContext';
 
-const Single = ({route}) => {
-  console.log(route.params);
-  const {setIsLoggedIn} = useContext(MainContext);
+const Single = ({navigation, route}) => {
+  const {isLoggedIn} = useContext(MainContext);
 
   const {
     title,
@@ -25,28 +23,19 @@ const Single = ({route}) => {
     user_id: userId, */
   } = route.params;
 
-  const logOut = () => {
-    Alert.alert('Log Out', 'Are you sure you want to log out?', [
-      {
-        text: 'Yes',
-        onPress: () => {
-          setIsLoggedIn(false);
-        },
-      },
-      {text: 'No'},
-    ]);
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.titleBar}>
         <Text style={styles.title}>Item</Text>
-        <Icon
-          style={styles.logOut}
-          onPress={logOut}
-          name="power-settings-new"
-          color="red"
-        />
+        {!isLoggedIn && (
+          <Icon
+            size={30}
+            style={styles.logOut}
+            onPress={() => navigation.navigate('Login')}
+            name="login"
+            color="Green"
+          />
+        )}
       </View>
 
       <View style={styles.column} elevation={5}>
@@ -127,6 +116,7 @@ const styles = StyleSheet.create({
 
 Single.propTypes = {
   route: PropTypes.object,
+  navigation: PropTypes.object,
 };
 
 export default Single;
