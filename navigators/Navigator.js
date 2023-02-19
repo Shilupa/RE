@@ -19,9 +19,12 @@ const TabScreen = ({navigation}) => {
   const {isLoggedIn} = useContext(MainContext);
   /**
    * Navigates to login form if user is not Signed in
+   * If signed in then navigates to desired screen
    */
-  const navigateToLogin = () => {
-    !isLoggedIn ? navigation.navigate('Login') : navigation.navigate('Profile');
+  const navigateScreen = (destinationScreen) => {
+    !isLoggedIn
+      ? navigation.navigate('Login')
+      : navigation.navigate(destinationScreen);
   };
 
   return (
@@ -48,7 +51,11 @@ const TabScreen = ({navigation}) => {
         component={Upload}
         options={{
           tabBarIcon: ({color}) => (
-            <Icon name="cloud-upload" color={color} onPress={navigateToLogin} />
+            <Icon
+              name="cloud-upload"
+              color={color}
+              onPress={() => navigateScreen('Upload')}
+            />
           ),
         }}
       />
@@ -64,7 +71,11 @@ const TabScreen = ({navigation}) => {
         component={Profile}
         options={{
           tabBarIcon: ({color}) => (
-            <Icon name="person" color={color} onPress={navigateToLogin} />
+            <Icon
+              name="person"
+              color={color}
+              onPress={() => navigateScreen('Profile')}
+            />
           ),
         }}
       />

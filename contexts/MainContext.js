@@ -18,9 +18,8 @@ const MainProvider = (props) => {
     try {
       const asyncToken = await AsyncStorage.getItem('userToken');
       const asyncUser = await AsyncStorage.getItem('user');
-      
+
       if (asyncToken !== null) {
-        console.log('Async user', JSON.parse(asyncUser));
         setUser(JSON.parse(asyncUser));
         setToken(asyncToken);
         setIsLoggedIn(true);
