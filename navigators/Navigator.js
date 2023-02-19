@@ -18,11 +18,12 @@ const Stack = createNativeStackNavigator();
 const TabScreen = ({navigation}) => {
   const {isLoggedIn} = useContext(MainContext);
   /**
-   * Navigates to login when form if user is not Signed up
+   * Navigates to login form if user is not Signed in
    */
   const navigateToLogin = () => {
     !isLoggedIn ? navigation.navigate('Login') : navigation.navigate('Profile');
   };
+
   return (
     <Tab.Navigator
       screenOptions={{

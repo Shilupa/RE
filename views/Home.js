@@ -5,17 +5,26 @@ import {Tab, TabView, Text, Card, Icon} from '@rneui/themed';
 import {useContext, useState} from 'react';
 import {primaryColour, primaryColourDark} from '../utils/variables';
 import {MainContext} from '../contexts/MainContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Home = ({navigation}) => {
   const [index, setIndex] = useState(0);
-  const {setIsLoggedIn} = useContext(MainContext);
+  const {setIsLoggedIn, token, user} = useContext(MainContext);
+  console.log('Home', token);
+  console.log('Home', user);
 
   const logOut = () => {
     Alert.alert('Log Out', 'Are you sure you want to log out?', [
       {
         text: 'Yes',
-        onPress: () => {
+        onPress: async () => {
           setIsLoggedIn(false);
+          try {
+            await AsyncStorage.removeItem('userToken');
+            await AsyncStorage.removeItem('user');
+          } catch (e) {
+            console.log('Token removal error message', e);
+          }
         },
       },
       {text: 'No'},

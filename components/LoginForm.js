@@ -12,7 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Main LoinForm function
 const LoginForm = ({navigation}) => {
-  const {setIsLoggedIn, setUser} = useContext(MainContext);
+  const {setIsLoggedIn} = useContext(MainContext);
   const {postLogin} = useAuthentication();
   const {
     control,
@@ -32,8 +32,9 @@ const LoginForm = ({navigation}) => {
     try {
       const loginResult = await postLogin(loginData);
       console.log('logIn', loginResult);
+      // Saving token and user data to async storage
       await AsyncStorage.setItem('userToken', loginResult.token);
-      setUser(loginResult.user);
+      await AsyncStorage.setItem('user', JSON.stringify(loginResult.user));
       setIsLoggedIn(true);
       navigation.navigate('Home');
     } catch (error) {
