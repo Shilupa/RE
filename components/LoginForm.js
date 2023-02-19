@@ -34,8 +34,9 @@ const LoginForm = ({navigation}) => {
     try {
       const loginResult = await postLogin(loginData);
       console.log('logIn', loginResult);
+      // Saving token and user data to async storage
       await AsyncStorage.setItem('userToken', loginResult.token);
-      setUser(loginResult.user);
+      await AsyncStorage.setItem('user', JSON.stringify(loginResult.user));
       setIsLoggedIn(true);
       navigation.navigate('Home');
     } catch (error) {

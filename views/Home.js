@@ -5,6 +5,7 @@ import {Tab, TabView, Text, Card, Icon} from '@rneui/themed';
 import {useContext, useState} from 'react';
 import {primaryColour} from '../utils/variables';
 import {MainContext} from '../contexts/MainContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Home = ({navigation}) => {
   const [index, setIndex] = useState();

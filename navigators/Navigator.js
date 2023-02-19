@@ -15,7 +15,18 @@ import Upload from '../views/Upload';
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-const TabScreen = () => {
+const TabScreen = ({navigation}) => {
+  const {isLoggedIn} = useContext(MainContext);
+  /**
+   * Navigates to login form if user is not Signed in
+   * If signed in then navigates to desired screen
+   */
+  const navigateScreen = (destinationScreen) => {
+    !isLoggedIn
+      ? navigation.navigate('Login')
+      : navigation.navigate(destinationScreen);
+  };
+
   return (
     <Tab.Navigator
       screenOptions={{
@@ -39,7 +50,13 @@ const TabScreen = () => {
         name="Upload"
         component={Upload}
         options={{
-          tabBarIcon: ({color}) => <Icon name="cloud-upload" color={color} />,
+          tabBarIcon: ({color}) => (
+            <Icon
+              name="cloud-upload"
+              color={color}
+              onPress={() => navigateScreen('Upload')}
+            />
+          ),
         }}
       />
       <Tab.Screen
@@ -53,7 +70,13 @@ const TabScreen = () => {
         name="Profile"
         component={Profile}
         options={{
-          tabBarIcon: ({color}) => <Icon name="person" color={color} />,
+          tabBarIcon: ({color}) => (
+            <Icon
+              name="person"
+              color={color}
+              onPress={() => navigateScreen('Profile')}
+            />
+          ),
         }}
       />
     </Tab.Navigator>
