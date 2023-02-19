@@ -15,7 +15,14 @@ import Upload from '../views/Upload';
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-const TabScreen = () => {
+const TabScreen = ({navigation}) => {
+  const {isLoggedIn} = useContext(MainContext);
+  /**
+   * Navigates to login when form if user is not Signed up
+   */
+  const navigateToLogin = () => {
+    !isLoggedIn ? navigation.navigate('Login') : navigation.navigate('Profile');
+  };
   return (
     <Tab.Navigator
       screenOptions={{
@@ -39,7 +46,9 @@ const TabScreen = () => {
         name="Upload"
         component={Upload}
         options={{
-          tabBarIcon: ({color}) => <Icon name="cloud-upload" color={color} />,
+          tabBarIcon: ({color}) => (
+            <Icon name="cloud-upload" color={color} onPress={navigateToLogin} />
+          ),
         }}
       />
       <Tab.Screen
@@ -53,7 +62,9 @@ const TabScreen = () => {
         name="Profile"
         component={Profile}
         options={{
-          tabBarIcon: ({color}) => <Icon name="person" color={color} />,
+          tabBarIcon: ({color}) => (
+            <Icon name="person" color={color} onPress={navigateToLogin} />
+          ),
         }}
       />
     </Tab.Navigator>
@@ -61,28 +72,23 @@ const TabScreen = () => {
 };
 
 const StackScreen = () => {
-  const {isLoggedIn} = useContext(MainContext);
-
   return (
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
       }}
     >
-      {isLoggedIn ? (
-        <>
-          <Stack.Screen
-            name="Tabs"
-            component={TabScreen}
-            screenOptions={{headerShown: false}}
-          />
-          <Stack.Screen name="Single" component={Single} />
-          {/* <Stack.Screen name="MyFiles" component={MyFiles} />
+      <>
+        <Stack.Screen
+          name="Tabs"
+          component={TabScreen}
+          screenOptions={{headerShown: false}}
+        />
+        <Stack.Screen name="Single" component={Single} />
+        {/* <Stack.Screen name="MyFiles" component={MyFiles} />
           <Stack.Screen name="Modify" component={Modify} /> */}
-        </>
-      ) : (
-        <Stack.Screen name="Login" component={Login} />
-      )}
+      </>
+      <Stack.Screen name="Login" component={Login} />
     </Stack.Navigator>
   );
 };

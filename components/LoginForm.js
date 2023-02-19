@@ -11,7 +11,7 @@ import FormButton from './formComponent/FormButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Main LoinForm function
-const LoginForm = () => {
+const LoginForm = ({navigation}) => {
   const {setIsLoggedIn, setUser} = useContext(MainContext);
   const {postLogin} = useAuthentication();
   const {
@@ -35,6 +35,7 @@ const LoginForm = () => {
       await AsyncStorage.setItem('userToken', loginResult.token);
       setUser(loginResult.user);
       setIsLoggedIn(true);
+      navigation.navigate('Home');
     } catch (error) {
       console.error('logIn', error);
       // TODO: notify user about failed login attempt
