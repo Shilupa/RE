@@ -23,15 +23,16 @@ const SecondaryListItem = ({singleMedia, navigation}) => {
 const styles = StyleSheet.create({
   column: {
     backgroundColor: '#FAFBFB',
-    margin: 6,
+    margin: 4.5,
     borderRadius: 6,
-    minWidth: 125,
+    minWidth: '31%',
   },
   image: {
     flex: 1,
-    minHeight: 200,
-    borderRadius: 6,
-    resizeMode: 'stretch',
+    aspectRatio: 1.2,
+    minHeight: 50,
+    borderRadius: 5,
+    resizeMode: 'cover',
   },
 });
 
