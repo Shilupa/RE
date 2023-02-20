@@ -1,4 +1,4 @@
-import {Button, Card} from '@rneui/themed';
+import {Button, Card, Icon} from '@rneui/themed';
 import React, {useContext, useEffect, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {Alert, Image, SafeAreaView, StyleSheet, Text, View} from 'react-native';
@@ -83,6 +83,10 @@ const EditProfile = ({navigation}) => {
     }
   };
 
+  const navigateToProfile = () => {
+    navigation.navigate('Profile');
+  };
+
   useEffect(() => {
     loadAvatar();
     reset({username: user.username, email: user.email});
@@ -91,8 +95,10 @@ const EditProfile = ({navigation}) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.titleBar}>
-        <Text style={styles.title}>Edit Profile</Text>
+      <Icon style={styles.back} name="arrow-back" color="black" onPress={navigateToProfile} />
       </View>
+
+      <View><Text style={styles.title}>Edit Profile</Text></View>
 
       <View style={styles.userProfile}>
         <Image
@@ -223,7 +229,15 @@ const EditProfile = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#FFFFFF',
     // alignItems: 'center',
+  },
+
+  back: {
+    marginBottom:'2%',
+    marginVertical: 25,
+    marginHorizontal: 25,
+    color: primaryColour,
   },
 
   avatar: {
@@ -236,11 +250,20 @@ const styles = StyleSheet.create({
 
   //Title of the page
   title: {
-    color: primaryColour,
-    fontSize: 28,
+    marginVertical: 10,
+    marginHorizontal: 25,
+    fontSize: 25,
     fontWeight: 'bold',
-    marginTop: '12%',
-    alignSelf: 'center',
+    color: primaryColour,
+    alignSelf:'center',
+
+  },
+
+  titleBar: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
 
   inputView: {
