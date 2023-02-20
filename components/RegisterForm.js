@@ -117,7 +117,9 @@ const RegisterForm = () => {
                 onBlur={onBlur}
                 onChange={onChange}
                 value={value}
-                autoCapitalize="none"
+                aautoCapitalize="none"
+                multiline={false}
+                secureTextEntry={false}
                 error={errors.username && errors.username.message}
               />
             )}
@@ -142,6 +144,8 @@ const RegisterForm = () => {
                 onChange={onChange}
                 value={value}
                 secureTextEntry={true}
+                autoCapitalize="none"
+                multiline={false}
                 error={errors.password && errors.password.message}
               />
             )}
@@ -165,6 +169,8 @@ const RegisterForm = () => {
                 onChange={onChange}
                 value={value}
                 secureTextEntry={true}
+                autoCapitalize="none"
+                multiline={false}
                 error={errors.confirmPassword && errors.confirmPassword.message}
               />
             )}
@@ -185,6 +191,9 @@ const RegisterForm = () => {
                 onBlur={onBlur}
                 onChange={onChange}
                 value={value}
+                secureTextEntry={false}
+                autoCapitalize="none"
+                multiline={false}
                 error={errors.email && errors.email.message}
               />
             )}
@@ -200,6 +209,7 @@ const RegisterForm = () => {
                 onChange={onChange}
                 value={value}
                 autoCapitalize="words"
+                secureTextEntry={false}
                 error={errors.full_name && errors.full_name.message}
               />
             )}

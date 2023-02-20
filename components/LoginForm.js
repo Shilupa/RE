@@ -1,8 +1,8 @@
 import {SafeAreaView, StyleSheet, View} from 'react-native';
-import React, {useContext} from 'react';
+import React, {useContext, useState} from 'react';
 import {primaryColour} from '../utils/variables';
 import LeafSvg from './LeafSvg';
-import {Card} from '@rneui/themed';
+import {Card, Icon} from '@rneui/themed';
 import PropTypes from 'prop-types';
 import {Controller, useForm} from 'react-hook-form';
 import FormInput from './formComponent/FormInput';
@@ -15,6 +15,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const LoginForm = ({navigation}) => {
   const {setIsLoggedIn} = useContext(MainContext);
   const {postLogin} = useAuthentication();
+
+  // password visibility Icon press
+  const [shown, setShown] = useState(true);
+  const togglePassword = () => {
+    setShown(!shown);
+  };
 
   const {
     control,
@@ -61,8 +67,10 @@ const LoginForm = ({navigation}) => {
             <FormInput
               onBlur={onBlur}
               onChange={onChange}
+              multiline={false}
               label={'Username'}
               value={value}
+              secureTextEntry={false}
               autoCapitalize="none"
               error={errors.username && errors.username.message}
             />
@@ -83,7 +91,16 @@ const LoginForm = ({navigation}) => {
               onBlur={onBlur}
               onChange={onChange}
               value={value}
-              secureTextEntry={true}
+              autoCapitalize="none"
+              multiline={false}
+              rightIcon={
+                <Icon
+                  onPress={togglePassword}
+                  name={shown ? 'visibility' : 'visibility-off'}
+                  size={20}
+                />
+              }
+              secureTextEntry={shown}
               error={errors.password && errors.password.message}
             />
           )}

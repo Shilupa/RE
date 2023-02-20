@@ -10,8 +10,7 @@ const FormInput = (props) => {
     <SafeAreaView>
       <Input
         inputContainerStyle={styles.inputContainerStyle}
-        labelStyle={styles.labelStyle}
-        inputStyle={styles.inputStyle}
+        labelStyle={styles.labelStyle}inputStyle={styles.inputStyle}
         errorStyle={styles.errorStyle}
         placeholder={props.placeholder}
         onBlur={props.onBlur}
@@ -21,8 +20,9 @@ const FormInput = (props) => {
         autoCapitalize={props.autoCapitalize}
         errorMessage={props.error}
         secureTextEntry={props.secureTextEntry}
-        multiline={true}
+        multiline={props.multiline}
         numberOfLines={props.numberOfLines}
+        rightIcon={props.rightIcon}
       />
     </SafeAreaView>
   );
@@ -31,11 +31,6 @@ const FormInput = (props) => {
 const styles = StyleSheet.create({
   // Styling of input box itself
   inputStyle: {
-    backgroundColor: inputBackground,
-    borderRadius: 8,
-    paddingLeft: 20,
-    fontSize: 16,
-    paddingTop: 6,
     textAlign: 'left',
     textAlignVertical: 'top',
   },
@@ -54,7 +49,11 @@ const styles = StyleSheet.create({
   // disable underline in the input box
   inputContainerStyle: {
     borderBottomWidth: 0,
-
+    backgroundColor: inputBackground,
+    borderRadius: 8,
+    paddingHorizontal: 20,
+    fontSize: 16,
+    paddingTop: 6,
   },
 
   // error text in the input box
@@ -73,6 +72,8 @@ FormInput.propTypes = {
   error: PropTypes.string,
   secureTextEntry: PropTypes.bool,
   numberOfLines: PropTypes.number,
+  rightIcon: PropTypes.any,
+  multiline: PropTypes.bool,
 };
 
 export default FormInput;
