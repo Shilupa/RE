@@ -44,11 +44,6 @@ const Upload = ({navigation}) => {
   const [avatar, setAvatar] = useState();
   const [index, setIndex] = useState();
 
-  console.log(isLoggedIn);
-  if (!isLoggedIn) {
-    navigation.navigate('Login');
-  }
-
   const uploadFile = async (data) => {
     // create form data and post it
     setLoading(true);

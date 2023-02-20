@@ -17,21 +17,22 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Profile = ({navigation}) => {
   const {getFilesByTag} = useTag();
-  const {setIsLoggedIn, isLoggedIn, user, setUser} = useContext(MainContext);
+  const {setIsLoggedIn, isLoggedIn, user, setUser, updateUser} =
+    useContext(MainContext);
   const [avatar, setAvatar] = useState();
   const [index, setIndex] = useState();
 
-  console.log(isLoggedIn);
-  if (!isLoggedIn) {
-    navigation.navigate('Login');
-  }
-
   const loadAvatar = async () => {
-    try {
-      const avatarArray = await getFilesByTag('avatar_' + user.user_id);
-      setAvatar(avatarArray.pop().filename);
-    } catch (error) {
-      console.error('user avatar fetch failed', error.message);
+    if (isLoggedIn) {
+      try {
+        const avatarArray = await getFilesByTag('avatar_' + user.user_id);
+        console.log('Profile avatar', avatarArray.filename);
+        if (avatarArray.filename !== undefined) {
+          setAvatar(avatarArray.pop().filename);
+        }
+      } catch (error) {
+        console.error('user avatar fetch failed', error.message);
+      }
     }
   };
 
@@ -59,9 +60,12 @@ const Profile = ({navigation}) => {
     ]);
   };
 
+  const navigateToEditProfile = () => {
+    navigation.navigate('EditProfile');
+  };
   useEffect(() => {
     loadAvatar();
-  }, [isLoggedIn]);
+  }, [updateUser]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -86,10 +90,12 @@ const Profile = ({navigation}) => {
           }}
         ></Image>
         <Text style={{textAlign: 'center', fontSize: 18}}>
-          {' '}
-          {user.username}{' '}
+          {user !== null ? user.username : ''}
         </Text>
-        <Text style={{textAlign: 'center', fontSize: 12}}> {user.email} </Text>
+        <Text style={{textAlign: 'center', fontSize: 12}}>
+          {' '}
+          {user !== null ? user.email : ''}
+        </Text>
         <Button
           containerStyle={{
             width: '40%',
@@ -102,6 +108,7 @@ const Profile = ({navigation}) => {
           color={'#4CBB17'}
           radius={6}
           title={'Edit Profile'}
+          onPress={navigateToEditProfile}
         ></Button>
       </View>
       <Tab

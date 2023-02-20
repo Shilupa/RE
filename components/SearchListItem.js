@@ -4,7 +4,7 @@ import {uploadsUrl} from '../utils/variables';
 
 const SearchListItem = ({singleMedia, navigation}) => {
   const item = singleMedia;
-  console.log('Item: ', item);
+  //console.log('Item: ', item);
   return (
     <View style={styles.container}>
       <TouchableOpacity

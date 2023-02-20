@@ -14,23 +14,30 @@ const ListItem = ({singleMedia, navigation}) => {
   const [avatar, setAvatar] = useState('');
   const {getUserById} = useUser();
   const [owner, setOwner] = useState({});
+  const {isLoggedIn} = useContext(MainContext);
 
   const loadAvatar = async () => {
-    try {
-      const avatarArray = await getFilesByTag('avatar_' + item.user_id);
-      setAvatar(avatarArray.pop().filename);
-    } catch (error) {
-      console.error('user avatar fetch failed', error.message);
+    if (isLoggedIn) {
+      try {
+        const avatarArray = await getFilesByTag('avatar_' + item.user_id);
+        if (avatarArray.filename !== undefined) {
+          setAvatar(avatarArray.pop().filename);
+        }
+      } catch (error) {
+        console.error('user avatar fetch failed', error.message);
+      }
     }
   };
   const getOwner = async () => {
-    try {
-      const token = await AsyncStorage.getItem('userToken');
-      const owner = await getUserById(item.user_id, token);
-      console.log('owner', owner);
-      setOwner(owner);
-    } catch (error) {
-      console.error('owner set failed', item.user_id);
+    if (isLoggedIn) {
+      try {
+        const token = await AsyncStorage.getItem('userToken');
+        const owner = await getUserById(item.user_id, token);
+        //console.log('owner', owner);
+        setOwner(owner);
+      } catch (error) {
+        console.error('owner set failed', item.user_id);
+      }
     }
   };
 

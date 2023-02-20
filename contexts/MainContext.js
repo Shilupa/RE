@@ -10,7 +10,7 @@ const MainProvider = (props) => {
   const [update, setUpdate] = useState(true);
   const [toggleForm, setToggleForm] = useState(true);
   const [token, setToken] = useState(null);
-
+  const [updateUser, setUpdateUser] = useState(0)
   /**
    * Saving user data and token from async storage to global variables
    */
@@ -28,10 +28,10 @@ const MainProvider = (props) => {
       console.error('logIn', error);
     }
   };
-
+  console.log(user);
   useEffect(() => {
     saveData();
-  }, [isLoggedIn]);
+  }, [updateUser]);
 
   return (
     <MainContext.Provider
@@ -45,6 +45,8 @@ const MainProvider = (props) => {
         toggleForm,
         setToggleForm,
         token,
+        updateUser,
+        setUpdateUser
       }}
     >
       {props.children}

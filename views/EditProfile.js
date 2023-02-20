@@ -8,7 +8,7 @@ import {MainContext} from '../contexts/MainContext';
 import {useTag, useUser} from '../hooks/ApiHooks';
 import {primaryColour, uploadsUrl} from '../utils/variables';
 
-const EditProfile = () => {
+const EditProfile = ({navigation}) => {
   const {getFilesByTag} = useTag();
   const [avatar, setAvatar] = useState();
   const {isLoggedIn, user, token} = useContext(MainContext);
@@ -50,7 +50,10 @@ const EditProfile = () => {
   const loadAvatar = async () => {
     try {
       const avatarArray = await getFilesByTag('avatar_' + user.user_id);
-      setAvatar(avatarArray.pop().filename);
+      console.log('Edit profile', avatarArray.filename);
+      if (avatarArray.filename !== undefined) {
+        setAvatar(avatarArray.pop().filename);
+      }
     } catch (error) {
       console.error('user avatar fetch failed', error.message);
     }
@@ -62,6 +65,7 @@ const EditProfile = () => {
       const response = await updateUser(formData, token);
       console.log(response);
       resetForm();
+      navigation.navigate('Profile');
     } catch (error) {
       console.log(error);
     }
