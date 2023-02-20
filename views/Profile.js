@@ -5,6 +5,7 @@ import {
   View,
   Image,
   Alert,
+  StatusBar,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import {Tab, TabView, Text, Button, Icon} from '@rneui/themed';
@@ -67,15 +68,9 @@ const Profile = ({navigation}) => {
     <SafeAreaView style={styles.container}>
       <View style={styles.titleBar}>
         <Text style={styles.title}>Profile</Text>
-        {isLoggedIn && (
-          <Icon
-            size={30}
-            style={styles.logOut}
-            onPress={logOut}
-            name="power-settings-new"
-            color="red"
-          />
-        )}
+        <Text style={styles.logOut} onPress={logOut}>
+          Log Out
+        </Text>
       </View>
 
       <View style={styles.userProfile}>
@@ -86,10 +81,11 @@ const Profile = ({navigation}) => {
           }}
         ></Image>
         <Text style={{textAlign: 'center', fontSize: 18}}>
-          {' '}
-          {user.username}{' '}
+          {isLoggedIn && user.username}
         </Text>
-        <Text style={{textAlign: 'center', fontSize: 12}}> {user.email} </Text>
+        <Text style={{textAlign: 'center', fontSize: 12}}>
+          {isLoggedIn && user.email}
+        </Text>
         <Button
           containerStyle={{
             width: '40%',
@@ -137,24 +133,29 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop: Platform.OS === 'android' ? 30 : 0,
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   titleBar: {
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'baseline',
   },
   title: {
-    marginVertical: 25,
+    marginTop: 25,
+    marginBottom: 15,
     marginHorizontal: 25,
     fontSize: 25,
     fontWeight: 'bold',
     color: primaryColour,
   },
   logOut: {
-    marginVertical: 25,
+    marginTop: 25,
+    marginBottom: 15,
     marginHorizontal: 25,
-    color: primaryColour,
+    color: 'red',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   userProfile: {
     width: '100%',

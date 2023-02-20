@@ -1,4 +1,10 @@
-import {Platform, StyleSheet, SafeAreaView, View} from 'react-native';
+import {
+  Platform,
+  StyleSheet,
+  SafeAreaView,
+  View,
+  StatusBar,
+} from 'react-native';
 import PropTypes from 'prop-types';
 import {Card, Icon, SearchBar, Tab, TabView, Text} from '@rneui/themed';
 import {primaryColour} from '../utils/variables';
@@ -19,14 +25,15 @@ const Search = ({navigation}) => {
     <SafeAreaView style={styles.container}>
       <View style={styles.titleBar}>
         <Text style={styles.title}>Discover</Text>
-        {!isLoggedIn && (
-          <Icon
-            size={30}
-            style={styles.logOut}
+        {!isLoggedIn ? (
+          <Text
+            style={styles.logIn}
             onPress={() => navigation.navigate('Login')}
-            name="login"
-            color="Green"
-          />
+          >
+            Sign In
+          </Text>
+        ) : (
+          <Text style={styles.logIn}>Hi!</Text>
         )}
       </View>
       <View style={{marginBottom: 10}}>
@@ -102,13 +109,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop: Platform.OS === 'android' ? 30 : 0,
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
 
   titleBar: {
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'baseline',
   },
   title: {
     marginTop: 25,
@@ -118,11 +126,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: primaryColour,
   },
-  logOut: {
+  logIn: {
     marginTop: 25,
     marginBottom: 15,
     marginHorizontal: 25,
     color: primaryColour,
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 

@@ -13,7 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Main LoinForm function
 const LoginForm = ({navigation}) => {
-  const {setIsLoggedIn, setUser} = useContext(MainContext);
+  const {setIsLoggedIn} = useContext(MainContext);
   const {postLogin} = useAuthentication();
 
   const {
@@ -46,10 +46,6 @@ const LoginForm = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.logoContainer}>
-        <LeafSvg />
-        <Card.Title style={styles.welcomeText}>Welcome Back</Card.Title>
-      </View>
       <View style={styles.inputView}>
         <Controller
           control={control}
@@ -115,17 +111,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
-  logoContainer: {
-    alignItems: 'center',
-  },
-
-  // Welcome Back text
-  welcomeText: {
-    color: primaryColour,
-    fontSize: 28,
-    fontWeight: 'bold',
-  },
-
   // view for input box area
   inputView: {
     marginTop: '5%',
@@ -136,6 +121,7 @@ const styles = StyleSheet.create({
   buttonView: {
     marginTop: '5%',
     width: '100%',
+    marginBottom: 5,
   },
 });
 

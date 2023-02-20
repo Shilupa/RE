@@ -1,26 +1,28 @@
 import {
   Platform,
   StyleSheet,
-  TouchableOpacity,
   Keyboard,
   KeyboardAvoidingView,
   Text,
   ScrollView,
   View,
+  SafeAreaView,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import LoginForm from '../components/LoginForm';
 import RegisterForm from '../components/RegisterForm';
 import {useContext} from 'react';
 import {MainContext} from '../contexts/MainContext';
-import {primaryColour} from '../utils/variables';
-import {Icon} from '@rneui/themed';
+import {primaryColour, vh} from '../utils/variables';
+import {Card, Icon} from '@rneui/themed';
+import {StatusBar} from 'react-native';
+import LeafSvg from '../components/LeafSvg';
 
 const Login = ({navigation}) => {
   const {toggleForm, setToggleForm} = useContext(MainContext);
 
   return (
-    <TouchableOpacity
+    <SafeAreaView
       onPress={() => Keyboard.dismiss()}
       style={{flex: 1}}
       activeOpacity={1}
@@ -32,13 +34,23 @@ const Login = ({navigation}) => {
         <View style={styles.titleBar}>
           <Icon
             size={30}
-            style={styles.title}
+            style={styles.icon}
             onPress={() => {
               navigation.navigate('Home');
             }}
             name="home"
-            color="black"
+            color={primaryColour}
           />
+        </View>
+        <View style={styles.logoContainer}>
+          <LeafSvg />
+          {toggleForm ? (
+            <Card.Title style={styles.welcomeText}>Welcome Back</Card.Title>
+          ) : (
+            <Card.Title style={styles.welcomeText}>
+              Create Your Account
+            </Card.Title>
+          )}
         </View>
         <ScrollView>
           {toggleForm ? (
@@ -63,7 +75,7 @@ const Login = ({navigation}) => {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-    </TouchableOpacity>
+    </SafeAreaView>
   );
 };
 
@@ -71,28 +83,43 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop: Platform.OS === 'android' ? 40 : 0,
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   signInView: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
   },
+  accountText: {
+    fontWeight: '400',
+    marginBottom: 10 * vh,
+  },
   signInText: {
     color: primaryColour,
     fontWeight: '400',
+    marginBottom: 10 * vh,
   },
   titleBar: {
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  title: {
-    marginTop: '15%',
+  icon: {
+    marginTop: 5 * vh,
     marginHorizontal: '5%',
     fontSize: 25,
     fontWeight: 'bold',
     color: primaryColour,
+  },
+  logoContainer: {
+    alignItems: 'center',
+  },
+
+  // Welcome Back text
+  welcomeText: {
+    color: primaryColour,
+    fontSize: 28,
+    fontWeight: 'bold',
   },
 });
 

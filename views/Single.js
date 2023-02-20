@@ -9,16 +9,15 @@ import {
   Image,
   Platform,
   SafeAreaView,
-  Alert,
   ScrollView,
 } from 'react-native';
 import {MainContext} from '../contexts/MainContext';
 import {useFavourite, useTag, useUser} from '../hooks/ApiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const Single = ({route}) => {
+const Single = ({navigation, route}) => {
   console.log(route.params);
-  const {setIsLoggedIn} = useContext(MainContext);
+  const {isLoggedIn} = useContext(MainContext);
   const {getUserById} = useUser();
   const [owner, setOwner] = useState({});
   const [avatar, setAvatar] = useState('');
@@ -99,18 +98,6 @@ const Single = ({route}) => {
     }
   };
 
-  const logOut = () => {
-    Alert.alert('Log Out', 'Are you sure you want to log out?', [
-      {
-        text: 'Yes',
-        onPress: () => {
-          setIsLoggedIn(false);
-        },
-      },
-      {text: 'No'},
-    ]);
-  };
-
   const loadAvatar = async () => {
     try {
       const avatarArray = await getFilesByTag('avatar_' + owner.user_id);
@@ -129,14 +116,24 @@ const Single = ({route}) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.titleBar}>
-        <Icon style={styles.logOut} name="arrow-back" color="black" />
         <Icon
-          style={styles.logOut}
-          onPress={logOut}
-          name="power-settings-new"
-          color="red"
+          onPress={() => navigation.goBack()}
+          style={styles.title}
+          name="arrow-back"
+          color="black"
         />
+        {!isLoggedIn ? (
+          <Text
+            style={styles.logIn}
+            onPress={() => navigation.navigate('Login')}
+          >
+            Sign In
+          </Text>
+        ) : (
+          <Text style={styles.logIn}>Hi!</Text>
+        )}
       </View>
+
       <Card.Divider />
 
       <ScrollView>
@@ -217,10 +214,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: primaryColour,
   },
-  logOut: {
+  logIn: {
     marginVertical: 25,
     marginHorizontal: 25,
     color: primaryColour,
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   column: {
     flexDirection: 'column',
