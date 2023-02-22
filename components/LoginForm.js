@@ -29,7 +29,7 @@ const LoginForm = ({navigation}) => {
   } = useForm({
     defaultValues: {
       username: 'bibekShrestha',
-      password: 'examplepass',
+      password: 'Test1234',
     },
     mode: 'onBlur',
   });

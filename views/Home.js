@@ -7,14 +7,14 @@ import {
 } from 'react-native';
 import List from '../components/List';
 import PropTypes from 'prop-types';
-import {Tab, TabView, Text, Card, Icon} from '@rneui/themed';
+import {Tab, TabView, Text, Card} from '@rneui/themed';
 import {useContext, useState} from 'react';
 import {primaryColour} from '../utils/variables';
 import {MainContext} from '../contexts/MainContext';
 
 const Home = ({navigation}) => {
   const [index, setIndex] = useState();
-  const {isLoggedIn} = useContext(MainContext);
+  const {isLoggedIn, user} = useContext(MainContext);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -28,7 +28,7 @@ const Home = ({navigation}) => {
             Sign In
           </Text>
         ) : (
-          <Text style={styles.logIn}>Hi!</Text>
+          <Text style={styles.logIn}>Hi {user.username}! </Text>
         )}
       </View>
 

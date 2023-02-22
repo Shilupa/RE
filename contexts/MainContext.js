@@ -10,6 +10,7 @@ const MainProvider = (props) => {
   const [update, setUpdate] = useState(true);
   const [toggleForm, setToggleForm] = useState(true);
   const [token, setToken] = useState(null);
+  const [updateAvatar, setUpdateAvatar] = useState(0);
 
   /**
    * Saving user data and token from async storage to global variables
@@ -45,6 +46,8 @@ const MainProvider = (props) => {
         toggleForm,
         setToggleForm,
         token,
+        updateAvatar,
+        setUpdateAvatar,
       }}
     >
       {props.children}

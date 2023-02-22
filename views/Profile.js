@@ -8,18 +8,20 @@ import {
   StatusBar,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import {Tab, TabView, Text, Button, Icon} from '@rneui/themed';
+import {Tab, TabView, Text, Button} from '@rneui/themed';
 import {useTag} from '../hooks/ApiHooks';
 import {primaryColour, uploadsUrl} from '../utils/variables';
 import React, {useContext, useEffect, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
 import MyFiles from './MyFiles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import defaultAvatar from '../assets/avatar.png';
 
 const Profile = ({navigation}) => {
+  const defaultAvatarUri = Image.resolveAssetSource(defaultAvatar).uri;
   const {getFilesByTag} = useTag();
   const {setIsLoggedIn, isLoggedIn, user, setUser} = useContext(MainContext);
-  const [avatar, setAvatar] = useState();
+  const [avatar, setAvatar] = useState(defaultAvatarUri);
   const [index, setIndex] = useState();
 
   console.log(isLoggedIn);
@@ -32,7 +34,7 @@ const Profile = ({navigation}) => {
       const avatarArray = await getFilesByTag('avatar_' + user.user_id);
       setAvatar(avatarArray.pop().filename);
     } catch (error) {
-      console.error('user avatar fetch failed', error.message);
+      console.log('set avatar failed', error.message);
     }
   };
 
@@ -49,9 +51,9 @@ const Profile = ({navigation}) => {
       {
         text: 'Yes',
         onPress: () => {
+          removeToken();
           setUser({});
           setIsLoggedIn(false);
-          removeToken();
           setIndex(0);
           navigation.navigate('Home');
         },
@@ -62,7 +64,7 @@ const Profile = ({navigation}) => {
 
   useEffect(() => {
     loadAvatar();
-  }, [isLoggedIn]);
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -119,11 +121,9 @@ const Profile = ({navigation}) => {
       </Tab>
       <TabView value={index} onChange={setIndex} animationType="spring">
         <TabView.Item>
-          {isLoggedIn && <MyFiles navigation={navigation} />}
+          <MyFiles navigation={navigation} />
         </TabView.Item>
-        <TabView.Item
-          style={{backgroundColor: 'green', width: '100%'}}
-        ></TabView.Item>
+        <TabView.Item>{/* {isLoggedIn && <FavouriteList />} */}</TabView.Item>
       </TabView>
     </SafeAreaView>
   );

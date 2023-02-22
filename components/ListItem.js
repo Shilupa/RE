@@ -3,24 +3,28 @@ import PropTypes from 'prop-types';
 import {uploadsUrl} from '../utils/variables';
 import {Icon} from '@rneui/themed';
 import {Card} from '@rneui/base';
-import {useContext, useEffect, useState} from 'react';
+import {useContext, useEffect, useRef, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
 import {useTag, useUser} from '../hooks/ApiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import defaultAvatar from '../assets/avatar.png';
 
 const ListItem = ({singleMedia, navigation}) => {
+  const defaultAvatarUri = Image.resolveAssetSource(defaultAvatar).uri;
   const item = singleMedia;
   const {getFilesByTag} = useTag();
-  const [avatar, setAvatar] = useState('');
+  const [avatar, setAvatar] = useState(defaultAvatarUri);
   const {getUserById} = useUser();
   const [owner, setOwner] = useState({});
+  const {isLoggedIn} = useContext(MainContext);
+  const isMountedRef = useRef(false);
 
   const loadAvatar = async () => {
     try {
       const avatarArray = await getFilesByTag('avatar_' + item.user_id);
       setAvatar(avatarArray.pop().filename);
     } catch (error) {
-      console.error('user avatar fetch failed', error.message);
+      console.log('set avatr faile', error.message);
     }
   };
   const getOwner = async () => {
@@ -34,22 +38,34 @@ const ListItem = ({singleMedia, navigation}) => {
     }
   };
 
-  useEffect(() => {
+  /*   useEffect(() => {
     loadAvatar();
     getOwner();
-  }, [avatar]);
+  }, [isLoggedIn]); */
+
+  useEffect(() => {
+    if (isMountedRef.current) {
+      loadAvatar();
+      getOwner();
+    } else {
+      isMountedRef.current = true;
+    }
+  }, [isLoggedIn]);
 
   return (
     <View style={styles.column} elevation={5}>
-      <View style={styles.userInfo}>
-        <Image
-          style={styles.avatar}
-          source={{
-            uri: uploadsUrl + avatar,
-          }}
-        ></Image>
-        <Text>{owner.username}</Text>
-      </View>
+      {isLoggedIn && (
+        <View style={styles.userInfo}>
+          <Image
+            style={styles.avatar}
+            source={{
+              uri: uploadsUrl + avatar,
+            }}
+          ></Image>
+          <Text>{owner.username}</Text>
+        </View>
+      )}
+
       <TouchableOpacity
         onPress={() => {
           navigation.navigate('Single', item);
@@ -127,7 +143,7 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
   },
   avatar: {
-    resizeMode: 'contain',
+    resizeMode: 'cover',
     width: 40,
     height: 40,
     borderRadius: 400 / 2,

@@ -1,7 +1,12 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {primaryColour, uploadsUrl} from '../utils/variables';
+import {
+  inputBackground,
+  primaryColour,
+  primaryColourDark,
+  uploadsUrl,
+} from '../utils/variables';
 import PropTypes from 'prop-types';
-import {Card, Icon, Button} from '@rneui/themed';
+import {Card, Icon, Button, ButtonGroup} from '@rneui/themed';
 import {
   StyleSheet,
   View,
@@ -10,6 +15,7 @@ import {
   Platform,
   SafeAreaView,
   ScrollView,
+  ImageBackground,
 } from 'react-native';
 import {MainContext} from '../contexts/MainContext';
 import {useFavourite, useTag, useUser} from '../hooks/ApiHooks';
@@ -115,7 +121,7 @@ const Single = ({navigation, route}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.titleBar}>
+      {/*       <View style={styles.titleBar}>
         <Icon
           onPress={() => navigation.goBack()}
           style={styles.title}
@@ -134,10 +140,9 @@ const Single = ({navigation, route}) => {
         )}
       </View>
 
-      <Card.Divider />
+      <Card.Divider /> */}
 
-      <ScrollView>
-        <View
+      {/*         <View
           style={{
             flexDirection: 'row',
             alignItems: 'center',
@@ -158,13 +163,63 @@ const Single = ({navigation, route}) => {
           <View style={styles.box}>
             <Text>{owner.username} </Text>
           </View>
-        </View>
-
-        <Image style={styles.image} source={{uri: uploadsUrl + filename}} />
-
-        <View style={styles.box}>
-          <Text style={styles.listTitle}>{title}</Text>
-          <Text style={styles.time}>listed {time}ago</Text>
+        </View> */}
+      <View style={styles.imageContainer}>
+        <ImageBackground
+          source={{uri: uploadsUrl + filename}}
+          style={styles.backgroundImage}
+        >
+          <Button
+            type="solid"
+            buttonStyle={styles.backBtn}
+            containerStyle={{
+              marginHorizontal: 20,
+              marginVertical: 10,
+              borderRadius: 100 / 2,
+            }}
+          >
+            <Icon
+              name="arrow-back"
+              color="black"
+              onPress={() => navigation.goBack()}
+            />
+          </Button>
+        </ImageBackground>
+      </View>
+      <ScrollView>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignContent: 'space-between',
+            justifyContent: 'space-between',
+          }}
+        >
+          <View style={styles.box}>
+            <Text style={styles.listTitle}>{title}</Text>
+            <Text style={styles.time}>listed {time}ago</Text>
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              margin: 5,
+              marginTop: 0,
+            }}
+          >
+            <Image
+              style={{
+                width: 50,
+                height: 50,
+                borderRadius: 400 / 2,
+                resizeMode: 'contain',
+                margin: 5,
+              }}
+              source={{uri: uploadsUrl + avatar}}
+            ></Image>
+            <View style={styles.box}>
+              <Text>{owner.username} </Text>
+            </View>
+          </View>
         </View>
 
         <Button buttonStyle={styles.button}> Message Seller</Button>
@@ -202,6 +257,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     paddingTop: Platform.OS === 'android' ? 30 : 0,
   },
+  imageContainer: {
+    width: '100%',
+    height: 300,
+  },
   titleBar: {
     width: '100%',
     flexDirection: 'row',
@@ -233,8 +292,11 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   image: {
+    flex: 1,
     resizeMode: 'cover',
-    height: 300,
+    opacity: 0.7,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   listTitle: {
     fontWeight: 'bold',
@@ -259,6 +321,21 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 20,
     padding: 10,
+  },
+  backBtn: {
+    borderRadius: 200 / 2,
+    width: 50,
+    height: 50,
+    left: -150,
+    alignSelf: 'center',
+    marginBottom: 5,
+    backgroundColor: '#81C784',
+    elevation: 10,
+  },
+  backgroundImage: {
+    flex: 1,
+    width: null,
+    height: null,
   },
 });
 

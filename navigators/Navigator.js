@@ -45,39 +45,46 @@ const TabScreen = ({navigation}) => {
           tabBarIcon: ({color}) => <Icon name="search" color={color} />,
         }}
       />
-      <Tab.Screen
-        name="Upload"
-        component={Upload}
-        options={{
-          tabBarIcon: ({color}) => (
-            <Icon
-              name="cloud-upload"
-              color={color}
-              onPress={() => navigateScreen('Upload')}
-            />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Chats"
-        component={Chats}
-        options={{
-          tabBarIcon: ({color}) => <Icon name="chat" color={color} />,
-        }}
-      />
-      <Tab.Screen
-        name="Profile"
-        component={Profile}
-        options={{
-          tabBarIcon: ({color}) => (
-            <Icon
-              name="person"
-              color={color}
-              onPress={() => navigateScreen('Profile')}
-            />
-          ),
-        }}
-      />
+
+      {isLoggedIn && (
+        <Tab.Screen
+          name="Upload"
+          component={Upload}
+          options={{
+            tabBarIcon: ({color}) => (
+              <Icon
+                name="cloud-upload"
+                color={color}
+                onPress={() => navigateScreen('Upload')}
+              />
+            ),
+          }}
+        />
+      )}
+      {isLoggedIn && (
+        <Tab.Screen
+          name="Chats"
+          component={Chats}
+          options={{
+            tabBarIcon: ({color}) => <Icon name="chat" color={color} />,
+          }}
+        />
+      )}
+      {isLoggedIn && (
+        <Tab.Screen
+          name="Profile"
+          component={Profile}
+          options={{
+            tabBarIcon: ({color}) => (
+              <Icon
+                name="person"
+                color={color}
+                onPress={() => navigateScreen('Profile')}
+              />
+            ),
+          }}
+        />
+      )}
     </Tab.Navigator>
   );
 };
