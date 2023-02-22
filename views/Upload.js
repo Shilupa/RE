@@ -190,6 +190,8 @@ const Upload = ({navigation}) => {
                 onBlur={onBlur}
                 onChange={onChange}
                 value={value}
+                autoCapitalize="none"
+                multiline={false}
                 error={errors.title && errors.title.message}
               />
             )}
@@ -211,6 +213,8 @@ const Upload = ({navigation}) => {
                 onChange={onChange}
                 value={value}
                 error={errors.description && errors.description.message}
+                autoCapitalize="none"
+                multiline={true}
                 numberOfLines={5}
               />
             )}

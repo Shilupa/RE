@@ -1,7 +1,12 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {primaryColour, uploadsUrl} from '../utils/variables';
+import {
+  inputBackground,
+  primaryColour,
+  primaryColourDark,
+  uploadsUrl,
+} from '../utils/variables';
 import PropTypes from 'prop-types';
-import {Card, Icon, Button} from '@rneui/themed';
+import {Card, Icon, Button, ButtonGroup} from '@rneui/themed';
 import {
   StyleSheet,
   View,
@@ -9,16 +14,16 @@ import {
   Image,
   Platform,
   SafeAreaView,
-  Alert,
   ScrollView,
+  ImageBackground,
 } from 'react-native';
 import {MainContext} from '../contexts/MainContext';
 import {useFavourite, useTag, useUser} from '../hooks/ApiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const Single = ({route}) => {
+const Single = ({navigation, route}) => {
   console.log(route.params);
-  const {setIsLoggedIn} = useContext(MainContext);
+  const {isLoggedIn} = useContext(MainContext);
   const {getUserById} = useUser();
   const [owner, setOwner] = useState({});
   const [avatar, setAvatar] = useState('');
@@ -99,18 +104,6 @@ const Single = ({route}) => {
     }
   };
 
-  const logOut = () => {
-    Alert.alert('Log Out', 'Are you sure you want to log out?', [
-      {
-        text: 'Yes',
-        onPress: () => {
-          setIsLoggedIn(false);
-        },
-      },
-      {text: 'No'},
-    ]);
-  };
-
   const loadAvatar = async () => {
     try {
       const avatarArray = await getFilesByTag('avatar_' + owner.user_id);
@@ -128,19 +121,28 @@ const Single = ({route}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.titleBar}>
-        <Icon style={styles.logOut} name="arrow-back" color="black" />
+      {/*       <View style={styles.titleBar}>
         <Icon
-          style={styles.logOut}
-          onPress={logOut}
-          name="power-settings-new"
-          color="red"
+          onPress={() => navigation.goBack()}
+          style={styles.title}
+          name="arrow-back"
+          color="black"
         />
+        {!isLoggedIn ? (
+          <Text
+            style={styles.logIn}
+            onPress={() => navigation.navigate('Login')}
+          >
+            Sign In
+          </Text>
+        ) : (
+          <Text style={styles.logIn}>Hi!</Text>
+        )}
       </View>
-      <Card.Divider />
 
-      <ScrollView>
-        <View
+      <Card.Divider /> */}
+
+      {/*         <View
           style={{
             flexDirection: 'row',
             alignItems: 'center',
@@ -161,13 +163,63 @@ const Single = ({route}) => {
           <View style={styles.box}>
             <Text>{owner.username} </Text>
           </View>
-        </View>
-
-        <Image style={styles.image} source={{uri: uploadsUrl + filename}} />
-
-        <View style={styles.box}>
-          <Text style={styles.listTitle}>{title}</Text>
-          <Text style={styles.time}>listed {time}ago</Text>
+        </View> */}
+      <View style={styles.imageContainer}>
+        <ImageBackground
+          source={{uri: uploadsUrl + filename}}
+          style={styles.backgroundImage}
+        >
+          <Button
+            type="solid"
+            buttonStyle={styles.backBtn}
+            containerStyle={{
+              marginHorizontal: 20,
+              marginVertical: 10,
+              borderRadius: 100 / 2,
+            }}
+          >
+            <Icon
+              name="arrow-back"
+              color="black"
+              onPress={() => navigation.goBack()}
+            />
+          </Button>
+        </ImageBackground>
+      </View>
+      <ScrollView>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignContent: 'space-between',
+            justifyContent: 'space-between',
+          }}
+        >
+          <View style={styles.box}>
+            <Text style={styles.listTitle}>{title}</Text>
+            <Text style={styles.time}>listed {time}ago</Text>
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              margin: 5,
+              marginTop: 0,
+            }}
+          >
+            <Image
+              style={{
+                width: 50,
+                height: 50,
+                borderRadius: 400 / 2,
+                resizeMode: 'contain',
+                margin: 5,
+              }}
+              source={{uri: uploadsUrl + avatar}}
+            ></Image>
+            <View style={styles.box}>
+              <Text>{owner.username} </Text>
+            </View>
+          </View>
         </View>
 
         <Button buttonStyle={styles.button}> Message Seller</Button>
@@ -205,6 +257,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     paddingTop: Platform.OS === 'android' ? 30 : 0,
   },
+  imageContainer: {
+    width: '100%',
+    height: 300,
+  },
   titleBar: {
     width: '100%',
     flexDirection: 'row',
@@ -217,10 +273,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: primaryColour,
   },
-  logOut: {
+  logIn: {
     marginVertical: 25,
     marginHorizontal: 25,
     color: primaryColour,
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   column: {
     flexDirection: 'column',
@@ -234,8 +292,11 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   image: {
+    flex: 1,
     resizeMode: 'cover',
-    height: 300,
+    opacity: 0.7,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   listTitle: {
     fontWeight: 'bold',
@@ -260,6 +321,21 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 20,
     padding: 10,
+  },
+  backBtn: {
+    borderRadius: 200 / 2,
+    width: 50,
+    height: 50,
+    left: -150,
+    alignSelf: 'center',
+    marginBottom: 5,
+    backgroundColor: '#81C784',
+    elevation: 10,
+  },
+  backgroundImage: {
+    flex: 1,
+    width: null,
+    height: null,
   },
 });
 

@@ -1,8 +1,8 @@
 import {SafeAreaView, StyleSheet, View} from 'react-native';
-import React, {useContext} from 'react';
+import React, {useContext, useState} from 'react';
 import {primaryColour} from '../utils/variables';
 import LeafSvg from './LeafSvg';
-import {Card} from '@rneui/themed';
+import {Card, Icon} from '@rneui/themed';
 import PropTypes from 'prop-types';
 import {Controller, useForm} from 'react-hook-form';
 import FormInput from './formComponent/FormInput';
@@ -16,6 +16,12 @@ const LoginForm = ({navigation}) => {
   const {setIsLoggedIn, updateUser, setUpdateUser} = useContext(MainContext);
   const {postLogin} = useAuthentication();
 
+  // password visibility Icon press
+  const [shown, setShown] = useState(true);
+  const togglePassword = () => {
+    setShown(!shown);
+  };
+
   const {
     control,
     handleSubmit,
@@ -23,7 +29,7 @@ const LoginForm = ({navigation}) => {
   } = useForm({
     defaultValues: {
       username: 'bibekShrestha',
-      password: 'examplepass',
+      password: 'Test1234',
     },
     mode: 'onBlur',
   });
@@ -47,10 +53,6 @@ const LoginForm = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.logoContainer}>
-        <LeafSvg />
-        <Card.Title style={styles.welcomeText}>Welcome Back</Card.Title>
-      </View>
       <View style={styles.inputView}>
         <Controller
           control={control}
@@ -66,8 +68,10 @@ const LoginForm = ({navigation}) => {
             <FormInput
               onBlur={onBlur}
               onChange={onChange}
+              multiline={false}
               label={'Username'}
               value={value}
+              secureTextEntry={false}
               autoCapitalize="none"
               error={errors.username && errors.username.message}
             />
@@ -88,7 +92,16 @@ const LoginForm = ({navigation}) => {
               onBlur={onBlur}
               onChange={onChange}
               value={value}
-              secureTextEntry={true}
+              autoCapitalize="none"
+              multiline={false}
+              rightIcon={
+                <Icon
+                  onPress={togglePassword}
+                  name={shown ? 'visibility' : 'visibility-off'}
+                  size={20}
+                />
+              }
+              secureTextEntry={shown}
               error={errors.password && errors.password.message}
             />
           )}
@@ -116,17 +129,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
-  logoContainer: {
-    alignItems: 'center',
-  },
-
-  // Welcome Back text
-  welcomeText: {
-    color: primaryColour,
-    fontSize: 28,
-    fontWeight: 'bold',
-  },
-
   // view for input box area
   inputView: {
     marginTop: '5%',
@@ -137,6 +139,7 @@ const styles = StyleSheet.create({
   buttonView: {
     marginTop: '5%',
     width: '100%',
+    marginBottom: 5,
   },
 });
 

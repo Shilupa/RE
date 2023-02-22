@@ -5,21 +5,14 @@ import {Alert, StyleSheet, View} from 'react-native';
 import {SafeAreaView} from 'react-native';
 import {MainContext} from '../contexts/MainContext';
 import {useUser} from '../hooks/ApiHooks';
-import {primaryColour} from '../utils/variables';
+import {primaryColour, vh} from '../utils/variables';
 import FormButton from './formComponent/FormButton';
 import FormInput from './formComponent/FormInput';
 import LeafSvg from './LeafSvg';
-import {
-  useFonts,
-  PlayfairDisplay_600SemiBold,
-} from '@expo-google-fonts/playfair-display';
 
 const RegisterForm = () => {
   const {postUser, checkUsername} = useUser();
-  const {toggleForm, setToggleForm} = useContext(MainContext);
-  let [fontsLoaded] = useFonts({
-    PlayfairDisplay_600SemiBold,
-  });
+  const {setToggleForm} = useContext(MainContext);
 
   const {
     control,
@@ -103,19 +96,9 @@ const RegisterForm = () => {
     }
   };
 
-  if (!fontsLoaded) {
-    return null;
-  }
   return (
     <SafeAreaView>
       <View style={styles.container}>
-        <View style={styles.logoContainer}>
-          <LeafSvg />
-          <Card.Title style={styles.welcomeText}>
-            Create Your Account
-          </Card.Title>
-        </View>
-
         <View style={styles.inputView}>
           <Controller
             control={control}
@@ -134,7 +117,9 @@ const RegisterForm = () => {
                 onBlur={onBlur}
                 onChange={onChange}
                 value={value}
-                autoCapitalize="none"
+                aautoCapitalize="none"
+                multiline={false}
+                secureTextEntry={false}
                 error={errors.username && errors.username.message}
               />
             )}
@@ -159,6 +144,8 @@ const RegisterForm = () => {
                 onChange={onChange}
                 value={value}
                 secureTextEntry={true}
+                autoCapitalize="none"
+                multiline={false}
                 error={errors.password && errors.password.message}
               />
             )}
@@ -182,6 +169,8 @@ const RegisterForm = () => {
                 onChange={onChange}
                 value={value}
                 secureTextEntry={true}
+                autoCapitalize="none"
+                multiline={false}
                 error={errors.confirmPassword && errors.confirmPassword.message}
               />
             )}
@@ -202,6 +191,9 @@ const RegisterForm = () => {
                 onBlur={onBlur}
                 onChange={onChange}
                 value={value}
+                secureTextEntry={false}
+                autoCapitalize="none"
+                multiline={false}
                 error={errors.email && errors.email.message}
               />
             )}
@@ -217,6 +209,7 @@ const RegisterForm = () => {
                 onChange={onChange}
                 value={value}
                 autoCapitalize="words"
+                secureTextEntry={false}
                 error={errors.full_name && errors.full_name.message}
               />
             )}
@@ -241,19 +234,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
-  logoContainer: {
-    marginTop: '10%',
-    alignItems: 'center',
-  },
-
-  // Welcome Back text
-  welcomeText: {
-    color: primaryColour,
-    fontSize: 28,
-    fontWeight: 'bold',
-    fontFamily: 'PlayfairDisplay_600SemiBold',
-  },
-
   // view for input box area
   inputView: {
     marginTop: '5%',
@@ -264,6 +244,7 @@ const styles = StyleSheet.create({
   buttonView: {
     marginTop: '5%',
     width: '100%',
+    marginBottom: 5,
   },
 });
 

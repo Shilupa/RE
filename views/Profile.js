@@ -5,17 +5,20 @@ import {
   View,
   Image,
   Alert,
+  StatusBar,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import {Tab, TabView, Text, Button, Icon} from '@rneui/themed';
+import {Tab, TabView, Text, Button} from '@rneui/themed';
 import {useTag} from '../hooks/ApiHooks';
 import {primaryColour, uploadsUrl} from '../utils/variables';
 import React, {useContext, useEffect, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
 import MyFiles from './MyFiles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import defaultAvatar from '../assets/avatar.png';
 
 const Profile = ({navigation}) => {
+  const defaultAvatarUri = Image.resolveAssetSource(defaultAvatar).uri;
   const {getFilesByTag} = useTag();
   const {setIsLoggedIn, isLoggedIn, user, setUser, updateUser} =
     useContext(MainContext);
@@ -49,9 +52,9 @@ const Profile = ({navigation}) => {
       {
         text: 'Yes',
         onPress: () => {
+          removeToken();
           setUser({});
           setIsLoggedIn(false);
-          removeToken();
           setIndex(0);
           navigation.navigate('Home');
         },
@@ -71,15 +74,9 @@ const Profile = ({navigation}) => {
     <SafeAreaView style={styles.container}>
       <View style={styles.titleBar}>
         <Text style={styles.title}>Profile</Text>
-        {isLoggedIn && (
-          <Icon
-            size={30}
-            style={styles.logOut}
-            onPress={logOut}
-            name="power-settings-new"
-            color="red"
-          />
-        )}
+        <Text style={styles.logOut} onPress={logOut}>
+          Log Out
+        </Text>
       </View>
 
       <View style={styles.userProfile}>
@@ -130,11 +127,9 @@ const Profile = ({navigation}) => {
       </Tab>
       <TabView value={index} onChange={setIndex} animationType="spring">
         <TabView.Item>
-          {isLoggedIn && <MyFiles navigation={navigation} />}
+          <MyFiles navigation={navigation} />
         </TabView.Item>
-        <TabView.Item
-          style={{backgroundColor: 'green', width: '100%'}}
-        ></TabView.Item>
+        <TabView.Item>{/* {isLoggedIn && <FavouriteList />} */}</TabView.Item>
       </TabView>
     </SafeAreaView>
   );
@@ -144,24 +139,29 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop: Platform.OS === 'android' ? 30 : 0,
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   titleBar: {
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'baseline',
   },
   title: {
-    marginVertical: 25,
+    marginTop: 25,
+    marginBottom: 15,
     marginHorizontal: 25,
     fontSize: 25,
     fontWeight: 'bold',
     color: primaryColour,
   },
   logOut: {
-    marginVertical: 25,
+    marginTop: 25,
+    marginBottom: 15,
     marginHorizontal: 25,
-    color: primaryColour,
+    color: 'red',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   userProfile: {
     width: '100%',

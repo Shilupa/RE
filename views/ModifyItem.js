@@ -127,6 +127,7 @@ const ModifyItem = ({navigation, route}) => {
               onBlur={onBlur}
               onChange={onChange}
               value={value}
+              multiline={true}
               numberOfLines={8}
               error={errors.description && errors.description.message}
             />
@@ -168,16 +169,14 @@ const styles = StyleSheet.create({
     color: primaryColour,
   },
   image: {
-    resizeMode: 'cover',
-    height: 300,
-    borderRadius: 6,
-    width: '90%',
+    width: '100%',
+    height: '100%',
     alignSelf: 'center',
   },
   box: {
     marginTop: 10,
     width: '90%',
-    maxHeight: 310,
+    maxHeight: 200,
     alignSelf: 'center',
     borderColor: '#C0C0C0',
     borderRadius: 6,
