@@ -15,7 +15,7 @@ import FormButton from '../components/formComponent/FormButton';
 import FormInput from '../components/formComponent/FormInput';
 import {MainContext} from '../contexts/MainContext';
 import {useTag, useUser} from '../hooks/ApiHooks';
-import {primaryColour} from '../utils/variables';
+import {primaryColour, uploadsUrl} from '../utils/variables';
 import * as ImagePicker from 'expo-image-picker';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 
@@ -28,7 +28,7 @@ const EditProfile = ({navigation}) => {
   const [avatar, setAvatar] = useState(assetImage);
   const {isLoggedIn, user, token} = useContext(MainContext);
   const {updateUser, checkUsername} = useUser();
-
+  console.log(token);
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -80,7 +80,7 @@ const EditProfile = ({navigation}) => {
   const loadAvatar = async () => {
     try {
       const avatarArray = await getFilesByTag('avatar_' + user.user_id);
-      if (avatarArray.filename !== undefined) {
+      if (avatarArray[0].filename !== undefined) {
         setAvatar(uploadsUrl + avatarArray.pop().filename);
       }
     } catch (error) {
