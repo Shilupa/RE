@@ -18,11 +18,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import defaultAvatar from '../assets/avatar.png';
 
 const Profile = ({navigation}) => {
-  const defaultAvatarUri = Image.resolveAssetSource(defaultAvatar).uri;
+  const assetImage = Image.resolveAssetSource(
+    require('../assets/avatar.png')
+  ).uri;
   const {getFilesByTag} = useTag();
   const {setIsLoggedIn, isLoggedIn, user, setUser, updateUser} =
     useContext(MainContext);
-  const [avatar, setAvatar] = useState();
+  const [avatar, setAvatar] = useState(assetImage);
   const [index, setIndex] = useState();
 
   const loadAvatar = async () => {
@@ -31,7 +33,7 @@ const Profile = ({navigation}) => {
         const avatarArray = await getFilesByTag('avatar_' + user.user_id);
         console.log('Profile avatar', avatarArray.filename);
         if (avatarArray.filename !== undefined) {
-          setAvatar(avatarArray.pop().filename);
+          setAvatar(uploadsUrl + avatarArray.pop().filename);
         }
       } catch (error) {
         console.error('user avatar fetch failed', error.message);
@@ -80,12 +82,7 @@ const Profile = ({navigation}) => {
       </View>
 
       <View style={styles.userProfile}>
-        <Image
-          style={styles.avatar}
-          source={{
-            uri: uploadsUrl + avatar,
-          }}
-        />
+        <Image style={styles.avatar} source={{uri: avatar}} />
         <Text style={{textAlign: 'center', fontSize: 18}}>
           {user !== null ? user.username : ''}
         </Text>

@@ -20,9 +20,12 @@ import * as ImagePicker from 'expo-image-picker';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 
 const EditProfile = ({navigation}) => {
-  const [image, setImage] = useState({});
+  const assetImage = Image.resolveAssetSource(
+    require('../assets/avatar.png')
+  ).uri;
+  const [image, setImage] = useState();
   const {getFilesByTag} = useTag();
-  const [avatar, setAvatar] = useState();
+  const [avatar, setAvatar] = useState(assetImage);
   const {isLoggedIn, user, token} = useContext(MainContext);
   const {updateUser, checkUsername} = useUser();
 
@@ -34,12 +37,12 @@ const EditProfile = ({navigation}) => {
       quality: 0.5,
     });
 
-    console.log(result);
-
     if (!result.canceled) {
       setImage(result.assets[0]);
+      setAvatar(result.assets[0].uri);
     }
   };
+  console.log('Image', image);
 
   const {
     control,
@@ -77,9 +80,8 @@ const EditProfile = ({navigation}) => {
   const loadAvatar = async () => {
     try {
       const avatarArray = await getFilesByTag('avatar_' + user.user_id);
-      console.log('Edit profile', avatarArray.filename);
       if (avatarArray.filename !== undefined) {
-        setAvatar(avatarArray.pop().filename);
+        setAvatar(uploadsUrl + avatarArray.pop().filename);
       }
     } catch (error) {
       console.error('user avatar fetch failed', error.message);
@@ -113,7 +115,6 @@ const EditProfile = ({navigation}) => {
     try {
       if (username !== user.username) {
         const userAvailable = await checkUsername(username);
-        console.log('checkUser', userAvailable);
         return userAvailable || 'Username is already taken';
       }
     } catch (error) {
@@ -147,9 +148,7 @@ const EditProfile = ({navigation}) => {
         <View style={{position: 'relative'}}>
           <Image
             style={styles.avatar}
-            source={{
-              uri: image.uri || 'https://placekitten.com/g/200/300',
-            }}
+            source={{uri: avatar}}
             onPress={editProfile}
           />
 
