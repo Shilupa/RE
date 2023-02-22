@@ -15,7 +15,7 @@ import FormButton from '../components/formComponent/FormButton';
 import FormInput from '../components/formComponent/FormInput';
 import {MainContext} from '../contexts/MainContext';
 import {useTag, useUser} from '../hooks/ApiHooks';
-import {primaryColour, uploadsUrl} from '../utils/variables';
+import {primaryColour} from '../utils/variables';
 import * as ImagePicker from 'expo-image-picker';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 
@@ -86,16 +86,27 @@ const EditProfile = ({navigation}) => {
     }
   };
 
-  const editProfile = async (formData) => {
-    delete formData.confirmPassword;
-    try {
+  const editProfile = async (data) => {
+    const formData = new FormData();
+    const filename = image.uri.split('/').pop();
+    let fileExt = filename.split('.').pop();
+    if (fileExt === 'jpg') fileExt = 'jpeg';
+    const mimeType = image.type + '/' + fileExt;
+    formData.append('file', {
+      uri: image.uri,
+      name: filename,
+      type: mimeType,
+    });
+    console.log(data);
+    console.log(formData._parts);
+    /* try {
       const response = await updateUser(formData, token);
       console.log(response);
       resetForm();
       navigation.navigate('Profile');
     } catch (error) {
       console.log(error);
-    }
+    } */
   };
 
   const checkUser = async (username) => {
