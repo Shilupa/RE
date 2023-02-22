@@ -26,6 +26,7 @@ const Profile = ({navigation}) => {
     if (isLoggedIn) {
       try {
         const avatarArray = await getFilesByTag('avatar_' + user.user_id);
+        console.log('Profile avatar', avatarArray.filename);
         if (avatarArray.filename !== undefined) {
           setAvatar(avatarArray.pop().filename);
         }
@@ -84,11 +85,9 @@ const Profile = ({navigation}) => {
       <View style={styles.userProfile}>
         <Image
           style={styles.avatar}
-          source={
-            avatar === undefined
-              ? require('../assets/icon.png')
-              : {uri: uploadsUrl + avatar}
-          }
+          source={{
+            uri: uploadsUrl + avatar,
+          }}
         />
         <Text style={{textAlign: 'center', fontSize: 18}}>
           {user !== null ? user.username : ''}

@@ -147,11 +147,10 @@ const EditProfile = ({navigation}) => {
         <View style={{position: 'relative'}}>
           <Image
             style={styles.avatar}
-            source={
-              avatar === undefined
-                ? require('../assets/icon.png')
-                : {uri: uploadsUrl + avatar}
-            }
+            source={{
+              uri: image.uri || 'https://placekitten.com/g/200/300',
+            }}
+            onPress={editProfile}
           />
 
           <FontAwesomeIcon
