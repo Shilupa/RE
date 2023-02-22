@@ -144,15 +144,22 @@ const EditProfile = ({navigation}) => {
         <View>
           <Text style={styles.title}>Edit Profile</Text>
         </View>
-        <View style={{ position: 'relative' }}>
-        <Image
-          style={styles.avatar}
-          source={{
-            uri: image.uri,
-          }}
-        ></Image>
+        <View style={{position: 'relative'}}>
+          <Image
+            style={styles.avatar}
+            source={
+              avatar === undefined
+                ? require('../assets/icon.png')
+                : {uri: uploadsUrl + avatar}
+            }
+          />
 
-        <FontAwesomeIcon style={styles.camera} name="camera" onPress={pickImage} size={20}  />
+          <FontAwesomeIcon
+            style={styles.camera}
+            name="camera"
+            onPress={pickImage}
+            size={20}
+          />
         </View>
 
         <View style={styles.inputView}>
