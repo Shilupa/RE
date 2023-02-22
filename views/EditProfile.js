@@ -1,18 +1,45 @@
-import {Button, Card, Icon} from '@rneui/themed';
+import {Icon} from '@rneui/themed';
 import React, {useContext, useEffect, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
-import {Alert, Image, SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import {
+  Alert,
+  Image,
+  Keyboard,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import FormButton from '../components/formComponent/FormButton';
 import FormInput from '../components/formComponent/FormInput';
 import {MainContext} from '../contexts/MainContext';
 import {useTag, useUser} from '../hooks/ApiHooks';
 import {primaryColour, uploadsUrl} from '../utils/variables';
+import * as ImagePicker from 'expo-image-picker';
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 
 const EditProfile = ({navigation}) => {
+  const [image, setImage] = useState({});
   const {getFilesByTag} = useTag();
   const [avatar, setAvatar] = useState();
   const {isLoggedIn, user, token} = useContext(MainContext);
   const {updateUser, checkUsername} = useUser();
+
+  const pickImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 0.5,
+    });
+
+    console.log(result);
+
+    if (!result.canceled) {
+      setImage(result.assets[0]);
+    }
+  };
 
   const {
     control,
@@ -94,19 +121,29 @@ const EditProfile = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.titleBar}>
-      <Icon style={styles.back} name="arrow-back" color="black" onPress={navigateToProfile} />
-      </View>
+      <TouchableOpacity onPress={() => Keyboard.dismiss()} activeOpacity={1}>
+        <View style={styles.titleBar}>
+          <Icon
+            style={styles.back}
+            name="arrow-back"
+            onPress={navigateToProfile}
+          />
+        </View>
 
-      <View><Text style={styles.title}>Edit Profile</Text></View>
-
-      <View style={styles.userProfile}>
+        <View>
+          <Text style={styles.title}>Edit Profile</Text>
+        </View>
+        <View style={{ position: 'relative' }}>
         <Image
           style={styles.avatar}
           source={{
-            uri: uploadsUrl + avatar,
+            uri: image.uri,
           }}
         ></Image>
+
+        <FontAwesomeIcon style={styles.camera} name="camera" onPress={pickImage} size={20}  />
+        </View>
+
         <View style={styles.inputView}>
           <Controller
             control={control}
@@ -221,7 +258,7 @@ const EditProfile = ({navigation}) => {
             handleSubmit={handleSubmit}
           />
         </View>
-      </View>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
@@ -234,9 +271,18 @@ const styles = StyleSheet.create({
   },
 
   back: {
-    marginBottom:'2%',
+    marginBottom: '2%',
     marginVertical: 25,
     marginHorizontal: 25,
+    fontSize: '22%',
+    color: 'black',
+  },
+
+  camera: {
+    position: 'absolute',
+    marginHorizontal: '35%',
+    marginVertical: '35%',
+    left: '24%',
     color: primaryColour,
   },
 
@@ -255,8 +301,7 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: 'bold',
     color: primaryColour,
-    alignSelf:'center',
-
+    alignSelf: 'center',
   },
 
   titleBar: {
