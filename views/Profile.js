@@ -86,7 +86,6 @@ const Profile = ({navigation}) => {
           {user !== null ? user.username : ''}
         </Text>
         <Text style={{textAlign: 'center', fontSize: 12}}>
-          {' '}
           {user !== null ? user.email : ''}
         </Text>
         <Button
@@ -102,7 +101,7 @@ const Profile = ({navigation}) => {
           radius={6}
           title={'Edit Profile'}
           onPress={navigateToEditProfile}
-        ></Button>
+        />
       </View>
       <Tab
         value={index}
