@@ -142,7 +142,7 @@ const useUser = () => {
     }
   };
 
-  const updateUser = async (userData, token) => {
+  const putUser = async (userData, token) => {
     const options = {
       method: 'put',
       headers: {
@@ -177,7 +177,7 @@ const useUser = () => {
     }
   };
 
-  return {getUserByToken, postUser, updateUser, checkUsername, getUserById};
+  return {getUserByToken, postUser, putUser, checkUsername, getUserById};
 };
 
 const useTag = () => {
@@ -231,7 +231,17 @@ const useFavourite = () => {
     }
   };
   const getFavouritesByUser = async (token) => {
-    // TODO: implement this
+    const options = {
+      method: 'get',
+      headers: {
+        'x-access-token': token,
+      },
+    };
+    try {
+      return await doFetch(baseUrl + 'favourites', options);
+    } catch (error) {
+      throw new Error('getFavourites: ' + error.message);
+    }
   };
   const deleteFavourite = async (fileId, token) => {
     const options = {

@@ -15,7 +15,6 @@ import React, {useContext, useEffect, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
 import MyFiles from './MyFiles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import defaultAvatar from '../assets/avatar.png';
 
 const Profile = ({navigation}) => {
   const assetImage = Image.resolveAssetSource(
@@ -26,14 +25,13 @@ const Profile = ({navigation}) => {
     useContext(MainContext);
   const [avatar, setAvatar] = useState(assetImage);
   const [index, setIndex] = useState();
-  console.log(user);
+
   const loadAvatar = async () => {
     if (isLoggedIn) {
       try {
         const avatarArray = await getFilesByTag('avatar_' + user.user_id);
-
-        console.log('Profile avatar', avatarArray.filename);
-        if (avatarArray[avatarArray.length - 1].filename !== undefined) {
+        // Checking if user has added avatar previously
+        if (avatarArray.length > 0) {
           setAvatar(uploadsUrl + avatarArray.pop().filename);
         }
       } catch (error) {
@@ -88,7 +86,6 @@ const Profile = ({navigation}) => {
           {user !== null ? user.username : ''}
         </Text>
         <Text style={{textAlign: 'center', fontSize: 12}}>
-          {' '}
           {user !== null ? user.email : ''}
         </Text>
         <Button
@@ -104,7 +101,7 @@ const Profile = ({navigation}) => {
           radius={6}
           title={'Edit Profile'}
           onPress={navigateToEditProfile}
-        ></Button>
+        />
       </View>
       <Tab
         value={index}
