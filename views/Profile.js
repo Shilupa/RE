@@ -26,14 +26,13 @@ const Profile = ({navigation}) => {
     useContext(MainContext);
   const [avatar, setAvatar] = useState(assetImage);
   const [index, setIndex] = useState();
-  console.log(user);
+
   const loadAvatar = async () => {
     if (isLoggedIn) {
       try {
         const avatarArray = await getFilesByTag('avatar_' + user.user_id);
-
-        console.log('Profile avatar', avatarArray.filename);
-        if (avatarArray[avatarArray.length - 1].filename !== undefined) {
+        // Checking if user has added avatar previously
+        if (avatarArray.length > 0) {
           setAvatar(uploadsUrl + avatarArray.pop().filename);
         }
       } catch (error) {

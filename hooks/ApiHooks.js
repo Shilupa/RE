@@ -142,7 +142,7 @@ const useUser = () => {
     }
   };
 
-  const updateUser = async (userData, token) => {
+  const putUser = async (userData, token) => {
     const options = {
       method: 'put',
       headers: {
@@ -177,7 +177,7 @@ const useUser = () => {
     }
   };
 
-  return {getUserByToken, postUser, updateUser, checkUsername, getUserById};
+  return {getUserByToken, postUser, putUser, checkUsername, getUserById};
 };
 
 const useTag = () => {

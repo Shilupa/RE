@@ -3,6 +3,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import PropTypes from 'prop-types';
 import {
+  Alert,
   Image,
   Keyboard,
   Platform,
@@ -15,21 +16,40 @@ import {
 import FormButton from '../components/formComponent/FormButton';
 import FormInput from '../components/formComponent/FormInput';
 import {MainContext} from '../contexts/MainContext';
-import {useTag, useUser} from '../hooks/ApiHooks';
+import {useMedia, useTag, useUser} from '../hooks/ApiHooks';
 import {primaryColour, uploadsUrl, vh} from '../utils/variables';
 import * as ImagePicker from 'expo-image-picker';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import {ScrollView} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const EditProfile = ({navigation}) => {
   const assetImage = Image.resolveAssetSource(
     require('../assets/avatar.png')
   ).uri;
   const [image, setImage] = useState();
-  const {getFilesByTag} = useTag();
+  const {getFilesByTag, postTag} = useTag(assetImage);
+  const {postMedia} = useMedia();
   const [avatar, setAvatar] = useState(assetImage);
-  const {isLoggedIn, user} = useContext(MainContext);
-  const {checkUsername} = useUser();
+  const {isLoggedIn, user, token, updateUser, setUpdateUser} =
+    useContext(MainContext);
+  const {checkUsername, putUser} = useUser();
+  const avatarTag = `avatar_${user.user_id}`;
+
+  /**
+   * Fetching and storing user avatar from database if avatar exists
+   */
+  const loadAvatar = async () => {
+    try {
+      const avatarArray = await getFilesByTag('avatar_' + user.user_id);
+      // Checking if user has added avatar previously
+      if (avatarArray.length > 0) {
+        setAvatar(uploadsUrl + avatarArray.pop().filename);
+      }
+    } catch (error) {
+      console.error('user avatar fetch failed', error.message);
+    }
+  };
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -38,13 +58,11 @@ const EditProfile = ({navigation}) => {
       aspect: [4, 3],
       quality: 0.5,
     });
-
     if (!result.canceled) {
       setImage(result.assets[0]);
       setAvatar(result.assets[0].uri);
     }
   };
-  console.log('Image', image);
 
   const {
     control,
@@ -63,56 +81,76 @@ const EditProfile = ({navigation}) => {
     mode: 'onBlur',
   });
 
-  const resetForm = () => {
-    reset(
-      {
-        username: '',
-        password: '',
-        confirmPassword: '',
-        email: '',
-        // full_name: '',
-      },
-      {
-        keepErrors: true,
-        keepDirty: true,
-      }
-    );
-  };
-
-  const loadAvatar = async () => {
-    try {
-      const avatarArray = await getFilesByTag('avatar_' + user.user_id);
-      if (avatarArray[0].filename !== undefined) {
-        setAvatar(uploadsUrl + avatarArray.pop().filename);
-      }
-    } catch (error) {
-      console.error('user avatar fetch failed', error.message);
-    }
-  };
-
   const editProfile = async (data) => {
     const formData = new FormData();
-    const filename = image.uri.split('/').pop();
-    let fileExt = filename.split('.').pop();
+    delete data.confirmPassword;
+    /**
+     * Checks if user selects the image for avatar
+     */
+    if (image !== undefined) {
+      /**
+       * Fetching data from picked image
+       */
+      const filename = image.uri.split('/').pop();
+      let fileExt = filename.split('.').pop();
 
-    if (fileExt === 'jpg') fileExt = 'jpeg';
-    const mimeType = image.type + '/' + fileExt;
+      if (fileExt === 'jpg') fileExt = 'jpeg';
+      const mimeType = image.type + '/' + fileExt;
 
-    formData.append('file', {
-      uri: image.uri,
-      name: filename,
-      type: mimeType,
-    });
-    console.log(data);
-    console.log(formData._parts);
-    /* try {
-      const response = await updateUser(formData, token);
-      console.log(response);
-      resetForm();
-      navigation.navigate('Profile');
+      formData.append('file', {
+        uri: image.uri,
+        name: filename,
+        type: mimeType,
+      });
+    }
+
+    try {
+      /**
+       * Checks if user selects the image for avatar
+       * If user does not select image then no media will be posted database
+       */
+      if (image !== undefined) {
+        /**
+         * Posting media to data base
+         */
+        const mediaResponse = await postMedia(formData, token);
+        console.log('media', mediaResponse);
+        if (mediaResponse) {
+          const tag = {
+            file_id: mediaResponse.file_id,
+            tag: avatarTag,
+          };
+          /**
+           * Posting user data and user avatar
+           */
+          await postTag(tag, token);
+        }
+      }
+      const userResponse = await putUser(data, token);
+      console.log('response', userResponse);
+      /**
+       * if both response are success then user data is stored
+       */
+      if (userResponse) {
+        delete data.password;
+        // adding user id to form data
+        data.user_id = user.user_id;
+        // Storing data to async storage after editing data
+        await AsyncStorage.setItem('user', JSON.stringify(data));
+        setUpdateUser(updateUser + 1);
+        //resetForm();
+        Alert.alert('Profile Details', 'Updated successfully.', [
+          {
+            text: 'Ok',
+            onPress: () => {
+              navigation.navigate('Profile');
+            },
+          },
+        ]);
+      }
     } catch (error) {
       console.log(error);
-    } */
+    }
   };
 
   const checkUser = async (username) => {
@@ -124,10 +162,6 @@ const EditProfile = ({navigation}) => {
     } catch (error) {
       console.error('checkUser', error.message);
     }
-  };
-
-  const navigateToProfile = () => {
-    navigation.navigate('Profile');
   };
 
   useEffect(() => {
