@@ -10,7 +10,8 @@ const FormInput = (props) => {
     <SafeAreaView>
       <Input
         inputContainerStyle={styles.inputContainerStyle}
-        labelStyle={styles.labelStyle}inputStyle={styles.inputStyle}
+        labelStyle={styles.labelStyle}
+        inputStyle={styles.inputStyle}
         errorStyle={styles.errorStyle}
         placeholder={props.placeholder}
         onBlur={props.onBlur}
