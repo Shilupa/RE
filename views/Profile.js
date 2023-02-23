@@ -15,7 +15,6 @@ import React, {useContext, useEffect, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
 import MyFiles from './MyFiles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import defaultAvatar from '../assets/avatar.png';
 
 const Profile = ({navigation}) => {
   const assetImage = Image.resolveAssetSource(
