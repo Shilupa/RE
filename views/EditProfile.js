@@ -107,7 +107,7 @@ const EditProfile = ({navigation}) => {
     try {
       /**
        * Checks if user selects the image for avatar
-       * If user does not select image then no media will be posted database
+       * If user does not select image then no media will be posted to database
        */
       if (image !== undefined) {
         /**
@@ -121,15 +121,15 @@ const EditProfile = ({navigation}) => {
             tag: avatarTag,
           };
           /**
-           * Posting user data and user avatar
+           * Posting user avatar
            */
           await postTag(tag, token);
         }
       }
+      //Posting user data
       const userResponse = await putUser(data, token);
-      console.log('response', userResponse);
       /**
-       * if both response are success then user data is stored
+       * if user response is success then new user data is stored
        */
       if (userResponse) {
         delete data.password;
@@ -138,7 +138,6 @@ const EditProfile = ({navigation}) => {
         // Storing data to async storage after editing data
         await AsyncStorage.setItem('user', JSON.stringify(data));
         setUpdateUser(updateUser + 1);
-        //resetForm();
         Alert.alert('Profile Details', 'Updated successfully.', [
           {
             text: 'Ok',
