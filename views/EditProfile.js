@@ -1,10 +1,11 @@
 import {Icon} from '@rneui/themed';
 import React, {useContext, useEffect, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
+import PropTypes from 'prop-types';
 import {
-  Alert,
   Image,
   Keyboard,
+  Platform,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -15,9 +16,10 @@ import FormButton from '../components/formComponent/FormButton';
 import FormInput from '../components/formComponent/FormInput';
 import {MainContext} from '../contexts/MainContext';
 import {useTag, useUser} from '../hooks/ApiHooks';
-import {primaryColour, uploadsUrl} from '../utils/variables';
+import {primaryColour, uploadsUrl, vh} from '../utils/variables';
 import * as ImagePicker from 'expo-image-picker';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import {ScrollView} from 'react-native';
 
 const EditProfile = ({navigation}) => {
   const assetImage = Image.resolveAssetSource(
@@ -26,9 +28,9 @@ const EditProfile = ({navigation}) => {
   const [image, setImage] = useState();
   const {getFilesByTag} = useTag();
   const [avatar, setAvatar] = useState(assetImage);
-  const {isLoggedIn, user, token} = useContext(MainContext);
-  const {updateUser, checkUsername} = useUser();
-  console.log(token);
+  const {isLoggedIn, user} = useContext(MainContext);
+  const {checkUsername} = useUser();
+
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -56,7 +58,7 @@ const EditProfile = ({navigation}) => {
       password: '',
       confirmPassword: '',
       email: '',
-      //full_name: '',
+      // full_name: '',
     },
     mode: 'onBlur',
   });
@@ -68,7 +70,7 @@ const EditProfile = ({navigation}) => {
         password: '',
         confirmPassword: '',
         email: '',
-        //full_name: '',
+        // full_name: '',
       },
       {
         keepErrors: true,
@@ -92,8 +94,10 @@ const EditProfile = ({navigation}) => {
     const formData = new FormData();
     const filename = image.uri.split('/').pop();
     let fileExt = filename.split('.').pop();
+
     if (fileExt === 'jpg') fileExt = 'jpeg';
     const mimeType = image.type + '/' + fileExt;
+
     formData.append('file', {
       uri: image.uri,
       name: filename,
@@ -136,31 +140,31 @@ const EditProfile = ({navigation}) => {
       <TouchableOpacity onPress={() => Keyboard.dismiss()} activeOpacity={1}>
         <View style={styles.titleBar}>
           <Icon
+            onPress={() => {
+              navigation.goBack();
+            }}
             style={styles.back}
             name="arrow-back"
-            onPress={navigateToProfile}
+            color="black"
           />
+          <Text style={styles.title}>Modify Item</Text>
         </View>
 
-        <View>
-          <Text style={styles.title}>Edit Profile</Text>
-        </View>
-        <View style={{position: 'relative'}}>
+        <View style={styles.imageContainer}>
           <Image
             style={styles.avatar}
             source={{uri: avatar}}
             onPress={editProfile}
           />
-
           <FontAwesomeIcon
             style={styles.camera}
             name="camera"
             onPress={pickImage}
-            size={20}
+            size={25}
           />
         </View>
 
-        <View style={styles.inputView}>
+        <ScrollView style={styles.inputView}>
           <Controller
             control={control}
             rules={{
@@ -251,29 +255,14 @@ const EditProfile = ({navigation}) => {
             )}
             name="email"
           />
-          {/* <Controller
-            control={control}
-            rules={{minLength: {value: 3, message: 'must be at least 3 chars'}}}
-            render={({field: {onChange, onBlur, value}}) => (
-              <FormInput
-                label="Full name"
-                onBlur={onBlur}
-                onChange={onChange}
-                value={value}
-                autoCapitalize="words"
-                error={errors.full_name && errors.full_name.message}
-              />
-            )}
-            name="full_name"
-          /> */}
-        </View>
-        <View style={styles.buttonView}>
-          <FormButton
-            text="Save changes"
-            submit={editProfile}
-            handleSubmit={handleSubmit}
-          />
-        </View>
+          <View style={styles.buttonView}>
+            <FormButton
+              text="Save changes"
+              submit={editProfile}
+              handleSubmit={handleSubmit}
+            />
+          </View>
+        </ScrollView>
       </TouchableOpacity>
     </SafeAreaView>
   );
@@ -282,24 +271,41 @@ const EditProfile = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
-    // alignItems: 'center',
+    backgroundColor: '#fff',
+    paddingTop: Platform.OS === 'android' ? 30 : 0,
+  },
+  titleBar: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  title: {
+    marginVertical: 25,
+    marginHorizontal: 25,
+    fontSize: 25,
+    fontWeight: 'bold',
+    color: primaryColour,
   },
 
   back: {
-    marginBottom: '2%',
     marginVertical: 25,
     marginHorizontal: 25,
-    fontSize: '22%',
-    color: 'black',
+    color: primaryColour,
+  },
+
+  imageContainer: {
+    position: 'relative',
+    width: 150,
+    height: 150,
+    alignSelf: 'center',
   },
 
   camera: {
     position: 'absolute',
-    marginHorizontal: '35%',
-    marginVertical: '35%',
-    left: '24%',
     color: primaryColour,
+    bottom: 5,
+    right: 5,
   },
 
   avatar: {
@@ -310,27 +316,11 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
 
-  //Title of the page
-  title: {
-    marginVertical: 10,
-    marginHorizontal: 25,
-    fontSize: 25,
-    fontWeight: 'bold',
-    color: primaryColour,
-    alignSelf: 'center',
-  },
-
-  titleBar: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-
   inputView: {
     marginTop: '5%',
     width: '85%',
     alignSelf: 'center',
+    marginBottom: 40 * vh,
   },
 
   // View for Sign in button
@@ -339,5 +329,9 @@ const styles = StyleSheet.create({
     width: '100%',
   },
 });
+
+EditProfile.propTypes = {
+  navigation: PropTypes.object,
+};
 
 export default EditProfile;

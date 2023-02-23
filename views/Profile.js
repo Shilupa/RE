@@ -31,9 +31,9 @@ const Profile = ({navigation}) => {
     if (isLoggedIn) {
       try {
         const avatarArray = await getFilesByTag('avatar_' + user.user_id);
-        console.log('avatar', avatarArray);
+
         console.log('Profile avatar', avatarArray.filename);
-        if (avatarArray[0].filename !== undefined) {
+        if (avatarArray[avatarArray.length - 1].filename !== undefined) {
           setAvatar(uploadsUrl + avatarArray.pop().filename);
         }
       } catch (error) {

@@ -6,7 +6,7 @@ import {
   uploadsUrl,
 } from '../utils/variables';
 import PropTypes from 'prop-types';
-import {Card, Icon, Button, ButtonGroup} from '@rneui/themed';
+import {Card, Icon, Button} from '@rneui/themed';
 import {
   StyleSheet,
   View,
@@ -58,7 +58,22 @@ const Single = ({navigation, route}) => {
     time = Math.floor(timeDiff / 1e3) + 's ';
   }
 
-  console.log('waka', time);
+  const editItem = () => {
+    navigation.navigate('ModifyItem', {
+      file: {
+        title,
+        description,
+        filename,
+        file_id: fileId,
+        time_added: timeAdded,
+        user_id: userId,
+      },
+    });
+  };
+
+  const messageSeller = () => {
+    console.log('Hahaha');
+  };
 
   const getOwner = async () => {
     const token = await AsyncStorage.getItem('userToken');
@@ -121,49 +136,6 @@ const Single = ({navigation, route}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/*       <View style={styles.titleBar}>
-        <Icon
-          onPress={() => navigation.goBack()}
-          style={styles.title}
-          name="arrow-back"
-          color="black"
-        />
-        {!isLoggedIn ? (
-          <Text
-            style={styles.logIn}
-            onPress={() => navigation.navigate('Login')}
-          >
-            Sign In
-          </Text>
-        ) : (
-          <Text style={styles.logIn}>Hi!</Text>
-        )}
-      </View>
-
-      <Card.Divider /> */}
-
-      {/*         <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            margin: 5,
-            marginTop: 0,
-          }}
-        >
-          <Image
-            style={{
-              width: 50,
-              height: 50,
-              borderRadius: 400 / 2,
-              resizeMode: 'contain',
-              margin: 5,
-            }}
-            source={{uri: uploadsUrl + avatar}}
-          ></Image>
-          <View style={styles.box}>
-            <Text>{owner.username} </Text>
-          </View>
-        </View> */}
       <View style={styles.imageContainer}>
         <ImageBackground
           source={{uri: uploadsUrl + filename}}
@@ -172,17 +144,14 @@ const Single = ({navigation, route}) => {
           <Button
             type="solid"
             buttonStyle={styles.backBtn}
+            onPress={() => navigation.goBack()}
             containerStyle={{
               marginHorizontal: 20,
               marginVertical: 10,
               borderRadius: 100 / 2,
             }}
           >
-            <Icon
-              name="arrow-back"
-              color="black"
-              onPress={() => navigation.goBack()}
-            />
+            <Icon name="arrow-back" color="black" />
           </Button>
         </ImageBackground>
       </View>
@@ -222,7 +191,15 @@ const Single = ({navigation, route}) => {
           </View>
         </View>
 
-        <Button buttonStyle={styles.button}> Message Seller</Button>
+        {user.user_id === owner.user_id ? (
+          <Button onPress={editItem} buttonStyle={styles.button}>
+            Edit Item
+          </Button>
+        ) : (
+          <Button onPress={messageSeller} buttonStyle={styles.button}>
+            Message Seller
+          </Button>
+        )}
 
         <View style={styles.userInteraction}>
           <View style={styles.iconbox}>
@@ -342,6 +319,7 @@ const styles = StyleSheet.create({
 Single.propTypes = {
   route: PropTypes.object,
   navigation: PropTypes.object,
+  singleMedia: PropTypes.object,
 };
 
 export default Single;

@@ -57,29 +57,18 @@ const ModifyItem = ({navigation, route}) => {
     }
   };
 
-  const logOut = () => {
-    Alert.alert('Log Out', 'Are you sure you want to log out?', [
-      {
-        text: 'Yes',
-        onPress: () => {
-          setIsLoggedIn(false);
-        },
-      },
-      {text: 'No'},
-    ]);
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.titleBar}>
-        <Icon style={styles.logOut} name="arrow-back" color="black" />
-        <Text style={styles.title}>Modify Item</Text>
         <Icon
-          style={styles.logOut}
-          onPress={logOut}
-          name="power-settings-new"
-          color="red"
+          onPress={() => {
+            navigation.goBack();
+          }}
+          style={styles.back}
+          name="arrow-back"
+          color="black"
         />
+        <Text style={styles.title}>Modify Item</Text>
       </View>
       <Card.Divider />
 
@@ -153,7 +142,7 @@ const styles = StyleSheet.create({
   titleBar: {
     width: '100%',
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
     alignItems: 'center',
   },
   title: {
@@ -163,7 +152,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: primaryColour,
   },
-  logOut: {
+  back: {
     marginVertical: 25,
     marginHorizontal: 25,
     color: primaryColour,

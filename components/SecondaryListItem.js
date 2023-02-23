@@ -8,7 +8,8 @@ const SecondaryListItem = ({singleMedia, navigation}) => {
     <View style={styles.column}>
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate('ModifyItem', {file: item});
+          navigation.navigate('Single', item);
+          console.log('secListItem:', item);
         }}
       >
         <Image
