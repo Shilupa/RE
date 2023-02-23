@@ -14,6 +14,7 @@ import Search from '../views/Search';
 import Single from '../views/Single';
 import Upload from '../views/Upload';
 import EditProfile from '../views/EditProfile';
+import GoLogin from '../views/GoLogin';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -107,6 +108,7 @@ const StackScreen = () => {
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="ModifyItem" component={ModifyItem} />
         <Stack.Screen name="EditProfile" component={EditProfile} />
+        <Stack.Screen name="GoLogin" component={GoLogin} />
       </>
     </Stack.Navigator>
   );

@@ -7,13 +7,15 @@ import {useContext, useEffect, useRef, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
 import {useTag, useUser} from '../hooks/ApiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import defaultAvatar from '../assets/avatar.png';
+import GoLogin from '../views/GoLogin';
 
 const ListItem = ({singleMedia, navigation}) => {
-  const defaultAvatarUri = Image.resolveAssetSource(defaultAvatar).uri;
+  const assetImage = Image.resolveAssetSource(
+    require('../assets/avatar.png')
+  ).uri;
   const item = singleMedia;
   const {getFilesByTag} = useTag();
-  const [avatar, setAvatar] = useState(defaultAvatarUri);
+  const [avatar, setAvatar] = useState(assetImage);
   const {getUserById} = useUser();
   const [owner, setOwner] = useState({});
   const {isLoggedIn} = useContext(MainContext);
@@ -23,8 +25,9 @@ const ListItem = ({singleMedia, navigation}) => {
     if (isLoggedIn) {
       try {
         const avatarArray = await getFilesByTag('avatar_' + item.user_id);
-        if (avatarArray.filename !== undefined) {
-          setAvatar(avatarArray.pop().filename);
+        console.log('Profile avatar', avatarArray.filename);
+        if (avatarArray[avatarArray.length - 1].filename !== undefined) {
+          setAvatar(uploadsUrl + avatarArray.pop().filename);
         }
       } catch (error) {
         console.error('user avatar fetch failed', error.message);
@@ -36,18 +39,12 @@ const ListItem = ({singleMedia, navigation}) => {
       try {
         const token = await AsyncStorage.getItem('userToken');
         const owner = await getUserById(item.user_id, token);
-        //console.log('owner', owner);
         setOwner(owner);
       } catch (error) {
         console.error('owner set failed', item.user_id);
       }
     }
   };
-
-  /*   useEffect(() => {
-    loadAvatar();
-    getOwner();
-  }, [isLoggedIn]); */
 
   useEffect(() => {
     if (isMountedRef.current) {
@@ -56,22 +53,14 @@ const ListItem = ({singleMedia, navigation}) => {
     } else {
       isMountedRef.current = true;
     }
-  }, [isLoggedIn]);
+  }, []);
+
+  const goToLogin = () => {
+    navigation.navigate('GoLogin');
+  };
 
   return (
     <View style={styles.column} elevation={5}>
-      {isLoggedIn && (
-        <View style={styles.userInfo}>
-          <Image
-            style={styles.avatar}
-            source={{
-              uri: uploadsUrl + avatar,
-            }}
-          ></Image>
-          <Text>{owner.username}</Text>
-        </View>
-      )}
-
       <TouchableOpacity
         onPress={() => {
           navigation.navigate('Single', item);
@@ -89,24 +78,67 @@ const ListItem = ({singleMedia, navigation}) => {
         </View>
       </TouchableOpacity>
       <Card.Divider />
-      <View style={styles.userInteraction}>
-        <View style={styles.iconbox}>
-          <Icon name="thumb-up-off-alt" size={20} />
-          <Text style={styles.iconText}>Like</Text>
+      {isLoggedIn ? (
+        <View style={styles.userInteraction}>
+          <View style={styles.userInfo}>
+            <Image
+              style={styles.avatar}
+              /* source={{
+                uri: uploadsUrl + avatar,
+              }} */
+              /* source={require('../assets/avatar.png')} */
+              source={{uri: avatar}}
+            ></Image>
+            <Text style={{fontSize: 10}}>{owner.username}</Text>
+          </View>
+
+          <View style={styles.icons}>
+            <View style={styles.iconbox}>
+              <Icon name="thumb-up-off-alt" size={20} />
+              <Text style={styles.iconText}>1.4k</Text>
+            </View>
+            <View style={styles.iconbox}>
+              <Icon name="thumb-down-off-alt" size={20} />
+              <Text style={styles.iconText}>1.4k</Text>
+            </View>
+            <View style={{alignSelf: 'flex-start'}}>
+              <Icon name="chat" size={20} />
+              {/* <Text style={styles.iconText}>Message</Text> */}
+            </View>
+            <View style={styles.iconbox}>
+              <Icon name="favorite-border" size={20} />
+              <Text style={styles.iconText}>1.4k</Text>
+            </View>
+          </View>
         </View>
-        <View style={styles.iconbox}>
-          <Icon name="thumb-down-off-alt" size={20} />
-          <Text style={styles.iconText}>Dislike</Text>
-        </View>
-        <View style={styles.iconbox}>
-          <Icon name="chat" size={20} />
-          <Text style={styles.iconText}>Message</Text>
-        </View>
-        <View style={styles.iconbox}>
-          <Icon name="favorite-border" size={20} />
-          <Text style={styles.iconText}>Favourite</Text>
-        </View>
-      </View>
+      ) : (
+        <TouchableOpacity onPress={goToLogin}>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-around',
+              padding: 10,
+            }}
+          >
+            <View style={styles.iconbox}>
+              <Icon name="thumb-up-off-alt" size={20} />
+              <Text style={styles.iconText}>1.4k</Text>
+            </View>
+            <View style={styles.iconbox}>
+              <Icon name="thumb-down-off-alt" size={20} />
+              <Text style={styles.iconText}>1.4k</Text>
+            </View>
+            <View style={{alignSelf: 'flex-start'}}>
+              <Icon name="chat" size={20} />
+            </View>
+            <View style={styles.iconbox}>
+              <Icon name="favorite-border" size={20} />
+              <Text style={styles.iconText}>1.4k</Text>
+            </View>
+          </View>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -128,14 +160,22 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   userInfo: {
-    width: '50%',
+    width: '40%',
     flexDirection: 'row',
     padding: 10,
     alignItems: 'center',
   },
+  icons: {
+    width: '60%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    padding: 10,
+  },
   userInteraction: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     padding: 10,
   },
   image: {
@@ -150,9 +190,9 @@ const styles = StyleSheet.create({
   },
   avatar: {
     resizeMode: 'cover',
-    width: 40,
-    height: 40,
-    borderRadius: 400 / 2,
+    width: 30,
+    height: 30,
+    borderRadius: 200 / 2,
     alignSelf: 'center',
     marginRight: 10,
   },
@@ -160,7 +200,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   iconText: {
-    fontSize: 12,
+    fontSize: 10,
   },
 });
 

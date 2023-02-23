@@ -1,10 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {
-  inputBackground,
-  primaryColour,
-  primaryColourDark,
-  uploadsUrl,
-} from '../utils/variables';
+import {primaryColour, uploadsUrl} from '../utils/variables';
 import PropTypes from 'prop-types';
 import {Card, Icon, Button} from '@rneui/themed';
 import {
@@ -72,6 +67,9 @@ const Single = ({navigation, route}) => {
   };
 
   const messageSeller = () => {
+    if (!isLoggedIn) {
+      navigation.navigate('Login');
+    }
     console.log('Hahaha');
   };
 
@@ -167,31 +165,33 @@ const Single = ({navigation, route}) => {
             <Text style={styles.listTitle}>{title}</Text>
             <Text style={styles.time}>listed {time}ago</Text>
           </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              margin: 5,
-              marginTop: 0,
-            }}
-          >
-            <Image
+          {isLoggedIn && (
+            <View
               style={{
-                width: 50,
-                height: 50,
-                borderRadius: 400 / 2,
-                resizeMode: 'contain',
+                flexDirection: 'row',
+                alignItems: 'center',
                 margin: 5,
+                marginTop: 0,
               }}
-              source={{uri: uploadsUrl + avatar}}
-            ></Image>
-            <View style={styles.box}>
-              <Text>{owner.username} </Text>
+            >
+              <Image
+                style={{
+                  width: 50,
+                  height: 50,
+                  borderRadius: 400 / 2,
+                  resizeMode: 'contain',
+                  margin: 5,
+                }}
+                source={{uri: uploadsUrl + avatar}}
+              ></Image>
+              <View style={styles.box}>
+                <Text>{owner.username} </Text>
+              </View>
             </View>
-          </View>
+          )}
         </View>
 
-        {user.user_id === owner.user_id ? (
+        {isLoggedIn && user.user_id === owner.user_id ? (
           <Button onPress={editItem} buttonStyle={styles.button}>
             Edit Item
           </Button>
@@ -204,11 +204,11 @@ const Single = ({navigation, route}) => {
         <View style={styles.userInteraction}>
           <View style={styles.iconbox}>
             <Icon name="thumb-up-off-alt" size={20} />
-            <Text style={styles.iconText}>Like</Text>
+            <Text style={styles.iconText}>1.4k</Text>
           </View>
           <View style={styles.iconbox}>
             <Icon name="thumb-down-off-alt" size={20} />
-            <Text style={styles.iconText}>Dislike</Text>
+            <Text style={styles.iconText}>1.4k</Text>
           </View>
           <View style={styles.iconbox}>
             {userFavouritesIt ? (
@@ -216,7 +216,7 @@ const Single = ({navigation, route}) => {
             ) : (
               <Icon name="favorite-border" onPress={favouriteFile} />
             )}
-            <Text style={styles.iconText}>Favourite</Text>
+            <Text style={styles.iconText}>1.4k</Text>
           </View>
         </View>
 
@@ -313,6 +313,9 @@ const styles = StyleSheet.create({
     flex: 1,
     width: null,
     height: null,
+  },
+  iconbox: {
+    flexDirection: 'column',
   },
 });
 
