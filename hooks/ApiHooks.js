@@ -35,11 +35,13 @@ const useMedia = (myFilesOnly) => {
           return await fileResponse.json();
         })
       );
+
       setMediaArray(media);
     } catch (error) {
       console.error('List, loadMedia', error);
     }
   };
+
   useEffect(() => {
     loadMedia();
     // load media when update state changes in main context

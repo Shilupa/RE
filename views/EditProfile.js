@@ -126,7 +126,7 @@ const EditProfile = ({navigation}) => {
           await postTag(tag, token);
         }
       }
-      //Posting user data
+      // Posting user data
       const userResponse = await putUser(data, token);
       /**
        * if user response is success then new user data is stored

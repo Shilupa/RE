@@ -26,7 +26,7 @@ const ListItem = ({singleMedia, navigation}) => {
       try {
         const avatarArray = await getFilesByTag('avatar_' + item.user_id);
         console.log('Profile avatar', avatarArray.filename);
-        if (avatarArray[avatarArray.length - 1].filename !== undefined) {
+        if (avatarArray.length > 0) {
           setAvatar(uploadsUrl + avatarArray.pop().filename);
         }
       } catch (error) {
@@ -34,6 +34,7 @@ const ListItem = ({singleMedia, navigation}) => {
       }
     }
   };
+
   const getOwner = async () => {
     if (isLoggedIn) {
       try {
@@ -48,13 +49,9 @@ const ListItem = ({singleMedia, navigation}) => {
   };
 
   useEffect(() => {
-    if (isMountedRef.current) {
-      loadAvatar();
-      getOwner();
-    } else {
-      isMountedRef.current = true;
-    }
-  }, []);
+    loadAvatar();
+    getOwner();
+  }, [isLoggedIn]);
 
   const goToLogin = () => {
     navigation.navigate('GoLogin');
@@ -147,7 +144,7 @@ const ListItem = ({singleMedia, navigation}) => {
 const styles = StyleSheet.create({
   column: {
     flexDirection: 'column',
-    backgroundColor: '#FAFBFB',
+    backgroundColor: '#F2F0F0',
     margin: 10,
     borderRadius: 6,
   },
