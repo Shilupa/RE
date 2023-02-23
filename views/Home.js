@@ -91,12 +91,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
+
   titleBar: {
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'baseline',
   },
+
   title: {
     marginVertical: 25,
     marginHorizontal: 25,
@@ -104,6 +106,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: primaryColour,
   },
+
   logIn: {
     marginVertical: 25,
     marginHorizontal: 25,

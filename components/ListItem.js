@@ -39,6 +39,7 @@ const ListItem = ({singleMedia, navigation}) => {
       try {
         const token = await AsyncStorage.getItem('userToken');
         const owner = await getUserById(item.user_id, token);
+        // console.log('owner', owner);
         setOwner(owner);
       } catch (error) {
         console.error('owner set failed', item.user_id);
