@@ -38,11 +38,7 @@ const Home = ({navigation}) => {
   // Removing duplicates from list [Just in case]
   const filteredMedia = category.reduce((acc, current) => {
     const media = acc.find((media) => media.file_id === current.file_id);
-    if (!media) {
-      return acc.concat([current]);
-    } else {
-      return acc;
-    }
+    return !media ? acc.concat([current]) : acc;
   }, []);
 
   console.log('media', filteredMedia);
