@@ -267,4 +267,15 @@ const useFavourite = () => {
   };
 };
 
-export {useMedia, useAuthentication, useUser, useTag, useFavourite};
+const loadMediaById = async (fileId) => {
+  return await doFetch(baseUrl + 'media/' + fileId);
+};
+
+export {
+  useMedia,
+  useAuthentication,
+  useUser,
+  useTag,
+  useFavourite,
+  loadMediaById,
+};
