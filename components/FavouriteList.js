@@ -17,14 +17,14 @@ const FavouriteList = ({navigation}) => {
     return await AsyncStorage.getItem('userToken');
   };
 
-  // Fetching  user favourite list
+  // Fetching user favourite list
   const fetchFavourite = async () => {
     const token = await getToken();
     const response = await getFavouritesByUser(token);
     setFavourites(response);
   };
 
-  // Mapping and storing all the favourites file via file id on the main media list
+  // Mapping favourites
   const setList = async () => {
     const media = await Promise.all(
       favourites.map(async (favourite) => {
@@ -35,14 +35,10 @@ const FavouriteList = ({navigation}) => {
     setFavouriteList(media);
   };
 
-  console.log('favs', favouriteList);
-
-  // Updating favourite list if user likes or dislikes the media
   useEffect(() => {
     fetchFavourite();
   }, [update, updateFavourite]);
 
-  // Updating list whenever there is change in favourite
   useEffect(() => {
     setList();
   }, [favourites]);
