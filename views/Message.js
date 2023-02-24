@@ -1,12 +1,26 @@
 import {Platform, StyleSheet, SafeAreaView, View} from 'react-native';
 import PropTypes from 'prop-types';
-import {Divider, Icon, Input, Text} from '@rneui/themed';
+import {Divider, Icon, Image, Input, Text} from '@rneui/themed';
 import {StatusBar} from 'react-native';
-import {inputBackground, primaryColour, vw} from '../utils/variables';
+import {
+  inputBackground,
+  primaryColour,
+  uploadsUrl,
+  vw,
+} from '../utils/variables';
 import MessageList from '../components/MessageList';
 import {Controller, useForm} from 'react-hook-form';
 
-const Message = ({navigation}) => {
+const Message = ({navigation, route}) => {
+  const {
+    title,
+    description,
+    filename,
+    file_id: fileId,
+    time_added: timeAdded,
+    user_id: userId,
+  } = route.params;
+
   const {control} = useForm({
     mode: 'onBlur',
   });
@@ -21,8 +35,15 @@ const Message = ({navigation}) => {
           name="arrow-back"
           color="black"
         />
-        <Text style={styles.title}>Message</Text>
+        <View>
+          <Image
+            style={styles.ItemPicture}
+            source={{uri: uploadsUrl + filename}}
+          />
+          <Text>{title}</Text>
+        </View>
       </View>
+
       <Divider />
       <MessageList navigation={navigation} />
       <Divider />
@@ -43,8 +64,9 @@ const Message = ({navigation}) => {
           )}
           name="username"
         />
-
-        <Icon name="send" color="black" />
+        <View style={styles.sendIcon}>
+          <Icon name="send" color="black" />
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -60,7 +82,7 @@ const styles = StyleSheet.create({
   titleBar: {
     width: '100%',
     flexDirection: 'row',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     alignItems: 'baseline',
     marginStart: 25,
   },
@@ -73,11 +95,18 @@ const styles = StyleSheet.create({
     color: primaryColour,
   },
 
+  ItemPicture: {
+    height: 100,
+    width: 100,
+    borderRadius: 50,
+  },
+
   sendMessage: {
-    width: '100%',
+    width: '90%',
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'baseline',
+    position: 'relative',
   },
 
   inputContainerStyle: {
@@ -93,10 +122,18 @@ const styles = StyleSheet.create({
     textAlignVertical: 'center',
     fontSize: 14,
   },
+
+  sendIcon: {
+    position: 'absolute',
+    right: -30,
+    top: 10,
+    transform: [{rotateZ: '-30deg'}],
+  },
 });
 
 Message.propTypes = {
   navigation: PropTypes.object,
+  route: PropTypes.object,
 };
 
 export default Message;

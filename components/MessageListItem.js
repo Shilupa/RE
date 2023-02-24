@@ -4,7 +4,7 @@ import {uploadsUrl, vw} from '../utils/variables';
 
 const MessageListItem = ({singleMedia, navigation}) => {
   const item = singleMedia;
-  const sender = false;
+  const sender = true;
 
   return (
     <TouchableOpacity

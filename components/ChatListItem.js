@@ -9,7 +9,8 @@ const ChatListItem = ({singleMedia, navigation}) => {
     <TouchableOpacity
       onPress={() => {
         console.log('Go to message: ');
-        navigation.navigate('Message');
+        console.log('ItemSend: ', item);
+        navigation.navigate('Message', item);
       }}
     >
       <View style={styles.container}>
