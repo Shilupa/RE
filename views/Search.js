@@ -89,7 +89,11 @@ const Search = ({navigation}) => {
         animationType="spring"
       >
         <TabView.Item style={{width: '100%'}}>
-          <SearchList navigation={navigation} />
+          <SearchList
+            navigation={navigation}
+            search={search}
+            setSearch={setSearch}
+          />
         </TabView.Item>
         <TabView.Item style={{backgroundColor: 'blue', width: '100%'}}>
           <Text h1>Furniture</Text>

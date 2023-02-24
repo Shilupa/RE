@@ -15,7 +15,6 @@ const SecondaryListItem = ({singleMedia, navigation}) => {
     const favourites = await getFavouritesByUser(token);
     setFavourites(favourites);
   };
-  console.log('Bibek Fabourate: ', favourites);
 
   useEffect(() => {
     fetchFavourite();
@@ -26,7 +25,6 @@ const SecondaryListItem = ({singleMedia, navigation}) => {
       <TouchableOpacity
         onPress={() => {
           navigation.navigate('Single', item);
-          console.log('secListItem:', item);
         }}
       >
         <Image
