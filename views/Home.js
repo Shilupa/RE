@@ -16,20 +16,28 @@ import {useTag} from '../hooks/ApiHooks';
 const Home = ({navigation}) => {
   const [index, setIndex] = useState();
   const {isLoggedIn, user, update} = useContext(MainContext);
-  const clothing = `${appId}_Clothing`;
-  const furniture = `${appId}_Furniture`;
   const {getFilesByTag} = useTag();
   const [category, setCategory] = useState([]);
+  let list = ['Clothing', 'Furniture'];
 
-  const getFilesWithTag = async () => {
-    const tagResponse = await getFilesByTag(clothing);
-    const furResponse = await getFilesByTag(furniture);
-    setCategory([...category, ...furResponse, ...tagResponse]);
+  /**
+   * Fetching media by category
+   * Adding category list(array list) one by one in useState array
+   */
+  const getFilesByCategory = () => {
+    try {
+      list.forEach(async (item) => {
+        const tagResponse = await getFilesByTag(`${appId}_${item}`);
+        setCategory((category) => [...category, ...tagResponse]);
+      });
+    } catch (error) {
+      console.log('Home error: ', error);
+    }
   };
 
-  // Removing duplicates from list
+  // Removing duplicates from list [Just in case]
   const filteredMedia = category.reduce((acc, current) => {
-    const media = acc.find((item) => item.file_id === current.file_id);
+    const media = acc.find((media) => media.file_id === current.file_id);
     if (!media) {
       return acc.concat([current]);
     } else {
@@ -37,14 +45,13 @@ const Home = ({navigation}) => {
     }
   }, []);
 
-  // Hello there
+  console.log('media', filteredMedia);
   console.log('====================================');
-  console.log(filteredMedia);
+  console.log('media', filteredMedia.length);
   console.log('====================================');
-  console.log(filteredMedia.length);
 
   useEffect(() => {
-    getFilesWithTag();
+    getFilesByCategory();
   }, [update]);
 
   return (
