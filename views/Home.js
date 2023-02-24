@@ -8,13 +8,44 @@ import {
 import List from '../components/List';
 import PropTypes from 'prop-types';
 import {Tab, TabView, Text, Card} from '@rneui/themed';
-import {useContext, useState} from 'react';
-import {primaryColour} from '../utils/variables';
+import {useContext, useEffect, useState} from 'react';
+import {appId, primaryColour} from '../utils/variables';
 import {MainContext} from '../contexts/MainContext';
+import {useTag} from '../hooks/ApiHooks';
 
 const Home = ({navigation}) => {
   const [index, setIndex] = useState();
-  const {isLoggedIn, user} = useContext(MainContext);
+  const {isLoggedIn, user, update} = useContext(MainContext);
+  const clothing = `${appId}_Clothing`;
+  const furniture = `${appId}_Furniture`;
+  const {getFilesByTag} = useTag();
+  const [category, setCategory] = useState([]);
+
+  const getFilesWithTag = async () => {
+    const tagResponse = await getFilesByTag(clothing);
+    const furResponse = await getFilesByTag(furniture);
+    setCategory([...category, ...furResponse, ...tagResponse]);
+  };
+
+  // Removing duplicates from list
+  const filteredMedia = category.reduce((acc, current) => {
+    const media = acc.find((item) => item.file_id === current.file_id);
+    if (!media) {
+      return acc.concat([current]);
+    } else {
+      return acc;
+    }
+  }, []);
+
+  // Hello there
+  console.log('====================================');
+  console.log(filteredMedia);
+  console.log('====================================');
+  console.log(filteredMedia.length);
+
+  useEffect(() => {
+    getFilesWithTag();
+  }, [update]);
 
   return (
     <SafeAreaView style={styles.container}>

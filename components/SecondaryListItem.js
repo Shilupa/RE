@@ -15,7 +15,7 @@ const SecondaryListItem = ({singleMedia, navigation}) => {
     const favourites = await getFavouritesByUser(token);
     setFavourites(favourites);
   };
-  console.log('Bibek Fabourate: ', favourites);
+  // console.log('Bibek Fabourate: ', favourites);
 
   useEffect(() => {
     fetchFavourite();

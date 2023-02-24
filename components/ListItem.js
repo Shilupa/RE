@@ -25,7 +25,6 @@ const ListItem = ({singleMedia, navigation}) => {
     if (isLoggedIn) {
       try {
         const avatarArray = await getFilesByTag('avatar_' + item.user_id);
-        console.log('Profile avatar', avatarArray.filename);
         if (avatarArray.length > 0) {
           setAvatar(uploadsUrl + avatarArray.pop().filename);
         }

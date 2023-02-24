@@ -43,6 +43,7 @@ const Upload = ({navigation}) => {
   const {setIsLoggedIn, isLoggedIn, user, setUser} = useContext(MainContext);
   const [avatar, setAvatar] = useState();
   const [index, setIndex] = useState();
+  let category = 'Furniture'
 
   const uploadFile = async (data) => {
     // create form data and post it
@@ -66,7 +67,7 @@ const Upload = ({navigation}) => {
 
       const appTag = {
         file_id: result.file_id,
-        tag: appId,
+        tag: `${appId}_${category}`,
       };
       const tagResult = await postTag(appTag, token);
       console.log('tag result', tagResult);
