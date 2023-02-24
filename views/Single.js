@@ -18,7 +18,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Single = ({navigation, route}) => {
   console.log(route.params);
-  const {isLoggedIn} = useContext(MainContext);
+  const {isLoggedIn, updateFavourite, setUpdateFavourite} =
+    useContext(MainContext);
   const {getUserById} = useUser();
   const [owner, setOwner] = useState({});
   const [avatar, setAvatar] = useState('');
@@ -100,6 +101,7 @@ const Single = ({navigation, route}) => {
       await postFavourite(fileId, token);
       setuserFavouritesIt(true);
       getFavourites();
+      setUpdateFavourite(!updateFavourite);
     } catch (error) {
       // note: you cannot like same file multiple times
       // console.log(error);
@@ -112,6 +114,7 @@ const Single = ({navigation, route}) => {
       await deleteFavourite(fileId, token);
       setuserFavouritesIt(false);
       getFavourites();
+      setUpdateFavourite(!updateFavourite);
     } catch (error) {
       // note: you cannot like same file multiple times
       console.log(error);

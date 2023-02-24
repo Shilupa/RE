@@ -8,6 +8,7 @@ const MainProvider = (props) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState({});
   const [update, setUpdate] = useState(true);
+  const [updateFavourite, setUpdateFavourite] = useState(true);
   const [toggleForm, setToggleForm] = useState(true);
   const [token, setToken] = useState(null);
   const [updateAvatar, setUpdateAvatar] = useState(0);
@@ -43,6 +44,8 @@ const MainProvider = (props) => {
         setUser,
         update,
         setUpdate,
+        updateFavourite,
+        setUpdateFavourite,
         toggleForm,
         setToggleForm,
         token,

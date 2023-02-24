@@ -113,11 +113,11 @@ const Profile = ({navigation}) => {
         }}
       >
         <Tab.Item
-          title="Your Listings ()"
+          title="My Listings."
           titleStyle={{fontSize: 12, color: 'black'}}
         />
         <Tab.Item
-          title="Your Favourites ()"
+          title="My Favourites."
           titleStyle={{fontSize: 12, color: 'black'}}
         />
       </Tab>
@@ -126,7 +126,7 @@ const Profile = ({navigation}) => {
           <MyFiles navigation={navigation} />
         </TabView.Item>
         <TabView.Item>
-          <FavouriteList />
+          <FavouriteList navigation={navigation} />
         </TabView.Item>
       </TabView>
     </SafeAreaView>

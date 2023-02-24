@@ -1,6 +1,6 @@
 import {Image, StyleSheet, View, TouchableOpacity} from 'react-native';
 import PropTypes from 'prop-types';
-import {uploadsUrl} from '../utils/variables';
+import {uploadsUrl, vw} from '../utils/variables';
 import {useEffect, useState} from 'react';
 import {getUserById} from '../hooks/ApiHooks';
 
@@ -38,12 +38,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#FAFBFB',
     margin: 4.5,
     borderRadius: 6,
-    minWidth: '31%',
+    minWidth: 31 * vw,
   },
   image: {
     flex: 1,
     aspectRatio: 1.2,
-    minHeight: 50,
+    width: 31 * vw,
     borderRadius: 5,
     resizeMode: 'cover',
   },

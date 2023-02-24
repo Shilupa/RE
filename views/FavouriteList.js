@@ -11,7 +11,7 @@ const FavouriteList = ({navigation}) => {
   const {getFavouritesByUser} = useFavourite();
   const [favourites, setFavourites] = useState([]);
   const [favouriteList, setFavouriteList] = useState([]);
-  const {update} = useContext(MainContext);
+  const {update, updateFavourite} = useContext(MainContext);
 
   const getToken = async () => {
     return await AsyncStorage.getItem('userToken');
@@ -40,7 +40,7 @@ const FavouriteList = ({navigation}) => {
   // Updating favourite list if user likes or dislikes the media
   useEffect(() => {
     fetchFavourite();
-  }, [update]);
+  }, [update, updateFavourite]);
 
   // Updating list whenever there is change in favourite
   useEffect(() => {

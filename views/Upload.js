@@ -15,7 +15,7 @@ import FormButton from '../components/formComponent/FormButton';
 import {useMedia, useTag, useUser} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 import * as ImagePicker from 'expo-image-picker';
-import {Image, Text, Icon} from '@rneui/themed';
+import {Image, Text, Icon, Divider} from '@rneui/themed';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {appId, primaryColour} from '../utils/variables';
 import {useFocusEffect} from '@react-navigation/native';
@@ -153,8 +153,9 @@ const Upload = ({navigation}) => {
   return (
     <SafeAreaView style={styles.safearea}>
       <View style={styles.titleBar}>
-        <Text style={styles.title}>Profile</Text>
+        <Text style={styles.title}>Uploads</Text>
       </View>
+      <Divider />
 
       <ScrollView>
         <View style={styles.container}>
@@ -313,10 +314,12 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'baseline',
   },
+
   title: {
-    marginTop: '10%',
-    marginHorizontal: '10%',
+    marginVertical: 25,
+    marginHorizontal: 25,
     fontSize: 25,
     fontWeight: 'bold',
     color: primaryColour,
