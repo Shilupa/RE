@@ -1,13 +1,20 @@
 import {FlatList} from 'react-native';
-import {useMedia} from '../hooks/ApiHooks';
+import {useMedia, useTag} from '../hooks/ApiHooks';
 import ListItem from './ListItem';
 import PropTypes from 'prop-types';
+import {useContext, useEffect, useState} from 'react';
+import {MainContext} from '../contexts/MainContext';
+import {appId, categoryList} from '../utils/variables';
 
 const List = ({navigation}) => {
-  const {mediaArray} = useMedia();
+  const {filteredMedia} = useMedia();
+
+  console.log('====================================');
+  console.log('List', filteredMedia.length);
+  console.log('====================================');
   return (
     <FlatList
-      data={mediaArray}
+      data={filteredMedia}
       keyExtractor={(item, index) => index.toString()}
       renderItem={({item}) => (
         <ListItem navigation={navigation} singleMedia={item} />

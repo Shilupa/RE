@@ -15,40 +15,7 @@ import {useTag} from '../hooks/ApiHooks';
 
 const Home = ({navigation}) => {
   const [index, setIndex] = useState();
-  const {isLoggedIn, user, update} = useContext(MainContext);
-  const {getFilesByTag} = useTag();
-  const [category, setCategory] = useState([]);
-  // let list = ['Clothing', 'Furniture'];
-
-  /**
-   * Fetching media by category
-   * Adding category list(array list) one by one in useState array
-   */
-  const getFilesByCategory = () => {
-    try {
-      categoryList.forEach(async (category) => {
-        const tagResponse = await getFilesByTag(`${appId}_${category}`);
-        setCategory((category) => [...category, ...tagResponse]);
-      });
-    } catch (error) {
-      console.log('Home error: ', error);
-    }
-  };
-
-  // Removing duplicates from list [Just in case]
-  const filteredMedia = category.reduce((acc, current) => {
-    const media = acc.find((media) => media.file_id === current.file_id);
-    return !media ? acc.concat([current]) : acc;
-  }, []);
-
-  console.log('media', filteredMedia);
-  console.log('====================================');
-  console.log('media', filteredMedia.length);
-  console.log('====================================');
-
-  useEffect(() => {
-    getFilesByCategory();
-  }, [update]);
+  const {isLoggedIn, user} = useContext(MainContext);
 
   return (
     <SafeAreaView style={styles.container}>
