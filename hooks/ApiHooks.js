@@ -24,7 +24,7 @@ const useMedia = (myFilesOnly) => {
        * Looping through Category list and fetching one array list at a time by category name
        */
       categoryList.forEach(async (category) => {
-        const json = await useTag().getFilesByTag(`${appId}_${category}`);
+        let json = await useTag().getFilesByTag(`${appId}_${category}`);
 
         // keep users files if MyFilesOnly
         if (myFilesOnly) {
