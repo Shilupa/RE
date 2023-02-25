@@ -25,7 +25,7 @@ const SecondaryListItem = ({singleMedia, navigation}) => {
     <View style={styles.column}>
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate('Single', item);
+          navigation.navigate('DetailProductView', item);
           console.log('secListItem:', item);
         }}
       >

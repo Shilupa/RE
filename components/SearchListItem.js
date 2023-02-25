@@ -9,7 +9,7 @@ const SearchListItem = ({singleMedia, navigation}) => {
     <View style={styles.container}>
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate('Single', item);
+          navigation.navigate('DetailProductView', item);
         }}
       >
         <Image

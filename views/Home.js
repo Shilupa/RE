@@ -5,7 +5,6 @@ import {
   View,
   StatusBar,
 } from 'react-native';
-import List from '../components/List';
 import PropTypes from 'prop-types';
 import {Tab, TabView, Text, Card} from '@rneui/themed';
 import {useContext, useEffect, useState} from 'react';

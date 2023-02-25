@@ -43,8 +43,8 @@ const ProductCategoryView = ({navigation, category}) => {
   );
 };
 
-roductCategoryView.propTypes = {
+ProductCategoryView.propTypes = {
   navigation: PropTypes.object,
 };
 
-export default roductCategoryView;
+export default ProductCategoryView;
