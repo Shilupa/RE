@@ -1,13 +1,19 @@
-import {Image, StyleSheet, View, Text, TouchableOpacity} from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import PropTypes from 'prop-types';
 import {uploadsUrl} from '../utils/variables';
 import {Icon} from '@rneui/themed';
 import {Card} from '@rneui/base';
-import {useContext, useEffect, useRef, useState} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
-import {useTag, useUser} from '../hooks/ApiHooks';
+import {useFavourite, useTag, useUser} from '../hooks/ApiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import GoLogin from '../views/GoLogin';
 
 const ListItem = ({singleMedia, navigation}) => {
   const assetImage = Image.resolveAssetSource(
@@ -18,19 +24,23 @@ const ListItem = ({singleMedia, navigation}) => {
   const [avatar, setAvatar] = useState(assetImage);
   const {getUserById} = useUser();
   const [owner, setOwner] = useState({});
-  const {isLoggedIn} = useContext(MainContext);
-  const isMountedRef = useRef(false);
+  const {isLoggedIn, user, updateFavourite, setUpdateFavourite, update} =
+    useContext(MainContext);
+  const [favourites, setFavourites] = useState([]);
+  const [userFavouritesIt, setuserFavouritesIt] = useState(false);
+  const {getFavouritesByFileId, postFavourite, deleteFavourite} =
+    useFavourite();
 
   const loadAvatar = async () => {
     if (isLoggedIn) {
       try {
         const avatarArray = await getFilesByTag('avatar_' + item.user_id);
-        console.log('Profile avatar', avatarArray.filename);
+        // console.log('Profile avatar', avatarArray.filename);
         if (avatarArray.length > 0) {
           setAvatar(uploadsUrl + avatarArray.pop().filename);
         }
       } catch (error) {
-        console.error('user avatar fetch failed', error.message);
+        // console.error('user avatar fetch failed', error.message);
       }
     }
   };
@@ -43,19 +53,59 @@ const ListItem = ({singleMedia, navigation}) => {
         // console.log('owner', owner);
         setOwner(owner);
       } catch (error) {
-        console.error('owner set failed', item.user_id);
+        // console.error('owner set failed', item.user_id);
       }
     }
   };
 
-  useEffect(() => {
-    loadAvatar();
-    getOwner();
-  }, [isLoggedIn]);
-
-  const goToLogin = () => {
-    navigation.navigate('GoLogin');
+  const getFavourites = async () => {
+    const favourites = await getFavouritesByFileId(item.file_id);
+    // console.log('likes', likes, 'user', user);
+    setFavourites(favourites);
+    // check if the current user id is included in the 'likes' array and
+    // set the 'userLikesIt' state accordingly
+    for (const favourite of favourites) {
+      if (favourite.user_id === user.user_id) {
+        setuserFavouritesIt(true);
+        break;
+      }
+    }
   };
+
+  const favouriteFile = async () => {
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      await postFavourite(item.file_id, token);
+      setuserFavouritesIt(true);
+      getFavourites();
+      setUpdateFavourite(!updateFavourite);
+    } catch (error) {
+      // note: you cannot like same file multiple times
+      // console.log(error);
+    }
+  };
+
+  const unfavouriteFile = async () => {
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      await deleteFavourite(item.file_id, token);
+      setuserFavouritesIt(false);
+      getFavourites();
+      setUpdateFavourite(!updateFavourite);
+    } catch (error) {
+      // note: you cannot like same file multiple times
+      // console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getOwner();
+    loadAvatar();
+  }, [isLoggedIn, owner]);
+
+  useEffect(() => {
+    getFavourites();
+  }, [update, updateFavourite]);
 
   return (
     <View style={styles.column} elevation={5}>
@@ -100,17 +150,43 @@ const ListItem = ({singleMedia, navigation}) => {
               <Text style={styles.iconText}>1.4k</Text>
             </View>
             <View style={{alignSelf: 'flex-start'}}>
-              <Icon name="chat" size={20} />
-              {/* <Text style={styles.iconText}>Message</Text> */}
+              <Icon
+                name="chat"
+                size={26}
+                onPress={() => {
+                  navigation.navigate('Chats'); // opens a new chat
+                }}
+              />
+              {/* <Text style={styles.iconText}>chat</Text> */}
             </View>
             <View style={styles.iconbox}>
-              <Icon name="favorite-border" size={20} />
-              <Text style={styles.iconText}>1.4k</Text>
+              {userFavouritesIt ? (
+                <Icon name="favorite" color="red" onPress={unfavouriteFile} />
+              ) : (
+                <Icon name="favorite-border" onPress={favouriteFile} />
+              )}
+              <Text style={styles.iconText}>{favourites.length}</Text>
             </View>
           </View>
         </View>
       ) : (
-        <TouchableOpacity onPress={goToLogin}>
+        <TouchableOpacity
+          onPress={() => {
+            Alert.alert(
+              'Login',
+              'To continue using all the features, you must log in!',
+              [
+                {
+                  text: 'Go to Login',
+                  onPress: () => {
+                    navigation.navigate('Login');
+                  },
+                },
+                {text: 'Continue as a guest'},
+              ]
+            );
+          }}
+        >
           <View
             style={{
               flexDirection: 'row',
@@ -121,18 +197,15 @@ const ListItem = ({singleMedia, navigation}) => {
           >
             <View style={styles.iconbox}>
               <Icon name="thumb-up-off-alt" size={20} />
-              <Text style={styles.iconText}>1.4k</Text>
             </View>
             <View style={styles.iconbox}>
               <Icon name="thumb-down-off-alt" size={20} />
-              <Text style={styles.iconText}>1.4k</Text>
             </View>
             <View style={{alignSelf: 'flex-start'}}>
               <Icon name="chat" size={20} />
             </View>
             <View style={styles.iconbox}>
               <Icon name="favorite-border" size={20} />
-              <Text style={styles.iconText}>1.4k</Text>
             </View>
           </View>
         </TouchableOpacity>
@@ -196,6 +269,7 @@ const styles = StyleSheet.create({
   },
   iconbox: {
     flexDirection: 'column',
+    alignItems: 'center',
   },
   iconText: {
     fontSize: 10,

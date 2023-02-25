@@ -45,12 +45,12 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     resizeMode: 'cover',
   },
-  profilePic: {
+  /*   profilePic: {
     height: 30,
     aspectRatio: 1,
     borderRadius: 15,
     resizeMode: 'cover',
-  },
+  }, */
   profileAndInfo: {
     flexDirection: 'row',
     alignItems: 'center',

@@ -41,7 +41,7 @@ const FavouriteList = ({navigation}) => {
 
   useEffect(() => {
     setList();
-  }, [favourites]);
+  }, [update, favourites]);
 
   return (
     <FlatList

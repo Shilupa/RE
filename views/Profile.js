@@ -16,6 +16,7 @@ import {MainContext} from '../contexts/MainContext';
 import MyFiles from './MyFiles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FavouriteList from '../components/FavouriteList';
+import {Divider} from '@rneui/base';
 
 const Profile = ({navigation}) => {
   const assetImage = Image.resolveAssetSource(
@@ -80,6 +81,8 @@ const Profile = ({navigation}) => {
           Log Out
         </Text>
       </View>
+
+      <Divider />
 
       <View style={styles.userProfile}>
         <Image style={styles.avatar} source={{uri: avatar}} />
@@ -165,6 +168,7 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'column',
     alignSelf: 'center',
+    marginTop: 10,
   },
   avatar: {
     resizeMode: 'cover',

@@ -29,7 +29,7 @@ const Home = ({navigation}) => {
           </Text>
         ) : (
           <Text style={styles.logIn}>
-            Hi {user !== null ? user.username : 'User'}!{' '}
+            Hi {user !== null ? user.username : 'User'}!
           </Text>
         )}
       </View>

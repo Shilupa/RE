@@ -14,7 +14,7 @@ import SearchList from '../components/SearchList';
 
 const Search = ({navigation}) => {
   const [searchIndex, setSearchIndex] = useState(0);
-  const {isLoggedIn} = useContext(MainContext);
+  const {isLoggedIn, user} = useContext(MainContext);
   const [search, setSearch] = useState('');
 
   const updateSearch = (search) => {
@@ -33,7 +33,9 @@ const Search = ({navigation}) => {
             Sign In
           </Text>
         ) : (
-          <Text style={styles.logIn}>Hi!</Text>
+          <Text style={styles.logIn}>
+            Hi {user !== null ? user.username : 'User'}!
+          </Text>
         )}
       </View>
       <View style={{marginBottom: 10}}>

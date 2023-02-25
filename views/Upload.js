@@ -17,9 +17,10 @@ import {MainContext} from '../contexts/MainContext';
 import * as ImagePicker from 'expo-image-picker';
 import {Image, Text, Icon, Divider} from '@rneui/themed';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {appId, primaryColour} from '../utils/variables';
+import {appId, inputBackground, primaryColour, primaryColourDark} from '../utils/variables';
 import {useFocusEffect} from '@react-navigation/native';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {Dropdown} from 'react-native-element-dropdown';
 
 const Upload = ({navigation}) => {
   const [value, setValue] = useState(null);
@@ -127,28 +128,28 @@ const Upload = ({navigation}) => {
     }, [])
   );
 
-  // const category = [
-  //   {
-  //     label: 'Select a category',
-  //     value: '',
-  //   },
-  //   {
-  //     label: 'Clothing',
-  //     value: 'Clothing',
-  //   },
-  //   {
-  //     label: 'Furniture',
-  //     value: 'Furniture',
-  //   },
-  //   {
-  //     label: 'Misc',
-  //     value: 'Misc',
-  //   },
-  // ];
+  const category = [
+    {
+      label: 'Select a category',
+      value: '',
+    },
+    {
+      label: 'Clothing',
+      value: 'Clothing',
+    },
+    {
+      label: 'Furniture',
+      value: 'Furniture',
+    },
+    {
+      label: 'Misc',
+      value: 'Misc',
+    },
+  ];
 
-  // const renderLabel = () => {
-  //   return <Text style={[styles.label]}>Category</Text>;
-  // };
+  const renderLabel = () => {
+    return <Text style={[styles.label]}>Category</Text>;
+  };
 
   return (
     <SafeAreaView style={styles.safearea}>
@@ -221,28 +222,26 @@ const Upload = ({navigation}) => {
             )}
             name="description"
           />
-
-          {/* <View style={styles.container}>
-        {renderLabel()}
-        <Dropdown
-          style={[styles.dropdown]}
-          placeholderStyle={styles.placeholderStyle}
-          selectedTextStyle={styles.selectedTextStyle}
-          inputSearchStyle={styles.inputSearchStyle}
-          data={category}
-          maxHeight={300}
-          labelField="label"
-          valueField="value"
-          placeholder={!isFocus ? 'Select a category' : '...'}
-          value={value}
-          onFocus={() => setIsFocus(true)}
-          onBlur={() => setIsFocus(false)}
-          onChange={(item) => {
-            setValue(item.value);
-            setIsFocus(false);
-          }}
-        />
-      </View> */}
+          <View style={styles.container}>
+            {renderLabel()}
+            <Dropdown
+              style={[styles.dropdown]}
+              placeholderStyle={styles.placeholderStyle}
+              selectedTextStyle={styles.selectedTextStyle}
+              data={category}
+              maxHeight={300}
+              labelField="label"
+              valueField="value"
+              placeholder={!isFocus ? 'Select a category' : '...'}
+              value={value}
+              onFocus={() => setIsFocus(true)}
+              onBlur={() => setIsFocus(false)}
+              onChange={(item) => {
+                setValue(item.value);
+                setIsFocus(false);
+              }}
+            />
+          </View>
           <FormButton
             text="Upload Item"
             submit={uploadFile}
@@ -280,7 +279,7 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     height: 50,
-    backgroundColor: '#e5e5e5',
+    backgroundColor: inputBackground,
     borderRadius: 8,
     borderWidth: 0.5,
     paddingHorizontal: 8,
@@ -289,13 +288,13 @@ const styles = StyleSheet.create({
   },
   label: {
     position: 'absolute',
-    left: 16,
-    top: 8,
+    left: 20,
+    top: 14,
     marginBottom: 10,
     zIndex: 999,
     paddingHorizontal: 8,
     fontSize: 10,
-    color: 'grey',
+    color: primaryColourDark,
   },
   placeholderStyle: {
     fontSize: 16,

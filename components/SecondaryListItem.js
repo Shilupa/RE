@@ -1,17 +1,17 @@
 import {Image, StyleSheet, View, TouchableOpacity} from 'react-native';
 import PropTypes from 'prop-types';
 import {uploadsUrl, vw} from '../utils/variables';
-import {useFavourite} from '../hooks/ApiHooks';
+/* import {useFavourite} from '../hooks/ApiHooks';
 import {useContext, useEffect, useState} from 'react';
-import {MainContext} from '../contexts/MainContext';
+import {MainContext} from '../contexts/MainContext'; */
 
 const SecondaryListItem = ({singleMedia, navigation}) => {
-  const {getFavouritesByUser} = useFavourite();
+  /*   const {getFavouritesByUser} = useFavourite();
   const {token} = useContext(MainContext);
-  const [favourites, setFavourites] = useState();
+  const [favourites, setFavourites] = useState(); */
   const item = singleMedia;
 
-  const fetchFavourite = async () => {
+  /*   const fetchFavourite = async () => {
     const favourites = await getFavouritesByUser(token);
     setFavourites(favourites);
   };
@@ -19,9 +19,9 @@ const SecondaryListItem = ({singleMedia, navigation}) => {
   useEffect(() => {
     fetchFavourite();
   }, []);
-
+ */
   return (
-    <View style={styles.column}>
+    <View style={styles.container}>
       <TouchableOpacity
         onPress={() => {
           navigation.navigate('Single', item);
@@ -37,7 +37,7 @@ const SecondaryListItem = ({singleMedia, navigation}) => {
 };
 
 const styles = StyleSheet.create({
-  column: {
+  container: {
     backgroundColor: '#FAFBFB',
     margin: 4.5,
     borderRadius: 6,
