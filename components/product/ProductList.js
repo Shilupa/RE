@@ -7,17 +7,17 @@ import {
   Alert,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import {uploadsUrl} from '../utils/variables';
+import {uploadsUrl} from '../../utils/variables';
 import {Icon} from '@rneui/themed';
 import {Card} from '@rneui/base';
 import {useContext, useEffect, useState} from 'react';
-import {MainContext} from '../contexts/MainContext';
-import {useFavourite, useTag, useUser} from '../hooks/ApiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useFavourite, useTag, useUser} from '../../hooks/ApiHooks';
+import {MainContext} from '../../contexts/MainContext';
 
-const ListItem = ({singleMedia, navigation}) => {
+const ProductList = ({singleMedia, navigation}) => {
   const assetImage = Image.resolveAssetSource(
-    require('../assets/avatar.png')
+    require('../../assets/avatar.png')
   ).uri;
   const {getFilesByTag} = useTag();
   const [avatar, setAvatar] = useState(assetImage);
@@ -111,7 +111,7 @@ const ListItem = ({singleMedia, navigation}) => {
     <View style={styles.column} elevation={5}>
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate('Single', singleMedia);
+          navigation.navigate('DetailProductView', singleMedia);
         }}
       >
         <View style={styles.box}>
@@ -276,9 +276,9 @@ const styles = StyleSheet.create({
   },
 });
 
-ListItem.propTypes = {
+ProductList.propTypes = {
   singleMedia: PropTypes.object,
   navigation: PropTypes.object,
 };
 
-export default ListItem;
+export default ProductList;

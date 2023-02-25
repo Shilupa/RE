@@ -1,12 +1,9 @@
 import {FlatList} from 'react-native';
-import {useMedia, useTag} from '../hooks/ApiHooks';
-import ListItem from './ListItem';
 import PropTypes from 'prop-types';
-import {useContext, useEffect, useState} from 'react';
-import {MainContext} from '../contexts/MainContext';
-import {appId, categoryList} from '../utils/variables';
+import {useMedia} from '../../hooks/ApiHooks';
+import ProductList from './ProductList';
 
-const List = ({navigation}) => {
+const MainView = ({navigation}) => {
   const {filteredMedia} = useMedia();
 
   console.log('====================================');
@@ -17,14 +14,14 @@ const List = ({navigation}) => {
       data={filteredMedia}
       keyExtractor={(item, index) => index.toString()}
       renderItem={({item}) => (
-        <ListItem navigation={navigation} singleMedia={item} />
+        <ProductList navigation={navigation} singleMedia={item} />
       )}
     />
   );
 };
 
-List.propTypes = {
+MainView.propTypes = {
   navigation: PropTypes.object,
 };
 
-export default List;
+export default MainView;

@@ -11,11 +11,11 @@ import Login from '../views/Login';
 import ModifyItem from '../views/ModifyItem';
 import Profile from '../views/Profile';
 import Search from '../views/Search';
-import Single from '../views/Single';
 import Upload from '../views/Upload';
 import EditProfile from '../views/EditProfile';
 import Message from '../views/Message';
 import GoLogin from '../views/GoLogin';
+import DetailProductView from '../components/product/DetailProductView';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -105,7 +105,8 @@ const StackScreen = () => {
           component={TabScreen}
           screenOptions={{headerShown: false}}
         />
-        <Stack.Screen name="Single" component={Single} />
+        {/* <Stack.Screen name="Single" component={Single} /> */}
+        <Stack.Screen name="DetailProductView" component={DetailProductView} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="ModifyItem" component={ModifyItem} />
         <Stack.Screen name="EditProfile" component={EditProfile} />

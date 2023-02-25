@@ -25,7 +25,8 @@ const SecondaryListItem = ({singleMedia, navigation}) => {
     <View style={styles.container}>
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate('Single', item);
+          navigation.navigate('DetailProductView', item);
+          console.log('secListItem:', item);
         }}
       >
         <Image
