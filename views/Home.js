@@ -12,6 +12,7 @@ import {useContext, useEffect, useState} from 'react';
 import {appId, categoryList, primaryColour} from '../utils/variables';
 import {MainContext} from '../contexts/MainContext';
 import {useTag} from '../hooks/ApiHooks';
+import MainView from '../components/product/MainView';
 
 const Home = ({navigation}) => {
   const [index, setIndex] = useState();
@@ -62,7 +63,7 @@ const Home = ({navigation}) => {
           icon={{name: 'shirt', type: 'ionicon', color: 'black'}}
         />
         <Tab.Item
-          title="Electronic Device"
+          title="Electronics"
           titleStyle={{fontSize: 12, color: 'black'}}
           icon={{name: 'tv', type: 'ionicon', color: 'black'}}
         />
@@ -70,7 +71,8 @@ const Home = ({navigation}) => {
       <Card.Divider />
       <TabView value={index} onChange={setIndex} animationType="spring">
         <TabView.Item style={{width: '100%'}}>
-          <List navigation={navigation} />
+          {/* <List navigation={navigation} /> */}
+          <MainView navigation={navigation} />
         </TabView.Item>
         <TabView.Item style={{backgroundColor: 'blue', width: '100%'}}>
           <Text h1>Furniture</Text>
