@@ -9,7 +9,7 @@ import List from '../components/List';
 import PropTypes from 'prop-types';
 import {Tab, TabView, Text, Card} from '@rneui/themed';
 import {useContext, useEffect, useState} from 'react';
-import {appId, primaryColour} from '../utils/variables';
+import {appId, categoryList, primaryColour} from '../utils/variables';
 import {MainContext} from '../contexts/MainContext';
 import {useTag} from '../hooks/ApiHooks';
 
@@ -18,7 +18,7 @@ const Home = ({navigation}) => {
   const {isLoggedIn, user, update} = useContext(MainContext);
   const {getFilesByTag} = useTag();
   const [category, setCategory] = useState([]);
-  let list = ['Clothing', 'Furniture'];
+  // let list = ['Clothing', 'Furniture'];
 
   /**
    * Fetching media by category
@@ -26,8 +26,8 @@ const Home = ({navigation}) => {
    */
   const getFilesByCategory = () => {
     try {
-      list.forEach(async (item) => {
-        const tagResponse = await getFilesByTag(`${appId}_${item}`);
+      categoryList.forEach(async (category) => {
+        const tagResponse = await getFilesByTag(`${appId}_${category}`);
         setCategory((category) => [...category, ...tagResponse]);
       });
     } catch (error) {
