@@ -68,6 +68,7 @@ const Profile = ({navigation}) => {
   const navigateToEditProfile = () => {
     navigation.navigate('EditProfile');
   };
+
   useEffect(() => {
     loadAvatar();
   }, [updateUser]);

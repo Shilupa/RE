@@ -10,6 +10,7 @@ import {
   SafeAreaView,
   Alert,
   ScrollView,
+  StatusBar,
 } from 'react-native';
 import {MainContext} from '../contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -137,7 +138,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop: Platform.OS === 'android' ? 30 : 0,
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   titleBar: {
     width: '100%',

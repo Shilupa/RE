@@ -11,13 +11,14 @@ import {
   SafeAreaView,
   ScrollView,
   ImageBackground,
+  StatusBar,
 } from 'react-native';
 import {MainContext} from '../contexts/MainContext';
 import {useFavourite, useTag, useUser} from '../hooks/ApiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Single = ({navigation, route}) => {
-  console.log(route.params);
+  console.log('routeParams: ', route.params);
   const {isLoggedIn, updateFavourite, setUpdateFavourite} =
     useContext(MainContext);
   const {getUserById} = useUser();
@@ -236,7 +237,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop: Platform.OS === 'android' ? 30 : 0,
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   imageContainer: {
     width: '100%',

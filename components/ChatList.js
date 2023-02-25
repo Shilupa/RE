@@ -5,6 +5,7 @@ import ChatListItem from './ChatListItem';
 
 const ChatList = ({navigation}) => {
   const {mediaArray} = useMedia();
+  // console.log('Media array from chat list: ', mediaArray);
   return (
     <FlatList
       data={mediaArray}

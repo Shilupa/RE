@@ -21,26 +21,60 @@ const Message = ({navigation, route}) => {
     user_id: userId,
   } = route.params;
 
+  const item = {
+    title: title,
+    description: description,
+    filename: filename,
+    file_id: fileId,
+    time_added: timeAdded,
+    user_id: userId,
+  };
+
   const {control} = useForm({
     mode: 'onBlur',
   });
 
+  const goToItemSingle = () => {
+    navigation.navigate('Single', item);
+  };
+
+  const moreData = {
+    message: 'Hey is this item available?',
+    receiverId: 2685,
+  };
+
+  const formData = new FormData();
+
+  formData.append('description', JSON.stringify(moreData));
+
+  console.log('Form Data Comment: ', formData);
+
+  const allData = JSON.parse(formData._parts[0][1]);
+  const message = allData.message;
+  const someData = allData.receiverId;
+
+  console.log('messgae: ', message);
+  console.log('receiverId: ', someData);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.titleBar}>
-        <Icon
-          onPress={() => {
-            navigation.goBack();
-          }}
-          name="arrow-back"
-          color="black"
-        />
-        <View>
+        <View style={styles.backIcon}>
+          <Icon
+            onPress={() => {
+              navigation.goBack();
+            }}
+            name="arrow-back"
+            color="black"
+          />
+        </View>
+        <View style={styles.itemContainer}>
           <Image
-            style={styles.ItemPicture}
+            onPress={goToItemSingle}
+            style={styles.itemPicture}
             source={{uri: uploadsUrl + filename}}
           />
-          <Text>{title}</Text>
+          <Text style={styles.itemTitle}>{title}</Text>
         </View>
       </View>
 
@@ -84,7 +118,28 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'baseline',
-    marginStart: 25,
+    position: 'relative',
+  },
+
+  backIcon: {
+    position: 'absolute',
+    top: '30%',
+    left: '10%',
+  },
+
+  itemContainer: {
+    alignItems: 'center',
+  },
+
+  itemPicture: {
+    height: 100,
+    width: 100,
+    borderRadius: 50,
+  },
+
+  itemTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
   },
 
   title: {
@@ -93,12 +148,6 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: 'bold',
     color: primaryColour,
-  },
-
-  ItemPicture: {
-    height: 100,
-    width: 100,
-    borderRadius: 50,
   },
 
   sendMessage: {

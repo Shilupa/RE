@@ -267,6 +267,56 @@ const useFavourite = () => {
   };
 };
 
+// ****** Hook for Comment STARTS
+
+const useComments = () => {
+  const postComment = async (fileId, token, comment) => {
+    const options = {
+      method: 'post',
+      headers: {
+        'x-access-token': token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({file_id: fileId, comment: comment}),
+    };
+    try {
+      return await doFetch(baseUrl + 'comments', options);
+    } catch (error) {
+      throw new Error('postComment: ' + error.message);
+    }
+  };
+
+  const getCommentsByFileId = async (fileId) => {
+    try {
+      return await doFetch(baseUrl + 'comments/file/' + fileId);
+    } catch (error) {
+      throw new Error('getCommentsByFileId error, ' + error.message);
+    }
+  };
+
+  const getCommentsByUser = async (token) => {
+    const options = {
+      method: 'get',
+      headers: {
+        'x-access-token': token,
+      },
+    };
+    try {
+      return await doFetch(baseUrl + 'comments', options);
+    } catch (error) {
+      throw new Error('getCommentsByUser: ' + error.message);
+    }
+  };
+
+  return {
+    postComment,
+    getCommentsByFileId,
+    getCommentsByUser,
+  };
+};
+
+// **** Hooks of comments ENDS
+
 const loadMediaById = async (fileId) => {
   return await doFetch(baseUrl + 'media/' + fileId);
 };
@@ -278,4 +328,5 @@ export {
   useTag,
   useFavourite,
   loadMediaById,
+  useComments,
 };
