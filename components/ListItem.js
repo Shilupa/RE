@@ -13,7 +13,6 @@ const ListItem = ({singleMedia, navigation}) => {
   const assetImage = Image.resolveAssetSource(
     require('../assets/avatar.png')
   ).uri;
-  const item = singleMedia;
   const {getFilesByTag} = useTag();
   const [avatar, setAvatar] = useState(assetImage);
   const {getUserById} = useUser();
@@ -24,8 +23,9 @@ const ListItem = ({singleMedia, navigation}) => {
   const loadAvatar = async () => {
     if (isLoggedIn) {
       try {
-        const avatarArray = await getFilesByTag('avatar_' + item.user_id);
-        console.log('Profile avatar', avatarArray.filename);
+        const avatarArray = await getFilesByTag(
+          'avatar_' + singleMedia.user_id
+        );
         if (avatarArray.length > 0) {
           setAvatar(uploadsUrl + avatarArray.pop().filename);
         }
@@ -35,22 +35,22 @@ const ListItem = ({singleMedia, navigation}) => {
     }
   };
 
-  const getOwner = async () => {
+  /*  const getOwner = async () => {
     if (isLoggedIn) {
       try {
         const token = await AsyncStorage.getItem('userToken');
-        const owner = await getUserById(item.user_id, token);
+        const owner = await getUserById(singleMedia.user_id, token);
         // console.log('owner', owner);
         setOwner(owner);
       } catch (error) {
-        console.error('owner set failed', item.user_id);
+        console.error('owner set failed', singleMedia.user_id);
       }
     }
-  };
+  }; */
 
   useEffect(() => {
     loadAvatar();
-    getOwner();
+    //getOwner();
   }, [isLoggedIn]);
 
   const goToLogin = () => {
@@ -61,18 +61,18 @@ const ListItem = ({singleMedia, navigation}) => {
     <View style={styles.column} elevation={5}>
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate('Single', item);
+          navigation.navigate('Single', singleMedia);
         }}
       >
         <View style={styles.box}>
           <Image
             style={styles.image}
-            source={{uri: uploadsUrl + item.thumbnails?.w160}}
+            source={{uri: uploadsUrl + singleMedia.thumbnails?.w160}}
           />
         </View>
         <View style={styles.box}>
-          <Text style={styles.listTitle}>{item.title}</Text>
-          <Text numberOfLines={1}>{item.description}</Text>
+          <Text style={styles.listTitle}>{singleMedia.title}</Text>
+          <Text numberOfLines={1}>{singleMedia.description}</Text>
         </View>
       </TouchableOpacity>
       <Card.Divider />

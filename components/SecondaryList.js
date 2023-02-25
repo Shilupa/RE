@@ -4,12 +4,12 @@ import SecondaryListItem from './SecondaryListItem';
 import PropTypes from 'prop-types';
 
 const SecondaryList = ({navigation}) => {
-  const {mediaArray} = useMedia(true);
+  const {filteredMedia} = useMedia(true);
   return (
     <FlatList
       horizontal={false}
       numColumns={3}
-      data={mediaArray}
+      data={filteredMedia}
       keyExtractor={(item, index) => index.toString()}
       renderItem={({item}) => (
         <SecondaryListItem navigation={navigation} singleMedia={item} />

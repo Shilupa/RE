@@ -8,9 +8,10 @@ import {
 import List from '../components/List';
 import PropTypes from 'prop-types';
 import {Tab, TabView, Text, Card} from '@rneui/themed';
-import {useContext, useState} from 'react';
-import {primaryColour} from '../utils/variables';
+import {useContext, useEffect, useState} from 'react';
+import {appId, categoryList, primaryColour} from '../utils/variables';
 import {MainContext} from '../contexts/MainContext';
+import {useTag} from '../hooks/ApiHooks';
 
 const Home = ({navigation}) => {
   const [index, setIndex] = useState();

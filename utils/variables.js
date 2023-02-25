@@ -13,6 +13,8 @@ const {width, height} = Dimensions.get('window');
 const vw = width / 100.0;
 const vh = height / 100.0;
 
+const categoryList = ['Clothing', 'Furniture', 'Electronics'];
+
 export {
   baseUrl,
   uploadsUrl,
@@ -22,4 +24,5 @@ export {
   inputBackground,
   vw,
   vh,
+  categoryList,
 };

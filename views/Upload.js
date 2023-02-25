@@ -17,18 +17,25 @@ import {MainContext} from '../contexts/MainContext';
 import * as ImagePicker from 'expo-image-picker';
 import {Image, Text, Icon, Divider} from '@rneui/themed';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {appId, primaryColour} from '../utils/variables';
+import {appId, categoryList, primaryColour, vh, vw} from '../utils/variables';
 import {useFocusEffect} from '@react-navigation/native';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {SelectList} from 'react-native-dropdown-select-list';
 
 const Upload = ({navigation}) => {
+  const {setIsLoggedIn, isLoggedIn, user, setUser, update, setUpdate, token} =
+    useContext(MainContext);
   const [value, setValue] = useState(null);
   const [isFocus, setIsFocus] = useState(false);
   const [mediafile, setMediafile] = useState({});
   const [loading, setLoading] = useState(false);
   const {postMedia} = useMedia();
   const {postTag} = useTag();
-  const {update, setUpdate} = useContext(MainContext);
+  const {getFilesByTag} = useTag();
+  const [avatar, setAvatar] = useState();
+  const [index, setIndex] = useState();
+  const [selectedCategory, setSelectedCategory] = useState();
+
   const {
     control,
     handleSubmit,
@@ -39,58 +46,77 @@ const Upload = ({navigation}) => {
     defaultValues: {title: '', description: ''},
     mode: 'onChange',
   });
-  const {getFilesByTag} = useTag();
-  const {setIsLoggedIn, isLoggedIn, user, setUser} = useContext(MainContext);
-  const [avatar, setAvatar] = useState();
-  const [index, setIndex] = useState();
 
   const uploadFile = async (data) => {
-    // create form data and post it
-    setLoading(true);
-    const formData = new FormData();
-    formData.append('title', data.title);
-    formData.append('description', data.description);
-    const filename = mediafile.uri.split('/').pop();
-    let fileExt = filename.split('.').pop();
-    if (fileExt === 'jpg') fileExt = 'jpeg';
-    const mimeType = mediafile.type + '/' + fileExt;
-    formData.append('file', {
-      uri: mediafile.uri,
-      name: filename,
-      type: mimeType,
-    });
-    console.log('form data', formData);
-    try {
-      const token = await AsyncStorage.getItem('userToken');
-      const result = await postMedia(formData, token);
+    let message = '';
+    /**
+     * Checking if mediafile object is empty
+     * Checking if category is selected
+     * Assigning alet message inaccordance with the situtation
+     *
+     */
+    Object.keys(mediafile).length === 0
+      ? (message = 'Image')
+      : selectedCategory === undefined
+      ? (message = 'Category')
+      : '';
 
-      const appTag = {
-        file_id: result.file_id,
-        tag: appId,
-      };
-      const tagResult = await postTag(appTag, token);
-      console.log('tag result', tagResult);
-
-      Alert.alert('Uploaded', 'File id: ' + result.file_id, [
+    // Alert message given if user does not select category or image
+    if (selectedCategory === undefined || Object.keys(mediafile).length === 0) {
+      Alert.alert('Please Select', message, [
         {
           text: 'OK',
-          onPress: () => {
-            console.log('OK Pressed');
-            // update 'update' state in context
-            setUpdate(!update);
-            // reset form
-            // reset();
-            // TODO: navigate to home
-            navigation.navigate('Home');
-          },
         },
       ]);
-    } catch (error) {
-      console.error('file upload failed', error);
-    } finally {
-      setLoading(false);
+    } else {
+      // create form data and post it
+      setLoading(true);
+      const formData = new FormData();
+      formData.append('title', data.title);
+      formData.append('description', data.description);
+
+      const filename = mediafile.uri.split('/').pop();
+      let fileExt = filename.split('.').pop();
+      if (fileExt === 'jpg') fileExt = 'jpeg';
+      const mimeType = mediafile.type + '/' + fileExt;
+
+      formData.append('file', {
+        uri: mediafile.uri,
+        name: filename,
+        type: mimeType,
+      });
+
+      try {
+        const result = await postMedia(formData, token);
+
+        const appTag = {
+          file_id: result.file_id,
+          tag: `${appId}_${selectedCategory}`,
+        };
+        await postTag(appTag, token);
+
+        Alert.alert('Uploaded', 'File id: ' + result.file_id, [
+          {
+            text: 'OK',
+            onPress: () => {
+              console.log('OK Pressed');
+              // update 'update' state in context
+              setUpdate(!update);
+              // reset form
+              // reset();
+              // TODO: navigate to home
+              navigation.navigate('Home');
+            },
+          },
+        ]);
+      } catch (error) {
+        console.error('file upload failed', error);
+      } finally {
+        setLoading(false);
+      }
     }
   };
+
   const pickFile = async () => {
     try {
       // No permissions request is necessary for launching the image library
@@ -100,8 +126,6 @@ const Upload = ({navigation}) => {
         aspect: [4, 3],
         quality: 0.5,
       });
-
-      console.log(result);
 
       if (!result.canceled) {
         setMediafile(result.assets[0]);
@@ -121,34 +145,10 @@ const Upload = ({navigation}) => {
   useFocusEffect(
     useCallback(() => {
       return () => {
-        console.log('leaving');
         resetForm();
       };
     }, [])
   );
-
-  // const category = [
-  //   {
-  //     label: 'Select a category',
-  //     value: '',
-  //   },
-  //   {
-  //     label: 'Clothing',
-  //     value: 'Clothing',
-  //   },
-  //   {
-  //     label: 'Furniture',
-  //     value: 'Furniture',
-  //   },
-  //   {
-  //     label: 'Misc',
-  //     value: 'Misc',
-  //   },
-  // ];
-
-  // const renderLabel = () => {
-  //   return <Text style={[styles.label]}>Category</Text>;
-  // };
 
   return (
     <SafeAreaView style={styles.safearea}>
@@ -222,6 +222,19 @@ const Upload = ({navigation}) => {
             name="description"
           />
 
+          <SelectList
+            setSelected={(val) => setSelectedCategory(val)}
+            data={categoryList}
+            save="value"
+            inputStyles={{fontSize: 18, color: '#808080'}}
+            boxStyles={{
+              backgroundColor: '#F0F0F0',
+              marginHorizontal: 2 * vw,
+              marginTop: 0.5 * vh,
+              marginBottom: 1 * vh,
+            }}
+          />
+
           {/* <View style={styles.container}>
         {renderLabel()}
         <Dropdown
@@ -276,18 +289,21 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 200,
     borderRadius: 6,
-    resizeMode: 'contain',
+    resizeMode: 'cover',
   },
   dropdown: {
     height: 50,
-    backgroundColor: '#e5e5e5',
+    backgroundColor: '#F0F0F0',
     borderRadius: 8,
     borderWidth: 0.5,
     paddingHorizontal: 8,
     borderColor: 'transparent',
     marginTop: 10,
   },
-  label: {
+  categoryList: {
+    fontSize: 100,
+  },
+  /* label: {
     position: 'absolute',
     left: 16,
     top: 8,
@@ -305,7 +321,7 @@ const styles = StyleSheet.create({
   selectedTextStyle: {
     fontSize: 16,
     paddingLeft: 10,
-  },
+  }, */
   inputSearchStyle: {
     height: 40,
     fontSize: 16,
