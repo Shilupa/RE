@@ -12,6 +12,8 @@ import {
   ScrollView,
   ImageBackground,
   StatusBar,
+  Alert,
+  TouchableOpacity,
 } from 'react-native';
 import {MainContext} from '../contexts/MainContext';
 import {useFavourite, useTag, useUser} from '../hooks/ApiHooks';
@@ -19,11 +21,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Single = ({navigation, route}) => {
   console.log('routeParams: ', route.params);
-  const {isLoggedIn, updateFavourite, setUpdateFavourite} =
+
+  const assetImage = Image.resolveAssetSource(
+    require('../assets/avatar.png')
+  ).uri;
+  const {isLoggedIn, updateFavourite, setUpdateFavourite, update} =
     useContext(MainContext);
   const {getUserById} = useUser();
   const [owner, setOwner] = useState({});
-  const [avatar, setAvatar] = useState('');
+  const [avatar, setAvatar] = useState(assetImage);
   const {getFilesByTag} = useTag();
   const [favourites, setFavourites] = useState([]);
   const [userFavouritesIt, setuserFavouritesIt] = useState(false);
@@ -70,9 +76,22 @@ const Single = ({navigation, route}) => {
 
   const messageSeller = () => {
     if (!isLoggedIn) {
-      navigation.navigate('Login');
+      Alert.alert(
+        'Continue',
+        'To continue using all the features, you must log in!',
+        [
+          {
+            text: 'Go to Login',
+            onPress: () => {
+              navigation.navigate('Login');
+            },
+          },
+          {text: 'Continue as a guest'},
+        ]
+      );
+    } else {
+      navigation.navigate('Chats');
     }
-    console.log('Hahaha');
   };
 
   const getOwner = async () => {
@@ -88,8 +107,8 @@ const Single = ({navigation, route}) => {
     setFavourites(favourites);
     // check if the current user id is included in the 'likes' array and
     // set the 'userLikesIt' state accordingly
-    for (const favorite of favourites) {
-      if (favorite.user_id === user.user_id) {
+    for (const favourite of favourites) {
+      if (favourite.user_id === user.user_id) {
         setuserFavouritesIt(true);
         break;
       }
@@ -118,24 +137,35 @@ const Single = ({navigation, route}) => {
       setUpdateFavourite(!updateFavourite);
     } catch (error) {
       // note: you cannot like same file multiple times
-      console.log(error);
+      // console.log(error);
     }
   };
 
   const loadAvatar = async () => {
-    try {
-      const avatarArray = await getFilesByTag('avatar_' + owner.user_id);
-      setAvatar(avatarArray.pop().filename);
-    } catch (error) {
-      console.error('user avatar fetch failed', error.message);
+    if (isLoggedIn) {
+      try {
+        const avatarArray = await getFilesByTag('avatar_' + owner.user_id);
+        // console.log('Profile avatar', avatarArray.filename);
+        if (avatarArray.length > 0) {
+          setAvatar(uploadsUrl + avatarArray.pop().filename);
+        }
+      } catch (error) {
+        // console.error('user avatar fetch failed', error.message);
+      }
     }
   };
 
-  loadAvatar();
   useEffect(() => {
     getOwner();
-    getFavourites();
   }, []);
+
+  useEffect(() => {
+    loadAvatar();
+  }, [owner]);
+
+  useEffect(() => {
+    getFavourites();
+  }, [update, updateFavourite]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -181,13 +211,14 @@ const Single = ({navigation, route}) => {
             >
               <Image
                 style={{
-                  width: 50,
-                  height: 50,
-                  borderRadius: 400 / 2,
-                  resizeMode: 'contain',
-                  margin: 5,
+                  resizeMode: 'cover',
+                  width: 40,
+                  height: 30,
+                  borderRadius: 200 / 2,
+                  alignSelf: 'center',
+                  marginRight: 10,
                 }}
-                source={{uri: uploadsUrl + avatar}}
+                source={{uri: avatar}}
               ></Image>
               <View style={styles.box}>
                 <Text>{owner.username} </Text>
@@ -205,25 +236,76 @@ const Single = ({navigation, route}) => {
             Message Seller
           </Button>
         )}
-
-        <View style={styles.userInteraction}>
-          <View style={styles.iconbox}>
-            <Icon name="thumb-up-off-alt" size={20} />
-            <Text style={styles.iconText}>1.4k</Text>
+        {isLoggedIn ? (
+          <View style={styles.userInteraction}>
+            <View style={styles.iconbox}>
+              <Icon name="thumb-up-off-alt" size={20} />
+              <Text style={styles.iconText}>1.4k</Text>
+            </View>
+            <View style={styles.iconbox}>
+              <Icon name="thumb-down-off-alt" size={20} />
+              <Text style={styles.iconText}>1.4k</Text>
+            </View>
+            <View style={{alignSelf: 'flex-start'}}>
+              <Icon
+                name="chat"
+                size={26}
+                onPress={() => {
+                  navigation.navigate('Chats'); // opens a new chat
+                }}
+              />
+              {/* <Text style={styles.iconText}>chat</Text> */}
+            </View>
+            <View style={styles.iconbox}>
+              {userFavouritesIt ? (
+                <Icon name="favorite" color="red" onPress={unfavouriteFile} />
+              ) : (
+                <Icon name="favorite-border" onPress={favouriteFile} />
+              )}
+              <Text style={styles.iconText}>{favourites.length}</Text>
+            </View>
           </View>
-          <View style={styles.iconbox}>
-            <Icon name="thumb-down-off-alt" size={20} />
-            <Text style={styles.iconText}>1.4k</Text>
-          </View>
-          <View style={styles.iconbox}>
-            {userFavouritesIt ? (
-              <Icon name="favorite" color="red" onPress={unfavouriteFile} />
-            ) : (
-              <Icon name="favorite-border" onPress={favouriteFile} />
-            )}
-            <Text style={styles.iconText}>1.4k</Text>
-          </View>
-        </View>
+        ) : (
+          <TouchableOpacity
+            onPress={() => {
+              Alert.alert(
+                'Login',
+                'To continue using all the features, you must log in!',
+                [
+                  {
+                    text: 'Go to Login',
+                    onPress: () => {
+                      navigation.navigate('Login');
+                    },
+                  },
+                  {text: 'Continue as a guest'},
+                ]
+              );
+            }}
+          >
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-around',
+                padding: 10,
+              }}
+            >
+              <View style={styles.iconbox}>
+                <Icon name="thumb-up-off-alt" size={20} />
+              </View>
+              <View style={styles.iconbox}>
+                <Icon name="thumb-down-off-alt" size={20} />
+              </View>
+              <View style={{alignSelf: 'flex-start'}}>
+                <Icon name="chat" size={20} />
+              </View>
+              <View style={styles.iconbox}>
+                <Icon name="favorite-border" size={20} />
+              </View>
+            </View>
+          </TouchableOpacity>
+        )}
 
         <Card.Divider />
         <Text style={styles.listHeader}>Description</Text>
@@ -321,6 +403,7 @@ const styles = StyleSheet.create({
   },
   iconbox: {
     flexDirection: 'column',
+    alignItems: 'center',
   },
 });
 

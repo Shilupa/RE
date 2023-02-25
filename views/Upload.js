@@ -5,35 +5,27 @@ import {
   View,
   Keyboard,
   Alert,
-  Platform,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import {useCallback, useContext, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import FormInput from '../components/formComponent/FormInput';
 import FormButton from '../components/formComponent/FormButton';
-import {useMedia, useTag, useUser} from '../hooks/ApiHooks';
+import {useMedia, useTag} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 import * as ImagePicker from 'expo-image-picker';
-import {Image, Text, Icon, Divider} from '@rneui/themed';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Image, Text, Divider} from '@rneui/themed';
 import {appId, categoryList, primaryColour, vh, vw} from '../utils/variables';
 import {useFocusEffect} from '@react-navigation/native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {SelectList} from 'react-native-dropdown-select-list';
 
 const Upload = ({navigation}) => {
-  const {setIsLoggedIn, isLoggedIn, user, setUser, update, setUpdate, token} =
-    useContext(MainContext);
-  const [value, setValue] = useState(null);
-  const [isFocus, setIsFocus] = useState(false);
+  const {update, setUpdate, token} = useContext(MainContext);
   const [mediafile, setMediafile] = useState({});
   const [loading, setLoading] = useState(false);
   const {postMedia} = useMedia();
   const {postTag} = useTag();
-  const {getFilesByTag} = useTag();
-  const [avatar, setAvatar] = useState();
-  const [index, setIndex] = useState();
   const [selectedCategory, setSelectedCategory] = useState();
 
   const {
@@ -235,27 +227,6 @@ const Upload = ({navigation}) => {
             }}
           />
 
-          {/* <View style={styles.container}>
-        {renderLabel()}
-        <Dropdown
-          style={[styles.dropdown]}
-          placeholderStyle={styles.placeholderStyle}
-          selectedTextStyle={styles.selectedTextStyle}
-          inputSearchStyle={styles.inputSearchStyle}
-          data={category}
-          maxHeight={300}
-          labelField="label"
-          valueField="value"
-          placeholder={!isFocus ? 'Select a category' : '...'}
-          value={value}
-          onFocus={() => setIsFocus(true)}
-          onBlur={() => setIsFocus(false)}
-          onChange={(item) => {
-            setValue(item.value);
-            setIsFocus(false);
-          }}
-        />
-      </View> */}
           <FormButton
             text="Upload Item"
             submit={uploadFile}
@@ -303,25 +274,7 @@ const styles = StyleSheet.create({
   categoryList: {
     fontSize: 100,
   },
-  /* label: {
-    position: 'absolute',
-    left: 16,
-    top: 8,
-    marginBottom: 10,
-    zIndex: 999,
-    paddingHorizontal: 8,
-    fontSize: 10,
-    color: 'grey',
-  },
-  placeholderStyle: {
-    fontSize: 16,
-    paddingLeft: 10,
-    color: 'grey',
-  },
-  selectedTextStyle: {
-    fontSize: 16,
-    paddingLeft: 10,
-  }, */
+
   inputSearchStyle: {
     height: 40,
     fontSize: 16,

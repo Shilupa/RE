@@ -1,6 +1,6 @@
 import {Image, StyleSheet, View, TouchableOpacity, Text} from 'react-native';
 import PropTypes from 'prop-types';
-import {uploadsUrl} from '../utils/variables';
+import {uploadsUrl, vw} from '../utils/variables';
 
 const SearchListItem = ({singleMedia, navigation}) => {
   const item = singleMedia;
@@ -19,10 +19,10 @@ const SearchListItem = ({singleMedia, navigation}) => {
       </TouchableOpacity>
 
       <View style={styles.profileAndInfo}>
-        <Image
+        {/* <Image
           style={styles.profilePic}
           source={{uri: uploadsUrl + item.thumbnails?.w160}}
-        />
+        /> */}
         <Text style={{marginLeft: 10}}>{item.title}</Text>
       </View>
     </View>
@@ -35,22 +35,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#F2F0F0',
     margin: 10,
     borderRadius: 5,
-    width: '47%',
-    padding: 2,
+    width: 50 * vw,
   },
 
   image: {
     minHeight: 50,
-    borderRadius: 10,
+    margin: 0,
     aspectRatio: 1.2,
+    borderRadius: 10,
     resizeMode: 'cover',
   },
-  profilePic: {
+  /*   profilePic: {
     height: 30,
     aspectRatio: 1,
     borderRadius: 15,
     resizeMode: 'cover',
-  },
+  }, */
   profileAndInfo: {
     flexDirection: 'row',
     alignItems: 'center',
