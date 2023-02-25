@@ -17,7 +17,7 @@ import {MainContext} from '../contexts/MainContext';
 import * as ImagePicker from 'expo-image-picker';
 import {Image, Text, Icon, Divider} from '@rneui/themed';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {appId, categoryList, primaryColour} from '../utils/variables';
+import {appId, categoryList, primaryColour, vh, vw} from '../utils/variables';
 import {useFocusEffect} from '@react-navigation/native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {SelectList} from 'react-native-dropdown-select-list';
@@ -226,6 +226,13 @@ const Upload = ({navigation}) => {
             setSelected={(val) => setSelectedCategory(val)}
             data={categoryList}
             save="value"
+            inputStyles={{fontSize: 18, color: '#808080'}}
+            boxStyles={{
+              backgroundColor: '#F0F0F0',
+              marginHorizontal: 2 * vw,
+              marginTop: 0.5 * vh,
+              marginBottom: 1 * vh,
+            }}
           />
 
           {/* <View style={styles.container}>
@@ -282,18 +289,21 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 200,
     borderRadius: 6,
-    resizeMode: 'contain',
+    resizeMode: 'cover',
   },
   dropdown: {
     height: 50,
-    backgroundColor: '#e5e5e5',
+    backgroundColor: '#F0F0F0',
     borderRadius: 8,
     borderWidth: 0.5,
     paddingHorizontal: 8,
     borderColor: 'transparent',
     marginTop: 10,
   },
-  label: {
+  categoryList: {
+    fontSize: 100,
+  },
+  /* label: {
     position: 'absolute',
     left: 16,
     top: 8,
@@ -311,7 +321,7 @@ const styles = StyleSheet.create({
   selectedTextStyle: {
     fontSize: 16,
     paddingLeft: 10,
-  },
+  }, */
   inputSearchStyle: {
     height: 40,
     fontSize: 16,
