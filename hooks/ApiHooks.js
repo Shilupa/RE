@@ -50,17 +50,17 @@ const useMedia = (myFilesOnly) => {
     }
   };
 
-  // Removing duplicates from list
-  const filteredMedia = mediaArray.reduce((acc, current) => {
-    const media = acc.find((media) => media.file_id === current.file_id);
-    return !media ? acc.concat([current]) : acc;
-  }, []);
+     // Removing duplicates from list
+     const filteredMedia = mediaArray.reduce((acc, current) => {
+      const media = acc.find((media) => media.file_id === current.file_id);
+      return !media ? acc.concat([current]) : acc;
+    }, []);
 
-  /**
-   * Sorting media files by time added
-   * returns files in descending order by time
-   */
-  filteredMedia.sort((a, b) => a.time_added < b.time_added);
+    /**
+     * Sorting media files by time added
+     * returns files in descending order by time
+     */
+    filteredMedia.sort((a, b) => a.time_added < b.time_added);
 
   useEffect(() => {
     loadMedia();
