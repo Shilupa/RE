@@ -95,7 +95,7 @@ const Upload = ({navigation}) => {
         };
         await postTag(appTag, token);
 
-        Alert.alert('Uploaded', 'File id: ' + result.file_id, [
+        Alert.alert('Congratulations! ','File uploaded', [
           {
             text: 'OK',
             onPress: () => {
