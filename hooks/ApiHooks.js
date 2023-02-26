@@ -340,6 +340,62 @@ const loadMediaById = async (fileId) => {
   return await doFetch(baseUrl + 'media/' + fileId);
 };
 
+// Hooks for likes and dislikes
+const useRating = () => {
+  const postRating = async (fileId, token, rating) => {
+    const options = {
+      method: 'post',
+      headers: {
+        'x-access-token': token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({file_id: fileId, rating: rating}),
+    };
+    try {
+      return await doFetch(baseUrl + '/ratings', options);
+    } catch (error) {
+      throw new Error('postRating: ', error.message);
+    }
+  };
+
+  const deleteRating = async (fileId, token) => {
+    const options = {
+      method: 'delete',
+      headers: {
+        'x-access-token': token,
+      },
+    };
+    try {
+      return await doFetch(baseUrl + 'ratings/file/' + fileId, options);
+    } catch (error) {
+      throw new Error('deleteFavourite error, ' + error.message);
+    }
+  };
+
+  const getRatingsByFileId = async (fileId) => {
+    try {
+      return await doFetch(baseUrl + 'ratings/file/' + fileId);
+    } catch (error) {
+      throw new Error('getRatingsByFileId error, ' + error.message);
+    }
+  };
+
+  const getAllRatings = async () => {
+    try {
+      return await doFetch(baseUrl + 'ratings/');
+    } catch (error) {
+      throw new Error('getAllRatings error, ' + error.message);
+    }
+  };
+
+  return {
+    postRating,
+    deleteRating,
+    getRatingsByFileId,
+    getAllRatings,
+  };
+};
+
 export {
   useMedia,
   useAuthentication,
@@ -348,4 +404,5 @@ export {
   useFavourite,
   loadMediaById,
   useComments,
+  useRating,
 };
