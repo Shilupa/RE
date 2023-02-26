@@ -1,6 +1,6 @@
 import {useContext, useEffect, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
-import {appId, baseUrl, categoryList} from '../utils/variables';
+import {appId, baseUrl} from '../utils/variables';
 
 const doFetch = async (url, options) => {
   const response = await fetch(url, options);
@@ -14,7 +14,7 @@ const doFetch = async (url, options) => {
   return json;
 };
 
-const useMedia = (myFilesOnly) => {
+const useMedia = (myFilesOnly = false, categoryList = []) => {
   const [mediaArray, setMediaArray] = useState([]);
   const {update, user} = useContext(MainContext);
 
@@ -62,10 +62,16 @@ const useMedia = (myFilesOnly) => {
    */
   filteredMedia.sort((a, b) => a.time_added < b.time_added);
 
+  /**
+   * Fetching data every 3 second from server
+   */
   useEffect(() => {
-    loadMedia();
-    // load media when update state changes in main context
-    // by adding update state to the array below
+    const interval = setInterval(() => {
+      // load media when update state changes in main context
+      // by adding update state to the array below
+      loadMedia();
+    }, 3000);
+    return () => clearInterval(interval);
   }, [update]);
 
   const postMedia = async (fileData, token) => {

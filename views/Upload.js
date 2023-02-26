@@ -15,7 +15,14 @@ import {useMedia, useTag} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 import * as ImagePicker from 'expo-image-picker';
 import {Image, Text, Divider} from '@rneui/themed';
-import {appId, categoryList, inputBackground, primaryColour, vh, vw} from '../utils/variables';
+import {
+  appId,
+  categoryList,
+  inputBackground,
+  primaryColour,
+  vh,
+  vw,
+} from '../utils/variables';
 import {useFocusEffect} from '@react-navigation/native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {SelectList} from 'react-native-dropdown-select-list';
@@ -87,7 +94,7 @@ const Upload = ({navigation}) => {
         };
         await postTag(appTag, token);
 
-        Alert.alert('Uploaded', 'File id: ' + result.file_id, [
+        Alert.alert('File upload', 'Successful', [
           {
             text: 'OK',
             onPress: () => {
