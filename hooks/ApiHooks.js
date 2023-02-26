@@ -112,6 +112,7 @@ const useMedia = (myFilesOnly) => {
   };
   return {filteredMedia, postMedia, deleteMedia, putMedia};
 };
+// ******* use media ENDS
 
 const useAuthentication = () => {
   const postLogin = async (userCredentials) => {
@@ -337,7 +338,11 @@ const useComments = () => {
 // **** Hooks of comments ENDS
 
 const loadMediaById = async (fileId) => {
-  return await doFetch(baseUrl + 'media/' + fileId);
+  try {
+    return await doFetch(baseUrl + 'media/' + fileId);
+  } catch (error) {
+    throw new Error('loadMediaById error: ' + error.message);
+  }
 };
 
 export {

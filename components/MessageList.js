@@ -4,10 +4,10 @@ import PropTypes from 'prop-types';
 import MessageListItem from './MessageListItem';
 
 const MessageList = ({navigation}) => {
-  const {mediaArray} = useMedia();
+  const {filteredMedia} = useMedia();
   return (
     <FlatList
-      data={mediaArray}
+      data={filteredMedia}
       keyExtractor={(item, index) => index.toString()}
       renderItem={({item}) => (
         <MessageListItem navigation={navigation} singleMedia={item} />

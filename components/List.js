@@ -9,9 +9,6 @@ import {appId, categoryList} from '../utils/variables';
 const List = ({navigation}) => {
   const {filteredMedia} = useMedia();
 
-  console.log('====================================');
-  console.log('List', filteredMedia.length);
-  console.log('====================================');
   return (
     <FlatList
       data={filteredMedia}

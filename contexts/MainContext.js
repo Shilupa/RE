@@ -30,7 +30,9 @@ const MainProvider = (props) => {
       console.error('logIn', error);
     }
   };
-  console.log(user);
+
+  // console.log(user);
+
   useEffect(() => {
     saveData();
   }, [updateUser]);

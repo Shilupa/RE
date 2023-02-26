@@ -4,11 +4,11 @@ import PropTypes from 'prop-types';
 import ChatListItem from './ChatListItem';
 
 const ChatList = ({navigation}) => {
-  const {mediaArray} = useMedia();
+  const {filteredMedia} = useMedia();
   // console.log('Media array from chat list: ', mediaArray);
   return (
     <FlatList
-      data={mediaArray}
+      data={filteredMedia}
       keyExtractor={(item, index) => index.toString()}
       renderItem={({item}) => (
         <ChatListItem navigation={navigation} singleMedia={item} />

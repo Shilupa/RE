@@ -6,7 +6,7 @@ import {StatusBar} from 'react-native';
 import {appId, baseUrl, primaryColour} from '../utils/variables';
 import {useContext, useEffect, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
-import {useComments, useMedia} from '../hooks/ApiHooks';
+import {loadMediaById, useComments, useMedia} from '../hooks/ApiHooks';
 
 const Chats = ({navigation}) => {
   const {user, token} = useContext(MainContext);
@@ -39,27 +39,50 @@ const Chats = ({navigation}) => {
     }
   }; */
 
-  const getAllComment = async () => {
-    setAllComments([]);
-    if (filteredMedia.length > 0) {
+  /*  const getAllComment = async () => {
+    const comments = await Promise.all(
       filteredMedia.map(async (media) => {
         const response = await getCommentsByFileId(media.file_id);
-        if (response.length > 0) {
-          setAllComments((allComments) => [...allComments, ...response]);
-        }
-      });
-    }
+
+        return response;
+      })
+    );
+    setAllComments(comments);
+  }; */
+
+  // console.log('All files: ', filteredMedia);
+  const getAllComment = async () => {
+    let list = [];
+    filteredMedia.forEach(async (media, index) => {
+      const response = await getCommentsByFileId(media.file_id);
+
+      if (response.length > 0) {
+        list = list.concat(response);
+        // console.log(media.file_id);
+        // console.log('====================================');
+        // console.log('Comments', list);
+        // console.log('====================================');
+        setAllComments(list);
+      }
+    });
+
+    console.log('All Comment outside function: ', allComments);
   };
-  console.log('====================================');
-  console.log('Comments', allComments);
-  console.log('====================================');
+
+  /* const testObj = {message: 'When can I get this product?', receiverId: 2685};
+  const stringObj = JSON.stringify(testObj);
+  console.log('Stringyfy: ', stringObj); */
 
   useEffect(() => {
     const interval = setInterval(() => {
       getAllComment();
-    }, 5000);
+    }, 30000);
     return () => clearInterval(interval);
   }, []);
+
+  /* useEffect(() => {
+    getAllComment();
+  }, []); */
 
   /* const comments = await Promise.all(
         mediaArray.map(async (file) => {
