@@ -116,6 +116,7 @@ const useMedia = (myFilesOnly = false, categoryList = []) => {
       throw new Error('putMedia: ' + error.message);
     }
   };
+
   return {filteredMedia, postMedia, deleteMedia, putMedia};
 };
 // ******* use media ENDS

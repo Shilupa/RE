@@ -1,6 +1,5 @@
 import {FlatList} from 'react-native';
 import PropTypes from 'prop-types';
-import {useContext, useEffect, useState} from 'react';
 import {useMedia} from '../../hooks/ApiHooks';
 import ProductList from './ProductList';
 
@@ -20,6 +19,7 @@ const MainView = ({navigation, categoryList}) => {
 
 MainView.propTypes = {
   navigation: PropTypes.object,
+  categoryList: PropTypes.object,
 };
 
 export default MainView;

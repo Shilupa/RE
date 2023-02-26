@@ -3,8 +3,8 @@ import {useMedia} from '../../hooks/ApiHooks';
 import PropTypes from 'prop-types';
 import UserList from './UserList';
 
-const MyList = ({navigation}) => {
-  const {filteredMedia} = useMedia(true);
+const MyList = ({navigation, categoryList}) => {
+  const {filteredMedia} = useMedia(true, categoryList);
   return (
     <FlatList
       horizontal={false}
@@ -20,6 +20,7 @@ const MyList = ({navigation}) => {
 
 MyList.propTypes = {
   navigation: PropTypes.object,
+  categoryList: PropTypes.object,
 };
 
 export default MyList;

@@ -11,9 +11,9 @@ import {Icon} from '@rneui/themed';
 import {Card} from '@rneui/base';
 import {useContext, useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useFavourite, useTag, useUser } from '../../hooks/ApiHooks';
-import { MainContext } from '../../contexts/MainContext';
-import { uploadsUrl } from '../../utils/variables';
+import {useFavourite, useTag, useUser} from '../../hooks/ApiHooks';
+import {MainContext} from '../../contexts/MainContext';
+import {uploadsUrl} from '../../utils/variables';
 
 const ProductList = ({singleMedia, navigation}) => {
   const assetImage = Image.resolveAssetSource(
