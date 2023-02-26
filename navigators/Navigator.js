@@ -19,6 +19,7 @@ import GoLogin from '../views/GoLogin';
 import {useTag} from '../hooks/ApiHooks';
 import {uploadsUrl} from '../utils/variables';
 import {StyleSheet} from 'react-native';
+import ProductDetails from '../components/product/ProductDetails';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -132,6 +133,7 @@ const StackScreen = () => {
           screenOptions={{headerShown: false}}
         />
         <Stack.Screen name="Single" component={Single} />
+        <Stack.Screen name="ProductDetails" component={ProductDetails} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="ModifyItem" component={ModifyItem} />
         <Stack.Screen name="EditProfile" component={EditProfile} />

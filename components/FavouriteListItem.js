@@ -25,7 +25,7 @@ const FavouriteListItem = ({singleMedia, navigation}) => {
     <View style={styles.column}>
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate('Single', item);
+          navigation.navigate('ProductDetails', item);
         }}
       >
         <Image

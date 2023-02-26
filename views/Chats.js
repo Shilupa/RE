@@ -50,9 +50,9 @@ const Chats = ({navigation}) => {
       });
     }
   };
-  console.log('====================================');
+/*   console.log('====================================');
   console.log('Comments', allComments);
-  console.log('====================================');
+  console.log('===================================='); */
 
   useEffect(() => {
     const interval = setInterval(() => {
