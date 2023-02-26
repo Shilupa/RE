@@ -6,7 +6,6 @@ import ProductList from './ProductList';
 
 const MainView = ({navigation, categoryList}) => {
   const {filteredMedia} = useMedia(false, categoryList);
-
   return (
     <FlatList
       data={filteredMedia}

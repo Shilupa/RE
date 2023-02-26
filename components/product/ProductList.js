@@ -11,9 +11,9 @@ import {Icon} from '@rneui/themed';
 import {Card} from '@rneui/base';
 import {useContext, useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useFavourite, useTag, useUser } from '../../hooks/ApiHooks';
-import { MainContext } from '../../contexts/MainContext';
-import { uploadsUrl } from '../../utils/variables';
+import {useFavourite, useTag, useUser} from '../../hooks/ApiHooks';
+import {MainContext} from '../../contexts/MainContext';
+import {uploadsUrl} from '../../utils/variables';
 
 const ProductList = ({singleMedia, navigation}) => {
   const assetImage = Image.resolveAssetSource(
@@ -29,6 +29,9 @@ const ProductList = ({singleMedia, navigation}) => {
   const [userFavouritesIt, setuserFavouritesIt] = useState(false);
   const {getFavouritesByFileId, postFavourite, deleteFavourite} =
     useFavourite();
+
+  // Parsing string object to json object
+  const descriptionObj = JSON.parse(singleMedia.description);
 
   const loadAvatar = async () => {
     if (isLoggedIn) {
@@ -122,7 +125,9 @@ const ProductList = ({singleMedia, navigation}) => {
         </View>
         <View style={styles.box}>
           <Text style={styles.listTitle}>{singleMedia.title}</Text>
-          <Text numberOfLines={1}>{singleMedia.description}</Text>
+          <Text numberOfLines={1}>{descriptionObj.detail}</Text>
+          <Text numberOfLines={1}>{descriptionObj.condition}</Text>
+          <Text numberOfLines={1}>{descriptionObj.status}</Text>
         </View>
       </TouchableOpacity>
       <Card.Divider />
