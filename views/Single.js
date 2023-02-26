@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {primaryColour, uploadsUrl} from '../utils/variables';
+import {primaryColour, uploadsUrl, vw} from '../utils/variables';
 import PropTypes from 'prop-types';
 import {Card, Icon, Button} from '@rneui/themed';
 import {
@@ -95,10 +95,14 @@ const Single = ({navigation, route}) => {
   };
 
   const getOwner = async () => {
-    const token = await AsyncStorage.getItem('userToken');
-    const owner = await getUserById(userId, token);
-    console.log('owner', owner);
-    setOwner(owner);
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      const owner = await getUserById(userId, token);
+      console.log('owner', owner);
+      setOwner(owner);
+    } catch (error) {
+      throw new Error('getOwner error, ' + error.message);
+    }
   };
 
   const getFavourites = async () => {
@@ -178,11 +182,6 @@ const Single = ({navigation, route}) => {
             type="solid"
             buttonStyle={styles.backBtn}
             onPress={() => navigation.goBack()}
-            containerStyle={{
-              marginHorizontal: 20,
-              marginVertical: 10,
-              borderRadius: 100 / 2,
-            }}
           >
             <Icon name="arrow-back" color="black" />
           </Button>
@@ -214,7 +213,7 @@ const Single = ({navigation, route}) => {
                   resizeMode: 'cover',
                   width: 40,
                   height: 30,
-                  borderRadius: 200 / 2,
+                  borderRadius: 15,
                   alignSelf: 'center',
                   marginRight: 10,
                 }}
@@ -387,14 +386,18 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   backBtn: {
-    borderRadius: 200 / 2,
-    width: 50,
-    height: 50,
-    left: -150,
+    borderRadius: 25,
+    padding: 0,
+    marginTop: 10,
+    width: 45,
+    height: 45,
+    left: -40 * vw,
     alignSelf: 'center',
-    marginBottom: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: '#81C784',
     elevation: 10,
+    position: 'relative',
   },
   backgroundImage: {
     flex: 1,

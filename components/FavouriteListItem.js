@@ -13,7 +13,7 @@ const FavouriteListItem = ({singleMedia, navigation}) => {
       const user = await getUserById(singleMedia.user_id);
       setOwner(user);
     } catch (error) {
-      throw new Error('getOwner error, ' + error.message);
+      throw new Error('getOwner error hahaha, ' + error.message);
     }
   };
 

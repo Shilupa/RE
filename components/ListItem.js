@@ -117,7 +117,7 @@ const ListItem = ({singleMedia, navigation}) => {
         <View style={styles.box}>
           <Image
             style={styles.image}
-            source={{uri: uploadsUrl + singleMedia.thumbnails?.w160}}
+            source={{uri: uploadsUrl + singleMedia.thumbnails?.w640}}
           />
         </View>
         <View style={styles.box}>
@@ -129,14 +129,7 @@ const ListItem = ({singleMedia, navigation}) => {
       {isLoggedIn ? (
         <View style={styles.userInteraction}>
           <View style={styles.userInfo}>
-            <Image
-              style={styles.avatar}
-              /* source={{
-                uri: uploadsUrl + avatar,
-              }} */
-              /* source={require('../assets/avatar.png')} */
-              source={{uri: avatar}}
-            ></Image>
+            <Image style={styles.avatar} source={{uri: avatar}}></Image>
             <Text style={{fontSize: 10}}>{owner.username}</Text>
           </View>
 
@@ -244,14 +237,16 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   userInteraction: {
+    marginTop: -10,
+    marginBottom: 5,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 10,
+    paddingHorizontal: 10,
   },
   image: {
     flex: 1,
-    minHeight: 300,
+    height: 200,
     borderRadius: 6,
   },
   listTitle: {
@@ -261,9 +256,9 @@ const styles = StyleSheet.create({
   },
   avatar: {
     resizeMode: 'cover',
-    width: 30,
+    width: 40,
     height: 30,
-    borderRadius: 200 / 2,
+    borderRadius: 15,
     alignSelf: 'center',
     marginRight: 10,
   },

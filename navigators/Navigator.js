@@ -60,9 +60,7 @@ const TabScreen = ({navigation}) => {
       screenOptions={{
         tabBarActiveTintColor: '#19a119',
         headerShown: false,
-      }}
-      tabBarOptions={{
-        showLabel: false,
+        tabBarShowLabel: false,
       }}
     >
       <Tab.Screen
@@ -159,8 +157,8 @@ TabScreen.propTypes = {
 const styles = StyleSheet.create({
   tabIcon: {
     width: 35,
-    height: 35,
-    borderRadius: 75,
+    height: 25,
+    borderRadius: 15,
     borderWidth: 1,
     borderColor: 'transparent',
   },
