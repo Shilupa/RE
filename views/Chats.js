@@ -39,25 +39,27 @@ const Chats = ({navigation}) => {
     }
   }; */
 
-  const loadAllComments = async () => {
-    let list = [];
-    try {
-      const elem = await Promise.all(
-        filteredMedia.forEach(async (element) => {
-          if (element != undefined) {
-            // console.log('Testing array: ', element.file_id);
-            const response = await getCommentsByFileId(element.file_id);
-            list = list.concat(response);
-            return list;
-          }
-        })
-      );
-
-      console.log('All list: ', elem);
-    } catch (error) {
-      console.error('Load comments error', error.message);
+  const getAllComment = async () => {
+    setAllComments([]);
+    if (filteredMedia.length > 0) {
+      filteredMedia.map(async (media) => {
+        const response = await getCommentsByFileId(media.file_id);
+        if (response.length > 0) {
+          setAllComments((allComments) => [...allComments, ...response]);
+        }
+      });
     }
   };
+  console.log('====================================');
+  console.log('Comments', allComments);
+  console.log('====================================');
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      getAllComment();
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   /* const comments = await Promise.all(
         mediaArray.map(async (file) => {
@@ -65,10 +67,6 @@ const Chats = ({navigation}) => {
           return await fileResponse.json();
         })
       ); */
-
-  useEffect(() => {
-    loadAllComments();
-  });
 
   return (
     <SafeAreaView style={styles.container}>

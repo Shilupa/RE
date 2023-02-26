@@ -11,28 +11,31 @@ const FavouriteList = ({navigation}) => {
   const {getFavouritesByUser} = useFavourite();
   const [favourites, setFavourites] = useState([]);
   const [favouriteList, setFavouriteList] = useState([]);
-  const {update, updateFavourite} = useContext(MainContext);
-
-  const getToken = async () => {
-    return await AsyncStorage.getItem('userToken');
-  };
+  const {update, updateFavourite, token} = useContext(MainContext);
 
   // Fetching user favourite list
   const fetchFavourite = async () => {
-    const token = await getToken();
-    const response = await getFavouritesByUser(token);
-    setFavourites(response);
+    try {
+      const response = await getFavouritesByUser(token);
+      setFavourites(response);
+    } catch (error) {
+      throw new Error('fetchFavourite error, ' + error.message);
+    }
   };
 
   // Mapping favourites
   const setList = async () => {
-    const media = await Promise.all(
-      favourites.map(async (favourite) => {
-        const response = await loadMediaById(favourite.file_id);
-        return response;
-      })
-    );
-    setFavouriteList(media);
+    try {
+      const media = await Promise.all(
+        favourites.map(async (favourite) => {
+          const response = await loadMediaById(favourite.file_id);
+          return response;
+        })
+      );
+      setFavouriteList(media);
+    } catch (error) {
+      throw new Error('setList error, ' + error.message);
+    }
   };
 
   useEffect(() => {

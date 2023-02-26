@@ -9,8 +9,12 @@ const FavouriteListItem = ({singleMedia, navigation}) => {
   const [owner, setOwner] = useState({});
 
   const getOwner = async () => {
-    const user = await getUserById(singleMedia.user_id);
-    setOwner(user);
+    try {
+      const user = await getUserById(singleMedia.user_id);
+      setOwner(user);
+    } catch (error) {
+      throw new Error('getOwner error, ' + error.message);
+    }
   };
 
   useEffect(() => {

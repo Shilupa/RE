@@ -73,7 +73,7 @@ const Home = ({navigation}) => {
           <List navigation={navigation} />
         </TabView.Item>
         <TabView.Item style={{backgroundColor: 'blue', width: '100%'}}>
-          <Text h1>Furniture</Text>
+          <List navigation={navigation} />
         </TabView.Item>
         <TabView.Item style={{backgroundColor: 'green', width: '100%'}}>
           <Text h1>Clothing</Text>
