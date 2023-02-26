@@ -17,6 +17,8 @@ import MyFiles from './MyFiles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FavouriteList from '../components/FavouriteList';
 import {Divider} from '@rneui/base';
+import Favourite from '../components/userList/Favourite';
+import MyList from '../components/userList/MyList';
 
 const Profile = ({navigation}) => {
   const assetImage = Image.resolveAssetSource(
@@ -127,10 +129,10 @@ const Profile = ({navigation}) => {
       </Tab>
       <TabView value={index} onChange={setIndex} animationType="spring">
         <TabView.Item>
-          <MyFiles navigation={navigation} />
+          <MyList navigation={navigation} />
         </TabView.Item>
         <TabView.Item>
-          <FavouriteList navigation={navigation} />
+          <Favourite navigation={navigation} />
         </TabView.Item>
       </TabView>
     </SafeAreaView>
