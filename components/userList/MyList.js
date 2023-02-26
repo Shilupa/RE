@@ -1,9 +1,9 @@
 import {FlatList} from 'react-native';
-import {useMedia} from '../hooks/ApiHooks';
-import SecondaryListItem from './SecondaryListItem';
+import {useMedia} from '../../hooks/ApiHooks';
 import PropTypes from 'prop-types';
+import UserList from './UserList';
 
-const SecondaryList = ({navigation}) => {
+const MyList = ({navigation}) => {
   const {filteredMedia} = useMedia(true);
   return (
     <FlatList
@@ -12,14 +12,14 @@ const SecondaryList = ({navigation}) => {
       data={filteredMedia}
       keyExtractor={(item, index) => index.toString()}
       renderItem={({item}) => (
-        <SecondaryListItem navigation={navigation} singleMedia={item} />
+        <UserList navigation={navigation} singleMedia={item} />
       )}
     />
   );
 };
 
-SecondaryList.propTypes = {
+MyList.propTypes = {
   navigation: PropTypes.object,
 };
 
-export default SecondaryList;
+export default MyList;

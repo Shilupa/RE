@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {primaryColour, uploadsUrl, vw} from '../utils/variables';
+import {primaryColour, uploadsUrl, vw} from '../../utils/variables';
 import PropTypes from 'prop-types';
 import {Card, Icon, Button} from '@rneui/themed';
 import {
@@ -15,15 +15,15 @@ import {
   Alert,
   TouchableOpacity,
 } from 'react-native';
-import {MainContext} from '../contexts/MainContext';
-import {useFavourite, useTag, useUser} from '../hooks/ApiHooks';
+import {MainContext} from '../../contexts/MainContext';
+import {useFavourite, useTag, useUser} from '../../hooks/ApiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const Single = ({navigation, route}) => {
+const ProductDetails = ({navigation, route}) => {
   console.log('routeParams: ', route.params);
 
   const assetImage = Image.resolveAssetSource(
-    require('../assets/avatar.png')
+    require('../../assets/avatar.png')
   ).uri;
   const {isLoggedIn, updateFavourite, setUpdateFavourite, update} =
     useContext(MainContext);
@@ -410,10 +410,10 @@ const styles = StyleSheet.create({
   },
 });
 
-Single.propTypes = {
+ProductDetails.propTypes = {
   route: PropTypes.object,
   navigation: PropTypes.object,
   singleMedia: PropTypes.object,
 };
 
-export default Single;
+export default ProductDetails;

@@ -1,13 +1,13 @@
 import {FlatList} from 'react-native';
-import {useFavourite} from '../hooks/ApiHooks';
-import FavouriteListItem from './FavouriteListItem';
+import {useFavourite} from '../../hooks/ApiHooks';
 import PropTypes from 'prop-types';
 import {useContext, useEffect, useState} from 'react';
-import {MainContext} from '../contexts/MainContext';
+import {MainContext} from '../../contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {loadMediaById} from '../hooks/ApiHooks';
+import {loadMediaById} from '../../hooks/ApiHooks';
+import UserList from './UserList';
 
-const FavouriteList = ({navigation}) => {
+const Favourite = ({navigation}) => {
   const {getFavouritesByUser} = useFavourite();
   const [favourites, setFavourites] = useState([]);
   const [favouriteList, setFavouriteList] = useState([]);
@@ -56,14 +56,14 @@ const FavouriteList = ({navigation}) => {
       data={favouriteList}
       keyExtractor={(item, index) => index.toString()}
       renderItem={({item}) => (
-        <FavouriteListItem navigation={navigation} singleMedia={item} />
+        <UserList navigation={navigation} singleMedia={item} />
       )}
     />
   );
 };
 
-FavouriteList.propTypes = {
+Favourite.propTypes = {
   navigation: PropTypes.object,
 };
 
-export default FavouriteList;
+export default Favourite;

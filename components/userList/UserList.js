@@ -1,14 +1,13 @@
 import {Image, StyleSheet, View, TouchableOpacity} from 'react-native';
 import PropTypes from 'prop-types';
-import {uploadsUrl, vw} from '../utils/variables';
+import {uploadsUrl, vw} from '../../utils/variables';
 import {useEffect, useState} from 'react';
-import {getUserById} from '../hooks/ApiHooks';
 
-const FavouriteListItem = ({singleMedia, navigation}) => {
+const UserList = ({singleMedia, navigation}) => {
   const item = singleMedia;
-  const [owner, setOwner] = useState({});
+  // const [owner, setOwner] = useState({});
 
-  const getOwner = async () => {
+  /*  const getOwner = async () => {
     try {
       const user = await getUserById(singleMedia.user_id);
       setOwner(user);
@@ -16,16 +15,16 @@ const FavouriteListItem = ({singleMedia, navigation}) => {
       throw new Error('getOwner error hahaha, ' + error.message);
     }
   };
-
+ */
   useEffect(() => {
-    getOwner();
+    // getOwner();
   }, []);
 
   return (
     <View style={styles.column}>
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate('Single', item);
+          navigation.navigate('ProductDetails', item);
         }}
       >
         <Image
@@ -53,9 +52,9 @@ const styles = StyleSheet.create({
   },
 });
 
-FavouriteListItem.propTypes = {
+UserList.propTypes = {
   singleMedia: PropTypes.object,
   navigation: PropTypes.object,
 };
 
-export default FavouriteListItem;
+export default UserList;

@@ -11,7 +11,6 @@ import Login from '../views/Login';
 import ModifyItem from '../views/ModifyItem';
 import Profile from '../views/Profile';
 import Search from '../views/Search';
-import Single from '../views/Single';
 import Upload from '../views/Upload';
 import EditProfile from '../views/EditProfile';
 import Message from '../views/Message';
@@ -19,6 +18,7 @@ import GoLogin from '../views/GoLogin';
 import {useTag} from '../hooks/ApiHooks';
 import {uploadsUrl} from '../utils/variables';
 import {StyleSheet} from 'react-native';
+import ProductDetails from '../components/product/ProductDetails';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -131,7 +131,7 @@ const StackScreen = () => {
           component={TabScreen}
           screenOptions={{headerShown: false}}
         />
-        <Stack.Screen name="Single" component={Single} />
+        <Stack.Screen name="ProductDetails" component={ProductDetails} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="ModifyItem" component={ModifyItem} />
         <Stack.Screen name="EditProfile" component={EditProfile} />

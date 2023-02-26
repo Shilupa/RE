@@ -5,13 +5,13 @@ import {
   View,
   StatusBar,
 } from 'react-native';
-import List from '../components/List';
 import PropTypes from 'prop-types';
 import {Tab, TabView, Text, Card} from '@rneui/themed';
 import {useContext, useEffect, useState} from 'react';
 import {appId, categoryList, primaryColour} from '../utils/variables';
 import {MainContext} from '../contexts/MainContext';
 import {useTag} from '../hooks/ApiHooks';
+import MainView from '../components/product/MainView';
 
 const Home = ({navigation}) => {
   const [index, setIndex] = useState();
@@ -78,10 +78,10 @@ const Home = ({navigation}) => {
       <Card.Divider />
       <TabView value={index} onChange={setIndex} animationType="spring">
         <TabView.Item style={{width: '100%'}}>
-          <List navigation={navigation} />
+          <MainView navigation={navigation} />
         </TabView.Item>
         <TabView.Item style={{backgroundColor: 'blue', width: '100%'}}>
-          <List navigation={navigation} />
+          <Text h1>Clothing</Text>
         </TabView.Item>
         <TabView.Item style={{backgroundColor: 'green', width: '100%'}}>
           <Text h1>Clothing</Text>
