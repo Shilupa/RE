@@ -16,7 +16,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {MainContext} from '../../contexts/MainContext';
-import {useFavourite, useTag, useUser} from '../../hooks/ApiHooks';
+import {useFavourite, useRating, useTag, useUser} from '../../hooks/ApiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ProductDetails = ({navigation, route}) => {
@@ -25,8 +25,14 @@ const ProductDetails = ({navigation, route}) => {
   const assetImage = Image.resolveAssetSource(
     require('../../assets/avatar.png')
   ).uri;
-  const {isLoggedIn, updateFavourite, setUpdateFavourite, update} =
-    useContext(MainContext);
+  const {
+    isLoggedIn,
+    updateFavourite,
+    setUpdateFavourite,
+    updateRating,
+    setUpdateRating,
+    update,
+  } = useContext(MainContext);
   const {getUserById} = useUser();
   const [owner, setOwner] = useState({});
   const [avatar, setAvatar] = useState(assetImage);
@@ -36,6 +42,10 @@ const ProductDetails = ({navigation, route}) => {
   const {user} = useContext(MainContext);
   const {getFavouritesByFileId, postFavourite, deleteFavourite} =
     useFavourite();
+  const {postRating, deleteRating, getRatingsbyFileId, getAllRatings} =
+    useRating();
+  const [ratings, setRatings] = useState([]);
+  const [userRatesIt, setUserRatesIt] = useState(false);
 
   const {
     title,
@@ -145,7 +155,44 @@ const ProductDetails = ({navigation, route}) => {
     }
   };
 
-  const loadAvatar = async () => {
+  const getRatings = async () => {
+    const ratings = await getRatingsbyFileId(fileId);
+    setRatings(ratings);
+    for (const rating of ratings) {
+      if (rating.user_id === user.user_id) {
+        setUserRatesIt(true);
+        break;
+      }
+    }
+  };
+
+  const rateFile = async () => {
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      await postRating(fileId, token, 1);
+      setUserRatesIt(true);
+      getRatings();
+      setUpdateRating(!updateRating);
+    } catch (error) {
+      // note: you cannot like same file multiple times
+      // console.log(error);
+    }
+  };
+
+  const unrateFile = async () => {
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      await deleteRating(fileId, token);
+      setuserFavouritesIt(false);
+      getRatings();
+      setUpdateRating(!updateRating);
+    } catch (error) {
+      // note: you cannot like same file multiple times
+      // console.log(error);
+    }
+  };
+
+  async function loadAvatar() {
     if (isLoggedIn) {
       try {
         const avatarArray = await getFilesByTag('avatar_' + owner.user_id);
@@ -157,7 +204,7 @@ const ProductDetails = ({navigation, route}) => {
         // console.error('user avatar fetch failed', error.message);
       }
     }
-  };
+  }
 
   useEffect(() => {
     getOwner();
@@ -170,6 +217,10 @@ const ProductDetails = ({navigation, route}) => {
   useEffect(() => {
     getFavourites();
   }, [update, updateFavourite]);
+
+  useEffect(() => {
+    getRatings();
+  }, [update, updateRating]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -238,8 +289,17 @@ const ProductDetails = ({navigation, route}) => {
         {isLoggedIn ? (
           <View style={styles.userInteraction}>
             <View style={styles.iconbox}>
-              <Icon name="thumb-up-off-alt" size={20} />
-              <Text style={styles.iconText}>1.4k</Text>
+              {userRatesIt ? (
+                <Icon
+                  name="thumb-up"
+                  size={26}
+                  color="green"
+                  onPress={unrateFile}
+                />
+              ) : (
+                <Icon name="thumb-up-off-alt" size={26} onPress={rateFile} />
+              )}
+              <Text style={styles.iconText}>{ratings.length}</Text>
             </View>
             <View style={styles.iconbox}>
               <Icon name="thumb-down-off-alt" size={20} />
