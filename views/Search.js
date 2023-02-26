@@ -25,7 +25,15 @@ const Search = ({navigation}) => {
     <SafeAreaView style={styles.container}>
       <View style={styles.titleBar}>
         <Text style={styles.title}>Discover</Text>
-        {!isLoggedIn ? (
+        {!isLoggedIn && (
+          <Text
+            style={styles.logIn}
+            onPress={() => navigation.navigate('Login')}
+          >
+            Sign In
+          </Text>
+        )}
+        {/* {!isLoggedIn ? (
           <Text
             style={styles.logIn}
             onPress={() => navigation.navigate('Login')}
@@ -36,7 +44,7 @@ const Search = ({navigation}) => {
           <Text style={styles.logIn}>
             Hi {user !== null ? user.username : 'User'}!
           </Text>
-        )}
+        )} */}
       </View>
       <View style={{marginBottom: 10}}>
         <Tab
