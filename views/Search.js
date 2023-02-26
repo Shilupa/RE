@@ -11,6 +11,7 @@ import {primaryColour} from '../utils/variables';
 import {useContext, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
 import SearchList from '../components/SearchList';
+import MainView from '../components/product/MainView';
 
 const Search = ({navigation}) => {
   const [searchIndex, setSearchIndex] = useState(0);
@@ -68,7 +69,7 @@ const Search = ({navigation}) => {
             titleStyle={{fontSize: 12, color: 'black'}}
           />
           <Tab.Item
-            title="Electronic Device"
+            title="Electronics"
             titleStyle={{fontSize: 12, color: 'black'}}
           />
         </Tab>
@@ -105,14 +106,14 @@ const Search = ({navigation}) => {
             setSearch={setSearch}
           />
         </TabView.Item>
-        <TabView.Item style={{backgroundColor: 'blue', width: '100%'}}>
-          <Text h1>Furniture</Text>
+        <TabView.Item style={{backgroundColor: 'none', width: '100%'}}>
+          <MainView navigation={navigation} categoryList={['Furniture']} />
         </TabView.Item>
-        <TabView.Item style={{backgroundColor: 'green', width: '100%'}}>
-          <Text h1>Clothing</Text>
+        <TabView.Item style={{backgroundColor: 'none', width: '100%'}}>
+          <MainView navigation={navigation} categoryList={['Clothing']} />
         </TabView.Item>
-        <TabView.Item style={{backgroundColor: 'red', width: '100%'}}>
-          <Text h1>Electronic Device</Text>
+        <TabView.Item style={{backgroundColor: 'none', width: '100%'}}>
+          <MainView navigation={navigation} categoryList={['Electronics']} />
         </TabView.Item>
       </TabView>
     </SafeAreaView>

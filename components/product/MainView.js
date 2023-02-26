@@ -4,12 +4,9 @@ import {useContext, useEffect, useState} from 'react';
 import {useMedia} from '../../hooks/ApiHooks';
 import ProductList from './ProductList';
 
-const MainView = ({navigation}) => {
-  const {filteredMedia} = useMedia();
+const MainView = ({navigation, categoryList}) => {
+  const {filteredMedia} = useMedia(false, categoryList);
 
-  console.log('====================================');
-  console.log('List', filteredMedia.length);
-  console.log('====================================');
   return (
     <FlatList
       data={filteredMedia}
