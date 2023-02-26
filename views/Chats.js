@@ -11,7 +11,7 @@ import {useComments, useMedia} from '../hooks/ApiHooks';
 const Chats = ({navigation}) => {
   const {user, token} = useContext(MainContext);
   const {getCommentsByUser, getCommentsByFileId} = useComments();
-  const {mediaArray} = useMedia();
+  const {filteredMedia} = useMedia();
   const [allComments, setAllComments] = useState([]);
   const [allMedia, setAllMedia] = useState([]);
 
@@ -43,7 +43,7 @@ const Chats = ({navigation}) => {
     let list = [];
     try {
       const elem = await Promise.all(
-        mediaArray.forEach(async (element) => {
+        filteredMedia.forEach(async (element) => {
           if (element != undefined) {
             // console.log('Testing array: ', element.file_id);
             const response = await getCommentsByFileId(element.file_id);
