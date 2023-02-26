@@ -5,7 +5,6 @@ import {
   View,
   StatusBar,
 } from 'react-native';
-import List from '../components/List';
 import PropTypes from 'prop-types';
 import {Tab, TabView, Text, Card} from '@rneui/themed';
 import {useContext, useEffect, useState} from 'react';
@@ -82,7 +81,7 @@ const Home = ({navigation}) => {
           <MainView navigation={navigation} />
         </TabView.Item>
         <TabView.Item style={{backgroundColor: 'blue', width: '100%'}}>
-          <List navigation={navigation} />
+          <Text h1>Clothing</Text>
         </TabView.Item>
         <TabView.Item style={{backgroundColor: 'green', width: '100%'}}>
           <Text h1>Clothing</Text>
