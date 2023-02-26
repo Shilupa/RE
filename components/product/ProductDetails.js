@@ -116,16 +116,20 @@ const ProductDetails = ({navigation, route}) => {
   };
 
   const getFavourites = async () => {
-    const favourites = await getFavouritesByFileId(fileId);
-    // console.log('likes', likes, 'user', user);
-    setFavourites(favourites);
-    // check if the current user id is included in the 'likes' array and
-    // set the 'userLikesIt' state accordingly
-    for (const favourite of favourites) {
-      if (favourite.user_id === user.user_id) {
-        setuserFavouritesIt(true);
-        break;
+    try {
+      const favourites = await getFavouritesByFileId(fileId);
+      // console.log('likes', likes, 'user', user);
+      setFavourites(favourites);
+      // check if the current user id is included in the 'likes' array and
+      // set the 'userLikesIt' state accordingly
+      for (const favourite of favourites) {
+        if (favourite.user_id === user.user_id) {
+          setuserFavouritesIt(true);
+          break;
+        }
       }
+    } catch (error) {
+      console.log('Product details [getFavourites]', error);
     }
   };
 
@@ -139,6 +143,7 @@ const ProductDetails = ({navigation, route}) => {
     } catch (error) {
       // note: you cannot like same file multiple times
       // console.log(error);
+      console.log('Product details [favouriteFile]', error);
     }
   };
 
@@ -152,17 +157,22 @@ const ProductDetails = ({navigation, route}) => {
     } catch (error) {
       // note: you cannot like same file multiple times
       // console.log(error);
+      console.log('Product details [nfavouriteFile]', error);
     }
   };
 
   const getRatings = async () => {
-    const ratings = await getRatingsbyFileId(fileId);
-    setRatings(ratings);
-    for (const rating of ratings) {
-      if (rating.user_id === user.user_id) {
-        setUserRatesIt(true);
-        break;
+    try {
+      const ratings = await getRatingsbyFileId(fileId);
+      setRatings(ratings);
+      for (const rating of ratings) {
+        if (rating.user_id === user.user_id) {
+          setUserRatesIt(true);
+          break;
+        }
       }
+    } catch (error) {
+      console.log('Product details [getRatings]', error);
     }
   };
 
@@ -175,7 +185,7 @@ const ProductDetails = ({navigation, route}) => {
       setUpdateRating(!updateRating);
     } catch (error) {
       // note: you cannot like same file multiple times
-      // console.log(error);
+      console.log('Product details [rateFile]', error);
     }
   };
 

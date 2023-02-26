@@ -2,9 +2,10 @@ import {FlatList} from 'react-native';
 import {useMedia} from '../hooks/ApiHooks';
 import PropTypes from 'prop-types';
 import SearchListItem from './SearchListItem';
+import {categoryList} from '../utils/variables';
 
 const SearchList = ({navigation, search}) => {
-  const {filteredMedia} = useMedia();
+  const {filteredMedia} = useMedia(false, categoryList);
   return (
     <FlatList
       horizontal={false}

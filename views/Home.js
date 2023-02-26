@@ -80,13 +80,13 @@ const Home = ({navigation}) => {
         <TabView.Item style={{width: '100%'}}>
           <MainView navigation={navigation} categoryList={categoryList} />
         </TabView.Item>
-        <TabView.Item style={{backgroundColor: 'blue', width: '100%'}}>
+        <TabView.Item style={{backgroundColor: 'none', width: '100%'}}>
           <MainView navigation={navigation} categoryList={['Furniture']} />
         </TabView.Item>
-        <TabView.Item style={{backgroundColor: 'green', width: '100%'}}>
+        <TabView.Item style={{backgroundColor: 'none', width: '100%'}}>
           <MainView navigation={navigation} categoryList={['Clothing']} />
         </TabView.Item>
-        <TabView.Item style={{backgroundColor: 'red', width: '100%'}}>
+        <TabView.Item style={{backgroundColor: 'none', width: '100%'}}>
           <MainView navigation={navigation} categoryList={['Electronics']} />
         </TabView.Item>
       </TabView>
