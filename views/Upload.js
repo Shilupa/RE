@@ -15,7 +15,7 @@ import {useMedia, useTag} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 import * as ImagePicker from 'expo-image-picker';
 import {Image, Text, Divider} from '@rneui/themed';
-import {appId, categoryList, primaryColour, vh, vw} from '../utils/variables';
+import {appId, categoryList, inputBackground, primaryColour, vh, vw} from '../utils/variables';
 import {useFocusEffect} from '@react-navigation/native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {SelectList} from 'react-native-dropdown-select-list';
@@ -219,8 +219,11 @@ const Upload = ({navigation}) => {
             data={categoryList}
             save="value"
             inputStyles={{fontSize: 18, color: '#808080'}}
+            search={false}
+            placeholder="Select a category"
             boxStyles={{
-              backgroundColor: '#F0F0F0',
+              backgroundColor: inputBackground,
+              borderColor: 'transparent',
               marginHorizontal: 2 * vw,
               marginTop: 0.5 * vh,
               marginBottom: 1 * vh,

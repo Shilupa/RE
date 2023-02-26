@@ -4,12 +4,12 @@ import PropTypes from 'prop-types';
 import SearchListItem from './SearchListItem';
 
 const SearchList = ({navigation, search}) => {
-  const {mediaArray} = useMedia();
+  const {filteredMedia} = useMedia();
   return (
     <FlatList
       horizontal={false}
       numColumns={2}
-      data={mediaArray}
+      data={filteredMedia}
       keyExtractor={(item, index) => index.toString()}
       renderItem={({item}) => {
         if (search === '') {

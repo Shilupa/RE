@@ -1,8 +1,8 @@
 const {createBottomTabNavigator} = require('@react-navigation/bottom-tabs');
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {Icon} from '@rneui/themed';
-import {useContext} from 'react';
+import {Icon, Image} from '@rneui/themed';
+import {useContext, useEffect, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
 import PropTypes from 'prop-types';
 import Chats from '../views/Chats';
@@ -16,12 +16,34 @@ import Upload from '../views/Upload';
 import EditProfile from '../views/EditProfile';
 import Message from '../views/Message';
 import GoLogin from '../views/GoLogin';
+import {useTag} from '../hooks/ApiHooks';
+import {uploadsUrl} from '../utils/variables';
+import {StyleSheet} from 'react-native';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 const TabScreen = ({navigation}) => {
-  const {isLoggedIn} = useContext(MainContext);
+  const {isLoggedIn, user} = useContext(MainContext);
+  const assetImage = Image.resolveAssetSource(
+    require('../assets/avatar.png')
+  ).uri;
+  const [avatar, setAvatar] = useState(assetImage);
+  const {getFilesByTag} = useTag();
+
+  const loadAvatar = async () => {
+    if (isLoggedIn) {
+      try {
+        const avatarArray = await getFilesByTag('avatar_' + user.user_id);
+        // Checking if user has added avatar previously
+        if (avatarArray.length > 0) {
+          setAvatar(uploadsUrl + avatarArray.pop().filename);
+        }
+      } catch (error) {
+        // console
+      }
+    }
+  };
 
   const navigateScreen = (destinationScreen) => {
     !isLoggedIn
@@ -29,11 +51,18 @@ const TabScreen = ({navigation}) => {
       : navigation.navigate(destinationScreen);
   };
 
+  useEffect(() => {
+    loadAvatar();
+  }, [user]);
+
   return (
     <Tab.Navigator
       screenOptions={{
         tabBarActiveTintColor: '#19a119',
         headerShown: false,
+      }}
+      tabBarOptions={{
+        showLabel: false,
       }}
     >
       <Tab.Screen
@@ -78,11 +107,10 @@ const TabScreen = ({navigation}) => {
           name="Profile"
           component={Profile}
           options={{
-            tabBarIcon: ({color}) => (
-              <Icon
-                name="person"
-                color={color}
-                onPress={() => navigateScreen('Profile')}
+            tabBarIcon: ({focused}) => (
+              <Image
+                style={[styles.tabIcon, focused && styles.activeTabIcon]}
+                source={{uri: avatar}}
               />
             ),
           }}
@@ -127,5 +155,18 @@ const Navigator = () => {
 TabScreen.propTypes = {
   navigation: PropTypes.object,
 };
+
+const styles = StyleSheet.create({
+  tabIcon: {
+    width: 35,
+    height: 35,
+    borderRadius: 75,
+    borderWidth: 1,
+    borderColor: 'transparent',
+  },
+  activeTabIcon: {
+    borderColor: '#19a119',
+  },
+});
 
 export default Navigator;
