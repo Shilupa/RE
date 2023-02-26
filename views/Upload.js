@@ -80,9 +80,10 @@ const Upload = ({navigation}) => {
         detail: data.description,
         condition: data.condition,
         status: 'Available',
+        tag: appId
       };
 
-      // Converting json object to string 
+      // Converting json object to string
       const jsonObj = JSON.stringify(mediaDescription);
       formData.append('title', data.title);
       formData.append('description', jsonObj);

@@ -20,8 +20,6 @@ import {useFavourite, useRating, useTag, useUser} from '../../hooks/ApiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ProductDetails = ({navigation, route}) => {
-  console.log('routeParams: ', route.params);
-
   const assetImage = Image.resolveAssetSource(
     require('../../assets/avatar.png')
   ).uri;
@@ -72,7 +70,7 @@ const ProductDetails = ({navigation, route}) => {
   }
 
   const editItem = () => {
-    navigation.navigate('ModifyItem', {
+    navigation.navigate('ModifyProduct', {
       file: {
         title,
         description,

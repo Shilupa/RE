@@ -29,7 +29,7 @@ const ProductList = ({singleMedia, navigation}) => {
   const [userFavouritesIt, setuserFavouritesIt] = useState(false);
   const {getFavouritesByFileId, postFavourite, deleteFavourite} =
     useFavourite();
-
+    
   // Parsing string object to json object
   const descriptionObj = JSON.parse(singleMedia.description);
 
@@ -128,6 +128,7 @@ const ProductList = ({singleMedia, navigation}) => {
           <Text numberOfLines={1}>{descriptionObj.detail}</Text>
           <Text numberOfLines={1}>{descriptionObj.condition}</Text>
           <Text numberOfLines={1}>{descriptionObj.status}</Text>
+          <Text numberOfLines={1}>{descriptionObj.tag}</Text>
         </View>
       </TouchableOpacity>
       <Card.Divider />
