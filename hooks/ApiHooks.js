@@ -352,7 +352,7 @@ const useRating = () => {
       body: JSON.stringify({file_id: fileId, rating: rating}),
     };
     try {
-      return await doFetch(baseUrl + '/ratings', options);
+      return await doFetch(baseUrl + 'ratings', options);
     } catch (error) {
       throw new Error('postRating: ', error.message);
     }

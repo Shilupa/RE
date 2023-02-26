@@ -37,6 +37,8 @@ const EditProfile = ({navigation}) => {
   const {checkUsername, putUser} = useUser();
   const avatarTag = `avatar_${user.user_id}`;
 
+  console.log('postman', token);
+
   /**
    * Fetching and storing user avatar from database if avatar exists
    */
