@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import {Card, Icon, SearchBar, Tab, TabView, Text} from '@rneui/themed';
-import {primaryColour} from '../utils/variables';
+import {categoryList, primaryColour} from '../utils/variables';
 import {useContext, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
 import SearchList from '../components/SearchList';
@@ -107,13 +107,13 @@ const Search = ({navigation}) => {
           />
         </TabView.Item>
         <TabView.Item style={{backgroundColor: 'none', width: '100%'}}>
-          <MainView navigation={navigation} categoryList={['Furniture']} />
+          <MainView navigation={navigation} category={categoryList[1]} />
         </TabView.Item>
         <TabView.Item style={{backgroundColor: 'none', width: '100%'}}>
-          <MainView navigation={navigation} categoryList={['Clothing']} />
+          <MainView navigation={navigation} category={categoryList[0]} />
         </TabView.Item>
         <TabView.Item style={{backgroundColor: 'none', width: '100%'}}>
-          <MainView navigation={navigation} categoryList={['Electronics']} />
+          <MainView navigation={navigation} category={categoryList[2]} />
         </TabView.Item>
       </TabView>
     </SafeAreaView>

@@ -11,7 +11,7 @@ import {loadMediaById, useComments, useMedia} from '../hooks/ApiHooks';
 const Chats = ({navigation}) => {
   const {user, token} = useContext(MainContext);
   const {getCommentsByUser, getCommentsByFileId} = useComments();
-  const {filteredMedia} = useMedia();
+  const {mediaArray} = useMedia();
   const [allComments, setAllComments] = useState([]);
   const [allMedia, setAllMedia] = useState([]);
 
@@ -53,7 +53,7 @@ const Chats = ({navigation}) => {
   // console.log('All files: ', filteredMedia);
   const getAllComment = async () => {
     let list = [];
-    filteredMedia.forEach(async (media, index) => {
+    mediaArray.forEach(async (media, index) => {
       const response = await getCommentsByFileId(media.file_id);
 
       if (response.length > 0) {

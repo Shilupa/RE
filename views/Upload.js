@@ -42,7 +42,11 @@ const Upload = ({navigation}) => {
     trigger,
     reset,
   } = useForm({
-    defaultValues: {title: '', description: ''},
+    defaultValues: {
+      title: '',
+      description: '',
+      condition: '',
+    },
     mode: 'onChange',
   });
 
@@ -71,8 +75,18 @@ const Upload = ({navigation}) => {
       // create form data and post it
       setLoading(true);
       const formData = new FormData();
-      formData.append('title', data.title);
-      formData.append('description', data.description);
+
+      const mediaDescription = {
+        detail: data.description,
+        condition: data.condition,
+        status: 'Available',
+        title: data.title,
+      };
+
+      // Converting json object to string
+      const jsonObj = JSON.stringify(mediaDescription);
+      formData.append('title', selectedCategory);
+      formData.append('description', jsonObj);
 
       const filename = mediafile.uri.split('/').pop();
       let fileExt = filename.split('.').pop();
@@ -87,10 +101,10 @@ const Upload = ({navigation}) => {
 
       try {
         const result = await postMedia(formData, token);
-
+        console.log('result', result);
         const appTag = {
           file_id: result.file_id,
-          tag: `${appId}_${selectedCategory}`,
+          tag: appId,
         };
         await postTag(appTag, token);
 
@@ -220,7 +234,29 @@ const Upload = ({navigation}) => {
             )}
             name="description"
           />
-
+          <Controller
+            control={control}
+            rules={{
+              required: {
+                value: true,
+                message: 'min 5 characters',
+              },
+            }}
+            render={({field: {onChange, onBlur, value}}) => (
+              <FormInput
+                label="Condition"
+                placeholder="Enter a condition of the item"
+                onBlur={onBlur}
+                onChange={onChange}
+                value={value}
+                error={errors.condition && errors.condition.message}
+                autoCapitalize="none"
+                multiline={true}
+                numberOfLines={5}
+              />
+            )}
+            name="condition"
+          />
           <SelectList
             setSelected={(val) => setSelectedCategory(val)}
             data={categoryList}

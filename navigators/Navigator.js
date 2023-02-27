@@ -8,7 +8,6 @@ import PropTypes from 'prop-types';
 import Chats from '../views/Chats';
 import Home from '../views/Home';
 import Login from '../views/Login';
-import ModifyItem from '../views/ModifyItem';
 import Profile from '../views/Profile';
 import Search from '../views/Search';
 import Upload from '../views/Upload';
@@ -19,6 +18,7 @@ import {useTag} from '../hooks/ApiHooks';
 import {uploadsUrl} from '../utils/variables';
 import {StyleSheet} from 'react-native';
 import ProductDetails from '../components/product/ProductDetails';
+import ModifyProduct from '../components/product/ModifyProduct';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -133,7 +133,7 @@ const StackScreen = () => {
         />
         <Stack.Screen name="ProductDetails" component={ProductDetails} />
         <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="ModifyItem" component={ModifyItem} />
+        <Stack.Screen name="ModifyProduct" component={ModifyProduct} />
         <Stack.Screen name="EditProfile" component={EditProfile} />
         <Stack.Screen name="Message" component={Message} />
         <Stack.Screen name="GoLogin" component={GoLogin} />

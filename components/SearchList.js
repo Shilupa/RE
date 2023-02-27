@@ -5,12 +5,12 @@ import SearchListItem from './SearchListItem';
 import {categoryList} from '../utils/variables';
 
 const SearchList = ({navigation, search}) => {
-  const {filteredMedia} = useMedia(false, categoryList);
+  const {mediaArray} = useMedia();
   return (
     <FlatList
       horizontal={false}
       numColumns={2}
-      data={filteredMedia}
+      data={mediaArray}
       keyExtractor={(item, index) => index.toString()}
       renderItem={({item}) => {
         if (search === '') {

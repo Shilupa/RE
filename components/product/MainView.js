@@ -4,12 +4,13 @@ import {useContext, useEffect, useState} from 'react';
 import {useMedia} from '../../hooks/ApiHooks';
 import ProductList from './ProductList';
 
-const MainView = ({navigation, categoryList}) => {
-  const {filteredMedia} = useMedia(false, categoryList);
-
+const MainView = ({navigation, category}) => {
+  const {mediaArray} = useMedia();
+  // Filtering media by category
+  const filteredMedia = mediaArray.filter((media) => media.title === category);
   return (
     <FlatList
-      data={filteredMedia}
+      data={category === '' ? mediaArray : filteredMedia}
       keyExtractor={(item, index) => index.toString()}
       renderItem={({item}) => (
         <ProductList navigation={navigation} singleMedia={item} />
