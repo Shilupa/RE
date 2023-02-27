@@ -1,5 +1,10 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {primaryColour, uploadsUrl, vw} from '../../utils/variables';
+import {
+  inputBackground,
+  primaryColour,
+  uploadsUrl,
+  vw,
+} from '../../utils/variables';
 import PropTypes from 'prop-types';
 import {Card, Icon, Button} from '@rneui/themed';
 import {
@@ -30,6 +35,7 @@ const ProductDetails = ({navigation, route}) => {
     updateRating,
     setUpdateRating,
     update,
+    setUpdate,
   } = useContext(MainContext);
   const {getUserById} = useUser();
   const [owner, setOwner] = useState({});
@@ -40,10 +46,12 @@ const ProductDetails = ({navigation, route}) => {
   const {user} = useContext(MainContext);
   const {getFavouritesByFileId, postFavourite, deleteFavourite} =
     useFavourite();
-  const {postRating, deleteRating, getRatingsbyFileId, getAllRatings} =
-    useRating();
+  const {postRating, deleteRating, getRatingsByFileId} = useRating();
   const [ratings, setRatings] = useState([]);
-  const [userRatesIt, setUserRatesIt] = useState(false);
+  const [likesArray, setLikesArray] = useState([]);
+  const [dislikesArray, setDislikesArray] = useState([]);
+  const [userLikesIt, setUserLikesIt] = useState(false);
+  const [userDislikesIt, setUserDislikesIt] = useState(false);
 
   const {
     title,
@@ -136,12 +144,12 @@ const ProductDetails = ({navigation, route}) => {
       const token = await AsyncStorage.getItem('userToken');
       await postFavourite(fileId, token);
       setuserFavouritesIt(true);
-      getFavourites();
       setUpdateFavourite(!updateFavourite);
+      setUpdate(update + 1);
     } catch (error) {
       // note: you cannot like same file multiple times
       // console.log(error);
-      console.log('Product details [favouriteFile]', error);
+      // console.log('Product details [favouriteFile]', error);
     }
   };
 
@@ -150,48 +158,82 @@ const ProductDetails = ({navigation, route}) => {
       const token = await AsyncStorage.getItem('userToken');
       await deleteFavourite(fileId, token);
       setuserFavouritesIt(false);
-      getFavourites();
       setUpdateFavourite(!updateFavourite);
+      setUpdate(update + 1);
     } catch (error) {
       // note: you cannot like same file multiple times
       // console.log(error);
-      console.log('Product details [nfavouriteFile]', error);
+      // console.log('Product details [nfavouriteFile]', error);
     }
   };
 
   const getRatings = async () => {
     try {
-      const ratings = await getRatingsbyFileId(fileId);
+      const ratings = await getRatingsByFileId(fileId);
       setRatings(ratings);
+
+      // checking if user likes or dislikes the item
       for (const rating of ratings) {
-        if (rating.user_id === user.user_id) {
-          setUserRatesIt(true);
+        if (rating.user_id === user.user_id && rating.rating === 1) {
+          setUserLikesIt(true);
+          break;
+        } else if (rating.user_id === user.user_id && rating.rating === 2) {
+          setUserDislikesIt(true);
           break;
         }
       }
+      // making new array of likes and dislikes
+      setLikesArray(ratings.filter((obj) => obj.rating === 1));
+      setDislikesArray(ratings.filter((obj) => obj.rating === 2));
     } catch (error) {
-      console.log('Product details [getRatings]', error);
+      // console.log('Product details [getRatings]', error);
     }
   };
 
-  const rateFile = async () => {
+  const likeFile = async () => {
     try {
       const token = await AsyncStorage.getItem('userToken');
       await postRating(fileId, token, 1);
-      setUserRatesIt(true);
+      setUserLikesIt(true);
       getRatings();
       setUpdateRating(!updateRating);
     } catch (error) {
       // note: you cannot like same file multiple times
-      console.log('Product details [rateFile]', error);
+      // console.log('Product details [rateFile]', error);
     }
   };
 
-  const unrateFile = async () => {
+  const unlikeFile = async () => {
     try {
       const token = await AsyncStorage.getItem('userToken');
       await deleteRating(fileId, token);
-      setuserFavouritesIt(false);
+      setUserLikesIt(false);
+      getRatings();
+      setUpdateRating(!updateRating);
+    } catch (error) {
+      // note: you cannot like same file multiple times
+      // console.log(error);
+    }
+  };
+
+  const dislikeFile = async () => {
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      await postRating(fileId, token, 2);
+      setUserDislikesIt(true);
+      getRatings();
+      setUpdateRating(!updateRating);
+    } catch (error) {
+      // note: you cannot like same file multiple times
+      // console.log('Product details [rateFile]', error);
+    }
+  };
+
+  const unDislikeFile = async () => {
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      await deleteRating(fileId, token);
+      setUserDislikesIt(false);
       getRatings();
       setUpdateRating(!updateRating);
     } catch (error) {
@@ -230,6 +272,22 @@ const ProductDetails = ({navigation, route}) => {
     getRatings();
   }, [update, updateRating]);
 
+  const handleLikePress = () => {
+    if (userDislikesIt) {
+      unDislikeFile();
+      likeFile();
+    }
+    likeFile();
+  };
+
+  const handleDislikePress = () => {
+    if (userLikesIt) {
+      unlikeFile();
+      dislikeFile();
+    }
+    dislikeFile();
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.imageContainer}>
@@ -246,7 +304,13 @@ const ProductDetails = ({navigation, route}) => {
           </Button>
         </ImageBackground>
       </View>
-      <ScrollView>
+      <ScrollView
+      /* style={{
+          backgroundColor: 'beige',
+          borderTopLeftRadius: 40,
+          borderTopRightRadius: 40,
+        }} */
+      >
         <View
           style={{
             flexDirection: 'row',
@@ -297,37 +361,53 @@ const ProductDetails = ({navigation, route}) => {
         {isLoggedIn ? (
           <View style={styles.userInteraction}>
             <View style={styles.iconbox}>
-              {userRatesIt ? (
+              {userLikesIt ? (
                 <Icon
                   name="thumb-up"
                   size={26}
                   color="green"
-                  onPress={unrateFile}
+                  onPress={unlikeFile}
                 />
               ) : (
-                <Icon name="thumb-up-off-alt" size={26} onPress={rateFile} />
+                <Icon
+                  name="thumb-up-off-alt"
+                  size={26}
+                  onPress={handleLikePress}
+                />
               )}
-              <Text style={styles.iconText}>{ratings.length}</Text>
+              <Text style={styles.iconText}>{likesArray.length}</Text>
             </View>
             <View style={styles.iconbox}>
-              <Icon name="thumb-down-off-alt" size={20} />
-              <Text style={styles.iconText}>1.4k</Text>
-            </View>
-            <View style={{alignSelf: 'flex-start'}}>
-              <Icon
-                name="chat"
-                size={26}
-                onPress={() => {
-                  navigation.navigate('Chats'); // opens a new chat
-                }}
-              />
-              {/* <Text style={styles.iconText}>chat</Text> */}
+              {userDislikesIt ? (
+                <Icon
+                  name="thumb-down"
+                  size={26}
+                  color="#EB212E"
+                  onPress={unDislikeFile}
+                />
+              ) : (
+                <Icon
+                  name="thumb-down-off-alt"
+                  size={26}
+                  onPress={handleDislikePress}
+                />
+              )}
+              <Text style={styles.iconText}>{dislikesArray.length}</Text>
             </View>
             <View style={styles.iconbox}>
               {userFavouritesIt ? (
-                <Icon name="favorite" color="red" onPress={unfavouriteFile} />
+                <Icon
+                  name="favorite"
+                  color="red"
+                  size={26}
+                  onPress={unfavouriteFile}
+                />
               ) : (
-                <Icon name="favorite-border" onPress={favouriteFile} />
+                <Icon
+                  name="favorite-border"
+                  size={26}
+                  onPress={favouriteFile}
+                />
               )}
               <Text style={styles.iconText}>{favourites.length}</Text>
             </View>
