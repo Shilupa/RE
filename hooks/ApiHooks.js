@@ -53,7 +53,7 @@ const useMedia = (myFilesOnly) => {
    * Sorting media files by time added
    * returns files in descending order by time
    */
-  //mediaArray.sort((a, b) => a.time_added < b.time_added);
+  // mediaArray.sort((a, b) => a.time_added < b.time_added);
 
   /**
    * Fetching data every 3 second from server

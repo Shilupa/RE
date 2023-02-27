@@ -42,37 +42,43 @@ const Message = ({navigation, route}) => {
   };
   const [loading, setLoading] = useState(false);
   const {postComment} = useComments();
-  const {token} = useContext(MainContext);
+  const {user, token} = useContext(MainContext);
 
   const goToItemSingle = () => {
     navigation.navigate('Single', item);
   };
 
-  const {control, handleSubmit} = useForm({
+  const {control, handleSubmit, reset} = useForm({
     defaultValues: {message: ''},
     mode: 'onBlur',
   });
 
   const sendMessage = async (data) => {
-    console.log('Send clicked');
+    if (user.user_id != item.user_id) {
+      console.log('Send clicked');
 
-    console.log('data: ', data.message);
+      console.log('Sender Id:', user.user_id);
+      console.log('Receiver Id', item.user_id);
 
-    setLoading(true);
-    console.log('Loading', loading);
+      console.log('data: ', data.message);
 
-    const commentObj = {
-      message: data.message,
-      receiverId: receiverId,
-    };
-
-    console.log('commentObject: ', commentObj);
-    try {
-      // const send = await postComment(token, item.file_id, commentObj);
-      setLoading(false);
+      setLoading(true);
       console.log('Loading', loading);
-    } catch (error) {
-      throw new Error('sendMessage error, ' + error.message);
+
+      const commentObj = {
+        message: data.message,
+        receiverId: receiverId,
+      };
+
+      console.log('commentObject: ', commentObj);
+      try {
+        const send = await postComment(token, item.file_id, commentObj);
+        setLoading(false);
+        console.log('Loading', send);
+        reset();
+      } catch (error) {
+        throw new Error('sendMessage error, ' + error.message);
+      }
     }
   };
 
@@ -138,7 +144,9 @@ const Message = ({navigation, route}) => {
                 inputStyle={styles.inputStyle}
                 placeholder={'Message'}
                 multiline={true}
-                // autoCapitalize="none"
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
               />
             )}
             name="message"

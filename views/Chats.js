@@ -13,7 +13,6 @@ const Chats = ({navigation}) => {
   const {getCommentsByUser, getCommentsByFileId} = useComments();
   const {mediaArray} = useMedia();
   const [allComments, setAllComments] = useState([]);
-  const [allMedia, setAllMedia] = useState([]);
 
   /* const getMessageOfUser = async () => {
     const response = await getCommentsByUser(token);
@@ -25,8 +24,8 @@ const Chats = ({navigation}) => {
   // getting one comment based on file id
   const loadCommentofFile = async () => {
     try {
-      const response = await getCommentsByFileId(6274);
-      console.log('loadCommentofFile: ', response);
+      const response = await getCommentsByFileId(6296);
+      console.log('load Comment for File id: ', response);
     } catch (error) {
       console.error('loadCommentofFile error', error.message);
     }
@@ -49,47 +48,32 @@ const Chats = ({navigation}) => {
     }
   }; */
 
-  /*   const getAllComment = async () => {
+  const getAllComment = async () => {
     const comments = await Promise.all(
-      filteredMedia.map(async (media) => {
+      mediaArray.map(async (media) => {
         const response = await getCommentsByFileId(media.file_id);
-
         return response;
       })
     );
     setAllComments(comments);
-  }; */
+  };
 
-  // console.log('All files: ', filteredMedia);
+  console.log('All files: ', mediaArray);
 
-  const getAllComment = async () => {
+  /*   const getAllComment = async () => {
     let list = [];
-
     for await (const media of mediaArray) {
       const response = await getCommentsByFileId(media.file_id);
-
-      console.log('Respons e: ', response);
-
+      console.log('Response: ', response);
       if (response.length > 0) {
         list = list.concat(response);
-        console.log('All Comment inside forEach: ', list);
+        console.log('All Comment inside for: ', list);
       }
     }
-
-    /*     filteredMedia.forOf(async (media) => {
-      const response = await getCommentsByFileId(media.file_id);
-
-      console.log('Response: ', response);
-
-      if (response.length > 0) {
-        list = list.concat(response);
-        console.log('All Comment inside forEach: ', response);
-      } */
-
     setAllComments(list);
-
     console.log('All Comment outside function: ', allComments);
-  };
+  }; */
+
   // console.log('All Comment all outside function: ', allComments);
 
   /* const testObj = {message: 'When can I get this product?', receiverId: 2685};
@@ -104,7 +88,7 @@ const Chats = ({navigation}) => {
   }, []); */
 
   useEffect(() => {
-    // loadCommentofFile();
+    loadCommentofFile();
     getAllComment();
   }, []);
 

@@ -5,13 +5,13 @@ import ChatListItem from './ChatListItem';
 import {categoryList} from '../utils/variables';
 
 const ChatList = ({navigation}) => {
-  const {filteredMedia} = useMedia(false, categoryList);
+  const {mediaArray} = useMedia();
 
   // console.log('All files: ', filteredMedia);
 
   return (
     <FlatList
-      data={filteredMedia}
+      data={mediaArray}
       keyExtractor={(item, index) => index.toString()}
       renderItem={({item}) => (
         <ChatListItem navigation={navigation} singleMedia={item} />
