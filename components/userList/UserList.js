@@ -2,12 +2,14 @@ import {Image, StyleSheet, View, TouchableOpacity} from 'react-native';
 import PropTypes from 'prop-types';
 import {uploadsUrl, vw} from '../../utils/variables';
 import {useEffect, useState} from 'react';
+import {useUser} from '../../hooks/ApiHooks';
 
 const UserList = ({singleMedia, navigation}) => {
   const item = singleMedia;
-  // const [owner, setOwner] = useState({});
+  const [owner, setOwner] = useState({});
+  const {getUserById} = useUser();
 
-  /*  const getOwner = async () => {
+  const getOwner = async () => {
     try {
       const user = await getUserById(singleMedia.user_id);
       setOwner(user);
@@ -15,9 +17,9 @@ const UserList = ({singleMedia, navigation}) => {
       throw new Error('getOwner error hahaha, ' + error.message);
     }
   };
- */
+
   useEffect(() => {
-    // getOwner();
+    getOwner();
   }, []);
 
   return (

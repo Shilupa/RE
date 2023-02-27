@@ -294,7 +294,7 @@ const useFavourite = () => {
 // ****** Hook for Comment STARTS
 
 const useComments = () => {
-  const postComment = async (fileId, token, comment) => {
+  const postComment = async (token, fileId, comment) => {
     const options = {
       method: 'post',
       headers: {

@@ -1,7 +1,7 @@
 import React, {useContext, useState} from 'react';
 import {primaryColour, uploadsUrl} from '../utils/variables';
 import PropTypes from 'prop-types';
-import {Card, Icon, Text} from '@rneui/themed';
+import {Button, Card, Icon, Text} from '@rneui/themed';
 import {
   StyleSheet,
   View,
@@ -22,8 +22,8 @@ import {useMedia} from '../hooks/ApiHooks';
 const ModifyItem = ({navigation, route}) => {
   const {file} = route.params;
   const [loading, setLoading] = useState(false);
-  const {setIsLoggedIn} = useContext(MainContext);
-  const {putMedia} = useMedia();
+  const {setIsLoggedIn, token} = useContext(MainContext);
+  const {putMedia, deleteMedia} = useMedia();
   const {update, setUpdate} = useContext(MainContext);
   const {
     control,
@@ -47,7 +47,7 @@ const ModifyItem = ({navigation, route}) => {
           text: 'OK',
           onPress: () => {
             setUpdate(!update);
-            navigation.navigate('Profile');
+            navigation.navigate('Home');
           },
         },
       ]);
@@ -56,6 +56,42 @@ const ModifyItem = ({navigation, route}) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const deleteFile = async () => {
+    try {
+      const result = await deleteMedia(file.file_id, token);
+      Alert.alert('Success', result.message, [
+        {
+          text: 'Go Profile',
+          onPress: () => {
+            setUpdate(!update);
+            navigation.navigate('Profile');
+          },
+        },
+        {
+          text: 'Go Home',
+          onPress: () => {
+            setUpdate(!update);
+            navigation.navigate('Home');
+          },
+        },
+      ]);
+    } catch (error) {
+      throw new Error('deleteFile error, ' + error.message);
+    }
+  };
+
+  const deleteItem = () => {
+    Alert.alert('Delete Item', 'Are you sure you want to delete this item?', [
+      {
+        text: 'Yes',
+        onPress: () => {
+          deleteFile();
+        },
+      },
+      {text: 'No'},
+    ]);
   };
 
   return (
@@ -129,6 +165,13 @@ const ModifyItem = ({navigation, route}) => {
           submit={modifyFile}
           handleSubmit={handleSubmit}
         />
+        <Button
+          buttonStyle={styles.deleteButtonStyle}
+          titleStyle={styles.deleteTitleStyle}
+          containerStyle={styles.deleteContainerStyle}
+          title="Delete"
+          onPress={deleteItem}
+        />
       </ScrollView>
     </SafeAreaView>
   );
@@ -172,6 +215,16 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     borderWidth: 1,
     marginBottom: 10,
+  },
+  deleteButtonStyle: {
+    backgroundColor: 'red',
+    borderRadius: 25,
+    height: 50,
+  },
+  deleteTitleStyle: {fontWeight: '300', fontSize: 20},
+  deleteContainerStyle: {
+    marginHorizontal: '10%',
+    marginVertical: 10,
   },
 });
 

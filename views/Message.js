@@ -1,6 +1,12 @@
-import {Platform, StyleSheet, SafeAreaView, View} from 'react-native';
+import {
+  Platform,
+  StyleSheet,
+  SafeAreaView,
+  View,
+  KeyboardAvoidingView,
+} from 'react-native';
 import PropTypes from 'prop-types';
-import {Divider, Icon, Image, Input, Text} from '@rneui/themed';
+import {Button, Divider, Icon, Image, Input, Text} from '@rneui/themed';
 import {StatusBar} from 'react-native';
 import {
   inputBackground,
@@ -10,6 +16,9 @@ import {
 } from '../utils/variables';
 import MessageList from '../components/MessageList';
 import {Controller, useForm} from 'react-hook-form';
+import {useContext, useState} from 'react';
+import {useComments} from '../hooks/ApiHooks';
+import {MainContext} from '../contexts/MainContext';
 
 const Message = ({navigation, route}) => {
   const {
@@ -21,6 +30,8 @@ const Message = ({navigation, route}) => {
     user_id: userId,
   } = route.params;
 
+  const receiverId = 2702;
+
   const item = {
     title: title,
     description: description,
@@ -29,21 +40,49 @@ const Message = ({navigation, route}) => {
     time_added: timeAdded,
     user_id: userId,
   };
-
-  const {control} = useForm({
-    mode: 'onBlur',
-  });
+  const [loading, setLoading] = useState(false);
+  const {postComment} = useComments();
+  const {token} = useContext(MainContext);
 
   const goToItemSingle = () => {
     navigation.navigate('Single', item);
   };
 
+  const {control, handleSubmit} = useForm({
+    defaultValues: {message: ''},
+    mode: 'onBlur',
+  });
+
+  const sendMessage = async (data) => {
+    console.log('Send clicked');
+
+    console.log('data: ', data.message);
+
+    setLoading(true);
+    console.log('Loading', loading);
+
+    const commentObj = {
+      message: data.message,
+      receiverId: receiverId,
+    };
+
+    console.log('commentObject: ', commentObj);
+    try {
+      // const send = await postComment(token, item.file_id, commentObj);
+      setLoading(false);
+      console.log('Loading', loading);
+    } catch (error) {
+      throw new Error('sendMessage error, ' + error.message);
+    }
+  };
+
+  /*
   const moreData = {
     message: 'Hey is this item available?',
     receiverId: 2685,
   };
 
-  const formData = new FormData();
+ const formData = new FormData();
 
   formData.append('description', JSON.stringify(moreData));
 
@@ -54,7 +93,7 @@ const Message = ({navigation, route}) => {
   const someData = allData.receiverId;
 
   console.log('messgae: ', message);
-  console.log('receiverId: ', someData);
+  console.log('receiverId: ', someData); */
 
   return (
     <SafeAreaView style={styles.container}>
@@ -81,27 +120,46 @@ const Message = ({navigation, route}) => {
       <Divider />
       <MessageList navigation={navigation} />
       <Divider />
-      <View style={styles.sendMessage}>
-        <Controller
-          control={control}
-          render={({field: {onChange, onBlur, value}}) => (
-            <Input
-              inputContainerStyle={styles.inputContainerStyle}
-              inputStyle={styles.inputStyle}
-              placeholder={'Message'}
-              onBlur={onBlur}
-              onChange={onChange}
-              multiline={true}
-              value={value}
-              autoCapitalize="none"
+      <KeyboardAvoidingView>
+        <View style={styles.sendMessage}>
+          <Controller
+            control={control}
+            rules={{
+              required: {
+                value: true,
+              },
+              minLength: {
+                value: 1,
+              },
+            }}
+            render={({field: {onChange, onBlur, value}}) => (
+              <Input
+                inputContainerStyle={styles.inputContainerStyle}
+                inputStyle={styles.inputStyle}
+                placeholder={'Message'}
+                multiline={true}
+                // autoCapitalize="none"
+              />
+            )}
+            name="message"
+          />
+          <View style={styles.sendIcon}>
+            <Button
+              containerStyle={{
+                width: 50,
+                height: 30,
+                borderRadius: 15,
+              }}
+              buttonStyle={{
+                backgroundColor: primaryColour,
+              }}
+              titleStyle={{fontSize: 10}}
+              title="Send"
+              onPress={handleSubmit(sendMessage)}
             />
-          )}
-          name="username"
-        />
-        <View style={styles.sendIcon}>
-          <Icon name="send" color="black" />
+          </View>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -151,7 +209,7 @@ const styles = StyleSheet.create({
   },
 
   sendMessage: {
-    width: '90%',
+    width: '85%',
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'baseline',
@@ -174,9 +232,8 @@ const styles = StyleSheet.create({
 
   sendIcon: {
     position: 'absolute',
-    right: -30,
+    right: -50,
     top: 10,
-    transform: [{rotateZ: '-30deg'}],
   },
 });
 
