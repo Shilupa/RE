@@ -3,7 +3,8 @@ import {MainContext} from '../contexts/MainContext';
 import {useFavourite} from './ApiHooks';
 
 const userFavourites = (fileId) => {
-  const {updateFavourite, setUpdateFavourite, token} = useContext(MainContext);
+  const {updateFavourite, setUpdateFavourite, token, update, setUpdate} =
+    useContext(MainContext);
   const [favourites, setFavourites] = useState([]);
   const {getFavouritesByFileId, postFavourite, deleteFavourite} =
     useFavourite();
