@@ -1,6 +1,6 @@
 import {useContext, useEffect, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
-import {useFavourite} from './ApiHooks';
+import {useFavourite, useRating} from './ApiHooks';
 
 const userFavourites = (fileId) => {
   const {updateFavourite, setUpdateFavourite, token, update, setUpdate} =
@@ -57,4 +57,37 @@ const userFavourites = (fileId) => {
   return {favourites, addFavourite, removeFavourite};
 };
 
-export {userFavourites};
+const userRatings = (fileId, userId) => {
+  const {updateRating, setUpdateRating, token} = useContext(MainContext);
+  const {getRatingsByFileId, postRating} = useRating();
+  const [ratings, setRatings] = useState([]);
+  let userLiked = false;
+  const getAllRatings = async () => {
+    try {
+      const response = await getRatingsByFileId(fileId);
+      setRatings(response);
+    } catch (error) {
+      console.log('Get All Ratings: ', error);
+    }
+    ratings.map((rating) => {
+      if (rating.user_id === userId && rating.rating === 1) {
+        userLiked = true;
+        return;
+      }
+    });
+  };
+
+  const addRating = async () => {
+    try {
+      await postRating(singleMedia.file_id, token, 1);
+      //setUserLikesIt(true);
+      //getRatings();
+      setUpdateRating(!updateRating);
+    } catch (error) {
+      // note: you cannot like same file multiple times
+      onsole.log('Add Rating: ]', error);
+    }
+  };
+  return {getAllRatings, userLiked};
+};
+export {userFavourites, userRatings};

@@ -14,7 +14,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useFavourite, useRating, useTag, useUser} from '../../hooks/ApiHooks';
 import {MainContext} from '../../contexts/MainContext';
 import {uploadsUrl} from '../../utils/variables';
-import {userFavourites} from '../../hooks/UserFunctionality';
+import {userFavourites, userRatings} from '../../hooks/UserFunctionality';
 
 const ProductList = ({singleMedia, navigation}) => {
   const assetImage = Image.resolveAssetSource(
@@ -43,6 +43,11 @@ const ProductList = ({singleMedia, navigation}) => {
   const {favourites, addFavourite, removeFavourite} = userFavourites(
     singleMedia.file_id
   );
+  const {getAllRatings, userLiked} = userRatings(
+    singleMedia.file_id,
+    user.user_id
+  );
+
   // Parsing string object to json object
   const descriptionObj = JSON.parse(singleMedia.description);
   const loadAvatar = async () => {
@@ -153,11 +158,6 @@ const ProductList = ({singleMedia, navigation}) => {
     getOwner();
     loadAvatar();
   }, [isLoggedIn, owner]);
-
-  // useEffect(() => {
-  //   getFavouriteList(singleMedia.file_id);
-  // }, [updateFavourite]);
-  // [update, updateFavourite]
 
   useEffect(() => {
     getRatings();
