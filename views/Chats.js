@@ -49,7 +49,7 @@ const Chats = ({navigation}) => {
     }
   }; */
 
-  const getAllComment = async () => {
+  /*   const getAllComment = async () => {
     const comments = await Promise.all(
       filteredMedia.map(async (media) => {
         const response = await getCommentsByFileId(media.file_id);
@@ -58,7 +58,7 @@ const Chats = ({navigation}) => {
       })
     );
     setAllComments(comments);
-  };
+  }; */
 
   // console.log('All files: ', filteredMedia);
 
