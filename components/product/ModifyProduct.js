@@ -13,7 +13,6 @@ import {
   StatusBar,
 } from 'react-native';
 import {MainContext} from '../../contexts/MainContext';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Controller, useForm} from 'react-hook-form';
 import {useMedia} from '../../hooks/ApiHooks';
 import FormInput from '../formComponent/FormInput';
@@ -22,7 +21,7 @@ import FormButton from '../formComponent/FormButton';
 const ModifyProduct = ({navigation, route}) => {
   const {file} = route.params;
   const [loading, setLoading] = useState(false);
-  const {setIsLoggedIn, token} = useContext(MainContext);
+  const {token} = useContext(MainContext);
   const {putMedia, deleteMedia} = useMedia();
   const {update, setUpdate} = useContext(MainContext);
   // Converting json string to json object
@@ -58,7 +57,6 @@ const ModifyProduct = ({navigation, route}) => {
     setLoading(true);
 
     try {
-      const token = await AsyncStorage.getItem('userToken');
       const result = await putMedia(file.file_id, newDataObj, token);
       Alert.alert('Success', result.message, [
         {
