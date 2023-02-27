@@ -58,13 +58,18 @@ const useMedia = (myFilesOnly) => {
   /**
    * Fetching data every 3 second from server
    */
-  useEffect(() => {
+  /* useEffect(() => {
+    loadMedia();
     const interval = setInterval(() => {
       // load media when update state changes in main context
       // by adding update state to the array below
-      loadMedia();
     }, 3000);
     return () => clearInterval(interval);
+  }, [update]); */
+  useEffect(() => {
+    // load media when update state changes in main context
+    // by adding update state to the array below
+    loadMedia();
   }, [update]);
 
   const postMedia = async (fileData, token) => {

@@ -16,7 +16,7 @@ import MainView from '../components/product/MainView';
 const Home = ({navigation}) => {
   const [index, setIndex] = useState();
   const {isLoggedIn, user} = useContext(MainContext);
-  const {mediaArray} = useMedia();
+  
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.titleBar}>
