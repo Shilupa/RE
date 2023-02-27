@@ -47,7 +47,7 @@ const ModifyItem = ({navigation, route}) => {
           text: 'OK',
           onPress: () => {
             setUpdate(!update);
-            navigation.navigate('Profile');
+            navigation.navigate('Home');
           },
         },
       ]);

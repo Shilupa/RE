@@ -1,11 +1,14 @@
 import {FlatList} from 'react-native';
-import {useMedia} from '../hooks/ApiHooks';
+import {useComments, useMedia} from '../hooks/ApiHooks';
 import PropTypes from 'prop-types';
 import ChatListItem from './ChatListItem';
+import {categoryList} from '../utils/variables';
 
 const ChatList = ({navigation}) => {
-  const {filteredMedia} = useMedia();
-  // console.log('Media array from chat list: ', mediaArray);
+  const {filteredMedia} = useMedia(false, categoryList);
+
+  // console.log('All files: ', filteredMedia);
+
   return (
     <FlatList
       data={filteredMedia}

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ChatList from '../components/ChatList';
 import {Divider, Text} from '@rneui/themed';
 import {StatusBar} from 'react-native';
-import {appId, baseUrl, primaryColour} from '../utils/variables';
+import {appId, baseUrl, categoryList, primaryColour} from '../utils/variables';
 import {useContext, useEffect, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
 import {loadMediaById, useComments, useMedia} from '../hooks/ApiHooks';
@@ -11,7 +11,7 @@ import {loadMediaById, useComments, useMedia} from '../hooks/ApiHooks';
 const Chats = ({navigation}) => {
   const {user, token} = useContext(MainContext);
   const {getCommentsByUser, getCommentsByFileId} = useComments();
-  const {filteredMedia} = useMedia();
+  const {filteredMedia} = useMedia(false, categoryList);
   const [allComments, setAllComments] = useState([]);
   const [allMedia, setAllMedia] = useState([]);
 
@@ -21,6 +21,16 @@ const Chats = ({navigation}) => {
   }; */
 
   // const mediaArray = [{file_id: 6200}, {file_id: 6200}, {file_id: 6200}];
+
+  // getting one comment based on file id
+  const loadCommentofFile = async () => {
+    try {
+      const response = await getCommentsByFileId(6274);
+      console.log('loadCommentofFile: ', response);
+    } catch (error) {
+      console.error('loadCommentofFile error', error.message);
+    }
+  };
 
   /*   const loadAllComments = async () => {
     let list = [];
@@ -39,7 +49,7 @@ const Chats = ({navigation}) => {
     }
   }; */
 
-  /*  const getAllComment = async () => {
+  const getAllComment = async () => {
     const comments = await Promise.all(
       filteredMedia.map(async (media) => {
         const response = await getCommentsByFileId(media.file_id);
@@ -48,41 +58,55 @@ const Chats = ({navigation}) => {
       })
     );
     setAllComments(comments);
-  }; */
+  };
 
   // console.log('All files: ', filteredMedia);
+
   const getAllComment = async () => {
     let list = [];
-    filteredMedia.forEach(async (media, index) => {
+
+    for await (const media of filteredMedia) {
       const response = await getCommentsByFileId(media.file_id);
+
+      console.log('Respons e: ', response);
 
       if (response.length > 0) {
         list = list.concat(response);
-        // console.log(media.file_id);
-        // console.log('====================================');
-        // console.log('Comments', list);
-        // console.log('====================================');
-        setAllComments(list);
+        console.log('All Comment inside forEach: ', list);
       }
-    });
+    }
+
+    /*     filteredMedia.forOf(async (media) => {
+      const response = await getCommentsByFileId(media.file_id);
+
+      console.log('Response: ', response);
+
+      if (response.length > 0) {
+        list = list.concat(response);
+        console.log('All Comment inside forEach: ', response);
+      } */
+
+    setAllComments(list);
 
     console.log('All Comment outside function: ', allComments);
   };
+  // console.log('All Comment all outside function: ', allComments);
 
   /* const testObj = {message: 'When can I get this product?', receiverId: 2685};
   const stringObj = JSON.stringify(testObj);
   console.log('Stringyfy: ', stringObj); */
 
-  useEffect(() => {
+  /*   useEffect(() => {
     const interval = setInterval(() => {
       getAllComment();
-    }, 30000);
+    }, 10000);
     return () => clearInterval(interval);
-  }, []);
-
-  /* useEffect(() => {
-    getAllComment();
   }, []); */
+
+  useEffect(() => {
+    // loadCommentofFile();
+    getAllComment();
+  }, []);
 
   /* const comments = await Promise.all(
         mediaArray.map(async (file) => {
@@ -97,7 +121,7 @@ const Chats = ({navigation}) => {
         <Text style={styles.title}>Chats</Text>
       </View>
       <Divider />
-
+      {/* <Text>{allComments}</Text> */}
       <ChatList navigation={navigation} />
     </SafeAreaView>
   );

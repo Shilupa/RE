@@ -2,8 +2,9 @@ import {FlatList} from 'react-native';
 import PropTypes from 'prop-types';
 import {useMedia} from '../../hooks/ApiHooks';
 import ProductList from './ProductList';
+import {categoryList} from '../../utils/variables';
 
-const MainView = ({navigation, categoryList}) => {
+const MainView = ({navigation}) => {
   const {filteredMedia} = useMedia(false, categoryList);
 
   return (
@@ -19,7 +20,6 @@ const MainView = ({navigation, categoryList}) => {
 
 MainView.propTypes = {
   navigation: PropTypes.object,
-  categoryList: PropTypes.object,
 };
 
 export default MainView;

@@ -65,13 +65,17 @@ const useMedia = (myFilesOnly = false, categoryList = []) => {
   /**
    * Fetching data every 3 second from server
    */
-  useEffect(() => {
+  /*   useEffect(() => {
     const interval = setInterval(() => {
       // load media when update state changes in main context
       // by adding update state to the array below
       loadMedia();
-    }, 3000);
+    }, 10000);
     return () => clearInterval(interval);
+  }, [update]); */
+
+  useEffect(() => {
+    loadMedia();
   }, [update]);
 
   const postMedia = async (fileData, token) => {
@@ -297,7 +301,7 @@ const useFavourite = () => {
 // ****** Hook for Comment STARTS
 
 const useComments = () => {
-  const postComment = async (fileId, token, comment) => {
+  const postComment = async (token, fileId, comment) => {
     const options = {
       method: 'post',
       headers: {
