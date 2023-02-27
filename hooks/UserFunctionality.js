@@ -2,7 +2,7 @@ import {useContext, useEffect, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
 import {useFavourite} from './ApiHooks';
 
-const userFunctionality = (fileId) => {
+const userFavourites = (fileId) => {
   const {
     updateFavourite,
     setUpdateFavourite,
@@ -51,4 +51,4 @@ const userFunctionality = (fileId) => {
   return {favourites, addFavourite, removeFavourite};
 };
 
-export {userFunctionality};
+export {userFavourites};

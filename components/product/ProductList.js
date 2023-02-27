@@ -14,7 +14,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useFavourite, useRating, useTag, useUser} from '../../hooks/ApiHooks';
 import {MainContext} from '../../contexts/MainContext';
 import {uploadsUrl} from '../../utils/variables';
-import {userFunctionality} from '../../hooks/UserFunctionality';
+import {userFavourites} from '../../hooks/UserFunctionality';
 
 const ProductList = ({singleMedia, navigation}) => {
   const assetImage = Image.resolveAssetSource(
@@ -40,7 +40,7 @@ const ProductList = ({singleMedia, navigation}) => {
   const [userLikesIt, setUserLikesIt] = useState(false);
   //const [userDislikesIt, setUserDislikesIt] = useState(false);
   const {postRating, deleteRating, getRatingsByFileId} = useRating();
-  const {favourites, addFavourite, removeFavourite} = userFunctionality(
+  const {favourites, addFavourite, removeFavourite} = userFavourites(
     singleMedia.file_id
   );
   // Parsing string object to json object

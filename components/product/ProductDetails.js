@@ -23,18 +23,14 @@ import {
 import {MainContext} from '../../contexts/MainContext';
 import {useFavourite, useRating, useTag, useUser} from '../../hooks/ApiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {userFunctionality} from '../../hooks/UserFunctionality';
+import {userFavourites} from '../../hooks/UserFunctionality';
 
 const ProductDetails = ({navigation, route}) => {
   const assetImage = Image.resolveAssetSource(
     require('../../assets/avatar.png')
   ).uri;
-  const {
-    isLoggedIn,
-    updateRating,
-    setUpdateRating,
-    update,
-  } = useContext(MainContext);
+  const {isLoggedIn, updateRating, setUpdateRating, update} =
+    useContext(MainContext);
   const {getUserById} = useUser();
   const [owner, setOwner] = useState({});
   const [avatar, setAvatar] = useState(assetImage);
@@ -57,7 +53,7 @@ const ProductDetails = ({navigation, route}) => {
     time_added: timeAdded,
     user_id: userId,
   } = route.params;
-  const {favourites, addFavourite, removeFavourite} = userFunctionality(fileId);
+  const {favourites, addFavourite, removeFavourite} = userFavourites(fileId);
 
   const mediaUploded = new Date(timeAdded);
   const timeNow = new Date();
