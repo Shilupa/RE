@@ -23,6 +23,7 @@ import {
 import {MainContext} from '../../contexts/MainContext';
 import {useFavourite, useRating, useTag, useUser} from '../../hooks/ApiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {userFunctionality} from '../../hooks/UserFunctionality';
 
 const ProductDetails = ({navigation, route}) => {
   const assetImage = Image.resolveAssetSource(
@@ -30,18 +31,14 @@ const ProductDetails = ({navigation, route}) => {
   ).uri;
   const {
     isLoggedIn,
-    updateFavourite,
-    setUpdateFavourite,
     updateRating,
     setUpdateRating,
     update,
-    setUpdate,
   } = useContext(MainContext);
   const {getUserById} = useUser();
   const [owner, setOwner] = useState({});
   const [avatar, setAvatar] = useState(assetImage);
   const {getFilesByTag} = useTag();
-  const [favourites, setFavourites] = useState([]);
   const [userFavouritesIt, setuserFavouritesIt] = useState(false);
   const {user} = useContext(MainContext);
   const {getFavouritesByFileId, postFavourite, deleteFavourite} =
@@ -52,7 +49,6 @@ const ProductDetails = ({navigation, route}) => {
   const [dislikesArray, setDislikesArray] = useState([]);
   const [userLikesIt, setUserLikesIt] = useState(false);
   const [userDislikesIt, setUserDislikesIt] = useState(false);
-
   const {
     title,
     description,
@@ -61,6 +57,7 @@ const ProductDetails = ({navigation, route}) => {
     time_added: timeAdded,
     user_id: userId,
   } = route.params;
+  const {favourites, addFavourite, removeFavourite} = userFunctionality(fileId);
 
   const mediaUploded = new Date(timeAdded);
   const timeNow = new Date();
@@ -118,52 +115,6 @@ const ProductDetails = ({navigation, route}) => {
       setOwner(owner);
     } catch (error) {
       throw new Error('getOwner error, ' + error.message);
-    }
-  };
-
-  const getFavourites = async () => {
-    try {
-      const favourites = await getFavouritesByFileId(fileId);
-      // console.log('likes', likes, 'user', user);
-      setFavourites(favourites);
-      // check if the current user id is included in the 'likes' array and
-      // set the 'userLikesIt' state accordingly
-      for (const favourite of favourites) {
-        if (favourite.user_id === user.user_id) {
-          setuserFavouritesIt(true);
-          break;
-        }
-      }
-    } catch (error) {
-      console.log('Product details [getFavourites]', error);
-    }
-  };
-
-  const favouriteFile = async () => {
-    try {
-      const token = await AsyncStorage.getItem('userToken');
-      await postFavourite(fileId, token);
-      setuserFavouritesIt(true);
-      setUpdateFavourite(!updateFavourite);
-      setUpdate(update + 1);
-    } catch (error) {
-      // note: you cannot like same file multiple times
-      // console.log(error);
-      // console.log('Product details [favouriteFile]', error);
-    }
-  };
-
-  const unfavouriteFile = async () => {
-    try {
-      const token = await AsyncStorage.getItem('userToken');
-      await deleteFavourite(fileId, token);
-      setuserFavouritesIt(false);
-      setUpdateFavourite(!updateFavourite);
-      setUpdate(update + 1);
-    } catch (error) {
-      // note: you cannot like same file multiple times
-      // console.log(error);
-      // console.log('Product details [nfavouriteFile]', error);
     }
   };
 
@@ -263,10 +214,6 @@ const ProductDetails = ({navigation, route}) => {
   useEffect(() => {
     loadAvatar();
   }, [owner]);
-
-  useEffect(() => {
-    getFavourites();
-  }, [update, updateFavourite]);
 
   useEffect(() => {
     getRatings();
@@ -395,18 +342,18 @@ const ProductDetails = ({navigation, route}) => {
               <Text style={styles.iconText}>{dislikesArray.length}</Text>
             </View>
             <View style={styles.iconbox}>
-              {userFavouritesIt ? (
+              {favourites.length > 0 ? (
                 <Icon
                   name="favorite"
                   color="red"
                   size={26}
-                  onPress={unfavouriteFile}
+                  onPress={() => removeFavourite(fileId)}
                 />
               ) : (
                 <Icon
                   name="favorite-border"
                   size={26}
-                  onPress={favouriteFile}
+                  onPress={() => addFavourite(fileId)}
                 />
               )}
               <Text style={styles.iconText}>{favourites.length}</Text>
