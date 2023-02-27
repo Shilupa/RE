@@ -12,6 +12,10 @@ const userFavourites = (fileId) => {
   const {getFavouritesByFileId, postFavourite, deleteFavourite} =
     useFavourite();
 
+    /**
+     * Gets user favourite by file id as an array of length 1
+     * If file is not favourite of user then length of arrat is 0
+     */
   const getFavouriteList = async () => {
     try {
       const response = await getFavouritesByFileId(fileId);
@@ -21,6 +25,9 @@ const userFavourites = (fileId) => {
     }
   };
 
+  /**
+   * Adds file as favourite for user
+   */
   const addFavourite = async (fileId) => {
     console.log('add', fileId);
     try {
@@ -33,6 +40,9 @@ const userFavourites = (fileId) => {
     }
   };
 
+  /**
+   * Deletes file from favourite of user
+   */
   const removeFavourite = async (fileId) => {
     try {
       const res = await deleteFavourite(fileId, token);
