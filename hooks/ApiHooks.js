@@ -14,7 +14,7 @@ const doFetch = async (url, options) => {
   return json;
 };
 
-const useMedia = (myFilesOnly = false, categoryList = []) => {
+const useMedia = (myFilesOnly) => {
   const [mediaArray, setMediaArray] = useState([]);
   const {update, user} = useContext(MainContext);
 
@@ -23,44 +23,37 @@ const useMedia = (myFilesOnly = false, categoryList = []) => {
       /**
        * Looping through Category list and fetching one array list at a time by category name
        */
-      categoryList.forEach(async (category) => {
-        let json = await useTag().getFilesByTag(`${appId}_${category}`);
+      let json = await useTag().getFilesByTag(`${appId}`);
 
-        // keep users files if MyFilesOnly
-        if (myFilesOnly) {
-          json = json.filter((file) => file.user_id === user.user_id);
-        }
+      // keep users files if MyFilesOnly
+      if (myFilesOnly) {
+        json = json.filter((file) => file.user_id === user.user_id);
+      }
 
-        /**
-         * Fetching all media by file id found in objects inside json file
-         */
-        const media = await Promise.all(
-          json.map(async (file) => {
-            const fileResponse = await fetch(baseUrl + 'media/' + file.file_id);
-            return await fileResponse.json();
-          })
-        );
-        /**
-         * Storing array of category one at a time
-         */
-        setMediaArray((mediaArray) => [...mediaArray, ...media]);
-      });
+      json.reverse();
+      /**
+       * Fetching all media by file id found in objects inside json file
+       */
+      const media = await Promise.all(
+        json.map(async (file) => {
+          const fileResponse = await fetch(baseUrl + 'media/' + file.file_id);
+          return await fileResponse.json();
+        })
+      );
+      /**
+       * Storing array of category one at a time
+       */
+      setMediaArray(media);
     } catch (error) {
       console.error('List, loadMedia', error);
     }
   };
 
-  // Removing duplicates from list
-  const filteredMedia = mediaArray.reduce((acc, current) => {
-    const media = acc.find((media) => media.file_id === current.file_id);
-    return !media ? acc.concat([current]) : acc;
-  }, []);
-
   /**
    * Sorting media files by time added
    * returns files in descending order by time
    */
-  filteredMedia.sort((a, b) => a.time_added < b.time_added);
+  //mediaArray.sort((a, b) => a.time_added < b.time_added);
 
   /**
    * Fetching data every 3 second from server
@@ -116,7 +109,7 @@ const useMedia = (myFilesOnly = false, categoryList = []) => {
       throw new Error('putMedia: ' + error.message);
     }
   };
-  return {filteredMedia, postMedia, deleteMedia, putMedia};
+  return {mediaArray, postMedia, deleteMedia, putMedia};
 };
 // ******* use media ENDS
 

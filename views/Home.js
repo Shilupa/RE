@@ -10,13 +10,13 @@ import {Tab, TabView, Text, Card} from '@rneui/themed';
 import {useContext, useEffect, useState} from 'react';
 import {categoryList, primaryColour} from '../utils/variables';
 import {MainContext} from '../contexts/MainContext';
-import {useTag} from '../hooks/ApiHooks';
+import {useMedia, useTag} from '../hooks/ApiHooks';
 import MainView from '../components/product/MainView';
 
 const Home = ({navigation}) => {
   const [index, setIndex] = useState();
   const {isLoggedIn, user} = useContext(MainContext);
-
+  const {mediaArray} = useMedia();
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.titleBar}>
@@ -78,16 +78,16 @@ const Home = ({navigation}) => {
       <Card.Divider />
       <TabView value={index} onChange={setIndex} animationType="spring">
         <TabView.Item style={{width: '100%'}}>
-          <MainView navigation={navigation} categoryList={categoryList} />
+          <MainView navigation={navigation} category={''} />
         </TabView.Item>
         <TabView.Item style={{backgroundColor: 'none', width: '100%'}}>
-          <MainView navigation={navigation} categoryList={['Furniture']} />
+          <MainView navigation={navigation} category={categoryList[1]} />
         </TabView.Item>
         <TabView.Item style={{backgroundColor: 'none', width: '100%'}}>
-          <MainView navigation={navigation} categoryList={['Clothing']} />
+          <MainView navigation={navigation} category={categoryList[0]} />
         </TabView.Item>
         <TabView.Item style={{backgroundColor: 'none', width: '100%'}}>
-          <MainView navigation={navigation} categoryList={['Electronics']} />
+          <MainView navigation={navigation} category={categoryList[2]} />
         </TabView.Item>
       </TabView>
     </SafeAreaView>

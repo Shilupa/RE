@@ -27,14 +27,14 @@ const ModifyProduct = ({navigation, route}) => {
   const {update, setUpdate} = useContext(MainContext);
   // Converting json string to json object
   const descriptionObj = JSON.parse(file.description);
-  
+
   const {
     control,
     handleSubmit,
     formState: {errors},
   } = useForm({
     defaultValues: {
-      title: file.title,
+      title: descriptionObj.title,
       description: descriptionObj.detail,
       condition: descriptionObj.condition,
       status: descriptionObj.status,
@@ -47,13 +47,12 @@ const ModifyProduct = ({navigation, route}) => {
       detail: data.description,
       condition: data.condition,
       status: data.status,
-      tag: appId
+      title: data.title,
     };
     // Converting json object to string
     const jsonObj = JSON.stringify(mediaDescription);
 
     const newDataObj = {
-      title: data.title,
       description: jsonObj,
     };
     setLoading(true);

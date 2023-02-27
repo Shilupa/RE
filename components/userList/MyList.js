@@ -5,12 +5,12 @@ import UserList from './UserList';
 import {categoryList} from '../../utils/variables';
 
 const MyList = ({navigation}) => {
-  const {filteredMedia} = useMedia(true, categoryList);
+  const {mediaArray} = useMedia(true);
   return (
     <FlatList
       horizontal={false}
       numColumns={3}
-      data={filteredMedia}
+      data={mediaArray}
       keyExtractor={(item, index) => index.toString()}
       renderItem={({item}) => (
         <UserList navigation={navigation} singleMedia={item} />

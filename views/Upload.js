@@ -80,12 +80,12 @@ const Upload = ({navigation}) => {
         detail: data.description,
         condition: data.condition,
         status: 'Available',
-        tag: appId
+        title: data.title,
       };
 
       // Converting json object to string
       const jsonObj = JSON.stringify(mediaDescription);
-      formData.append('title', data.title);
+      formData.append('title', selectedCategory);
       formData.append('description', jsonObj);
 
       const filename = mediafile.uri.split('/').pop();
@@ -104,7 +104,7 @@ const Upload = ({navigation}) => {
         console.log('result', result);
         const appTag = {
           file_id: result.file_id,
-          tag: `${appId}_${selectedCategory}`,
+          tag: appId,
         };
         await postTag(appTag, token);
 
