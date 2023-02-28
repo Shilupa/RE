@@ -145,7 +145,7 @@ const ProductList = ({singleMedia, navigation}) => {
     try {
       const token = await AsyncStorage.getItem('userToken');
       await deleteRating(singleMedia.file_id, token);
-      setUserDislikesIt(false);
+      //setUserDislikesIt(false);
       getRatings();
       setUpdateRating(!updateRating);
     } catch (error) {
@@ -159,9 +159,6 @@ const ProductList = ({singleMedia, navigation}) => {
     loadAvatar();
   }, [isLoggedIn]);
 
-  useEffect(() => {
-    getFavourites();
-  }, [update, updateFavourite]);
 
   useEffect(() => {
     getRatings();
