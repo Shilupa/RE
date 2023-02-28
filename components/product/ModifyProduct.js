@@ -1,7 +1,7 @@
 import React, {useContext, useState} from 'react';
 import {appId, primaryColour, uploadsUrl} from '../../utils/variables';
 import PropTypes from 'prop-types';
-import {Card, Icon, Text} from '@rneui/themed';
+import {Button, Card, Icon, Text} from '@rneui/themed';
 import {
   StyleSheet,
   View,
@@ -13,7 +13,6 @@ import {
   StatusBar,
 } from 'react-native';
 import {MainContext} from '../../contexts/MainContext';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Controller, useForm} from 'react-hook-form';
 import {useMedia} from '../../hooks/ApiHooks';
 import FormInput from '../formComponent/FormInput';
@@ -22,7 +21,7 @@ import FormButton from '../formComponent/FormButton';
 const ModifyProduct = ({navigation, route}) => {
   const {file} = route.params;
   const [loading, setLoading] = useState(false);
-  const {setIsLoggedIn} = useContext(MainContext);
+  const {token} = useContext(MainContext);
   const {putMedia, deleteMedia} = useMedia();
   const {update, setUpdate} = useContext(MainContext);
   // Converting json string to json object
@@ -58,7 +57,6 @@ const ModifyProduct = ({navigation, route}) => {
     setLoading(true);
 
     try {
-      const token = await AsyncStorage.getItem('userToken');
       const result = await putMedia(file.file_id, newDataObj, token);
       Alert.alert('Success', result.message, [
         {
@@ -74,6 +72,42 @@ const ModifyProduct = ({navigation, route}) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const deleteFile = async () => {
+    try {
+      const result = await deleteMedia(file.file_id, token);
+      Alert.alert('Success', result.message, [
+        {
+          text: 'Go Profile',
+          onPress: () => {
+            setUpdate(!update);
+            navigation.navigate('Profile');
+          },
+        },
+        {
+          text: 'Go Home',
+          onPress: () => {
+            setUpdate(!update);
+            navigation.navigate('Home');
+          },
+        },
+      ]);
+    } catch (error) {
+      throw new Error('deleteFile error, ' + error.message);
+    }
+  };
+
+  const deleteItem = () => {
+    Alert.alert('Delete Item', 'Are you sure you want to delete this item?', [
+      {
+        text: 'Yes',
+        onPress: () => {
+          deleteFile();
+        },
+      },
+      {text: 'No'},
+    ]);
   };
 
   return (
@@ -189,6 +223,13 @@ const ModifyProduct = ({navigation, route}) => {
           submit={modifyFile}
           handleSubmit={handleSubmit}
         />
+        <Button
+          buttonStyle={styles.deleteButtonStyle}
+          titleStyle={styles.deleteTitleStyle}
+          containerStyle={styles.deleteContainerStyle}
+          title="Delete"
+          onPress={deleteItem}
+        />
       </ScrollView>
     </SafeAreaView>
   );
@@ -232,6 +273,16 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     borderWidth: 1,
     marginBottom: 10,
+  },
+  deleteButtonStyle: {
+    backgroundColor: 'red',
+    borderRadius: 25,
+    height: 50,
+  },
+  deleteTitleStyle: {fontWeight: '300', fontSize: 20},
+  deleteContainerStyle: {
+    marginHorizontal: '10%',
+    marginVertical: 10,
   },
 });
 

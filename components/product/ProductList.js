@@ -7,13 +7,14 @@ import {
   Alert,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import {Icon} from '@rneui/themed';
+import {Button, Icon} from '@rneui/themed';
 import {Card} from '@rneui/base';
 import {useContext, useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useFavourite, useRating, useTag, useUser} from '../../hooks/ApiHooks';
 import {MainContext} from '../../contexts/MainContext';
 import {uploadsUrl} from '../../utils/variables';
+import {userFavourites, userRatings} from '../../hooks/UserFunctionality';
 
 const ProductList = ({singleMedia, navigation}) => {
   const assetImage = Image.resolveAssetSource(
@@ -26,27 +27,29 @@ const ProductList = ({singleMedia, navigation}) => {
   const {
     isLoggedIn,
     user,
-    updateFavourite,
-    setUpdateFavourite,
     update,
-    setUpdate,
     updateRating,
     setUpdateRating,
+    userDislikesIt,
   } = useContext(MainContext);
-  const [favourites, setFavourites] = useState([]);
-  const [userFavouritesIt, setuserFavouritesIt] = useState(false);
-  const {getFavouritesByFileId, postFavourite, deleteFavourite} =
-    useFavourite();
+
+  const {getFavouritesByFileId, deleteFavourite} = useFavourite();
   const [ratings, setRatings] = useState([]);
   const [likesArray, setLikesArray] = useState([]);
   const [dislikesArray, setDislikesArray] = useState([]);
   const [userLikesIt, setUserLikesIt] = useState(false);
-  const [userDislikesIt, setUserDislikesIt] = useState(false);
+  //const [userDislikesIt, setUserDislikesIt] = useState(false);
   const {postRating, deleteRating, getRatingsByFileId} = useRating();
+  const {favourites, addFavourite, removeFavourite} = userFavourites(
+    singleMedia.file_id
+  );
+  const {getAllRatings, userLiked} = userRatings(
+    singleMedia.file_id,
+    user.user_id
+  );
 
   // Parsing string object to json object
   const descriptionObj = JSON.parse(singleMedia.description);
-
   const loadAvatar = async () => {
     if (isLoggedIn) {
       try {
@@ -75,50 +78,6 @@ const ProductList = ({singleMedia, navigation}) => {
     }
   };
 
-  const getFavourites = async () => {
-    try {
-      const favourites = await getFavouritesByFileId(singleMedia.file_id);
-      // console.log('likes', likes, 'user', user);
-      setFavourites(favourites);
-      // check if the current user  id is included in the 'likes' array and
-      // set the 'userLikesIt' state accordingly
-      for (const favourite of favourites) {
-        if (favourite.user_id === user.user_id) {
-          setuserFavouritesIt(true);
-          break;
-        }
-      }
-    } catch (error) {
-      // console.log('Product details [getFavourites]', error);
-    }
-  };
-
-  const favouriteFile = async () => {
-    try {
-      const token = await AsyncStorage.getItem('userToken');
-      await postFavourite(singleMedia.file_id, token);
-      setuserFavouritesIt(true);
-      setUpdateFavourite(!updateFavourite);
-      setUpdate(update + 1);
-    } catch (error) {
-      // note: you cannot like same file multiple times
-      // console.log(error);
-    }
-  };
-
-  const unfavouriteFile = async () => {
-    try {
-      const token = await AsyncStorage.getItem('userToken');
-      await deleteFavourite(singleMedia.file_id, token);
-      setuserFavouritesIt(false);
-      setUpdateFavourite(!updateFavourite);
-      setUpdate(update + 1);
-    } catch (error) {
-      // note: you cannot like same file multiple times
-      // console.log(error);
-    }
-  };
-
   const getRatings = async () => {
     try {
       const ratings = await getRatingsByFileId(singleMedia.file_id);
@@ -130,7 +89,7 @@ const ProductList = ({singleMedia, navigation}) => {
           setUserLikesIt(true);
           break;
         } else if (rating.user_id === user.user_id && rating.rating === 2) {
-          setUserDislikesIt(true);
+          //setUserDislikesIt(true);
           break;
         }
       }
@@ -147,7 +106,7 @@ const ProductList = ({singleMedia, navigation}) => {
     try {
       const token = await AsyncStorage.getItem('userToken');
       await postRating(singleMedia.file_id, token, 1);
-      setUserLikesIt(true);
+      //setUserLikesIt(true);
       getRatings();
       setUpdateRating(!updateRating);
     } catch (error) {
@@ -173,7 +132,7 @@ const ProductList = ({singleMedia, navigation}) => {
     try {
       const token = await AsyncStorage.getItem('userToken');
       await postRating(singleMedia.file_id, token, 2);
-      setUserDislikesIt(true);
+      //setUserDislikesIt(true);
       getRatings();
       setUpdateRating(!updateRating);
     } catch (error) {
@@ -299,10 +258,17 @@ const ProductList = ({singleMedia, navigation}) => {
               {/* <Text style={styles.iconText}>chat</Text> */}
             </View>
             <View style={styles.iconbox}>
-              {userFavouritesIt ? (
-                <Icon name="favorite" color="red" onPress={unfavouriteFile} />
+              {favourites.length > 0 ? (
+                <Icon
+                  name="favorite"
+                  color="red"
+                  onPress={() => removeFavourite(singleMedia.file_id)}
+                />
               ) : (
-                <Icon name="favorite-border" onPress={favouriteFile} />
+                <Icon
+                  name="favorite-border"
+                  onPress={() => addFavourite(singleMedia.file_id)}
+                />
               )}
               <Text style={styles.iconText}>{favourites.length}</Text>
             </View>
