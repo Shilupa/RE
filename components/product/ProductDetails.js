@@ -204,7 +204,7 @@ const ProductDetails = ({navigation, route}) => {
   }
 
   useEffect(() => {
-    // getOwner();
+    getOwner();
   }, []);
 
   useEffect(() => {
