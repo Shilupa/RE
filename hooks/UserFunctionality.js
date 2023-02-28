@@ -1,6 +1,8 @@
 import {useContext, useEffect, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
-import {useFavourite, useRating} from './ApiHooks';
+import {uploadsUrl} from '../utils/variables';
+import {useFavourite, useRating, useTag} from './ApiHooks';
+import {Image} from 'react-native';
 
 const userFavourites = (fileId) => {
   const {updateFavourite, setUpdateFavourite, token, update, setUpdate} =
@@ -80,14 +82,15 @@ const userRatings = (fileId, userId) => {
   const addRating = async () => {
     try {
       await postRating(singleMedia.file_id, token, 1);
-      //setUserLikesIt(true);
-      //getRatings();
+      // setUserLikesIt(true);
+      // getRatings();
       setUpdateRating(!updateRating);
     } catch (error) {
       // note: you cannot like same file multiple times
-      onsole.log('Add Rating: ]', error);
+      console.log('Add Rating: ]', error);
     }
   };
-  return {getAllRatings, userLiked};
+  return {getAllRatings, userLiked, addRating};
 };
+
 export {userFavourites, userRatings};

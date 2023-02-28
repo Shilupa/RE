@@ -2,15 +2,43 @@ import {Image, StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 import PropTypes from 'prop-types';
 import {uploadsUrl, vw} from '../utils/variables';
 
-const ChatListItem = ({singleMedia, navigation}) => {
-  const item = singleMedia;
-  const {message, commentAddedTime} = singleMedia.chatGroup[0];
+const ChatListItem = ({singleComment, navigation}) => {
+  const item = singleComment;
+  const {message, commentAddedTime} = singleComment.chatGroup[0];
+  const file = singleComment.file;
+  const {title} = JSON.parse(file.description);
+
+  const commentUploadTime = new Date(commentAddedTime);
+  const month = commentUploadTime.toLocaleString('default', {month: 'short'});
+  const day = commentUploadTime.getUTCDate();
+  const year = commentUploadTime.getUTCFullYear();
+  const hours = commentUploadTime.getHours() % 12 || 12;
+  const minutes = commentUploadTime.getUTCMinutes();
+  const ampm = commentUploadTime.getHours() >= 12 ? 'PM' : 'AM';
+  const formattedDate = `${month} ${day} ${year} ${hours}:${minutes
+    .toString()
+    .padStart(2, '0')} ${ampm}`;
+
+  const timeNow = new Date();
+  const timeDiff = timeNow.getTime() - commentUploadTime.getTime();
+
+  let timeformat;
+  // Convert the time difference to seconds mins hours
+  if (timeDiff < 60000) {
+    timeformat = Math.floor(timeDiff / 1000) + 's ';
+  } else if (timeDiff >= 60000 && timeDiff < 3600000) {
+    timeformat = Math.round(Math.abs(timeDiff) / 60000) + 'm ';
+  } else if (timeDiff >= 3600000 && timeDiff < 24 * 3600000) {
+    timeformat = Math.floor(timeDiff / 3600000) + 'h ';
+  } else {
+    timeformat = formattedDate;
+  }
 
   return (
     <TouchableOpacity
       onPress={() => {
-        console.log('Go to message: ');
-        console.log('ItemSend: ', item.chatGroup[0]);
+        // console.log('Go to  message: ');
+        // console.log('ItemSend: ', item.chatGroup[0]);
         navigation.navigate('Message', item);
       }}
     >
@@ -19,18 +47,18 @@ const ChatListItem = ({singleMedia, navigation}) => {
           <Image
             style={styles.itemPic}
             source={{
-              uri: uploadsUrl + item.thumbnails?.w160,
+              uri: uploadsUrl + file.thumbnails?.w160,
             }}
           />
           <View style={styles.messageBox}>
-            <Text style={styles.title}>{item.title}</Text>
+            <Text style={styles.title}>{title}</Text>
             <Text numberOfLines={1} style={styles.message}>
               {message}
             </Text>
           </View>
         </View>
 
-        <Text style={styles.time}>{commentAddedTime}</Text>
+        <Text style={styles.time}>{timeformat}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -82,7 +110,7 @@ const styles = StyleSheet.create({
 });
 
 ChatListItem.propTypes = {
-  singleMedia: PropTypes.object,
+  singleComment: PropTypes.object,
   navigation: PropTypes.object,
 };
 

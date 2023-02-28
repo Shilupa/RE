@@ -8,125 +8,150 @@ import {
 import PropTypes from 'prop-types';
 import {Button, Divider, Icon, Image, Input, Text} from '@rneui/themed';
 import {StatusBar} from 'react-native';
-import {
-  inputBackground,
-  primaryColour,
-  uploadsUrl,
-  vw,
-} from '../utils/variables';
+import {inputBackground, primaryColour, uploadsUrl} from '../utils/variables';
 import MessageList from '../components/MessageList';
 import {Controller, useForm} from 'react-hook-form';
-import {useContext, useState} from 'react';
-import {useComments} from '../hooks/ApiHooks';
+import {useContext, useEffect, useState} from 'react';
+import {useComments, useTag} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 
 const Message = ({navigation, route}) => {
-  const {
-    title,
-    description,
-    filename,
-    file_id: fileId,
-    time_added: timeAdded,
-    user_id: userId,
-  } = route.params;
-
-  const item = {
-    title: title,
-    description: description,
-    filename: filename,
-    file_id: fileId,
-    time_added: timeAdded,
-    user_id: userId,
-  };
-  const [loading, setLoading] = useState(false);
+  const {chatGroup, file} = route.params;
+  // console.log('chatGroup, ', chatGroup);
+  const {title} = JSON.parse(file.description);
   const {postComment} = useComments();
-  const {user, token} = useContext(MainContext);
-
-  const goToItemSingle = () => {
-    navigation.navigate('Single', item);
-  };
+  const {token, updateMessage, setUpdateMessage} = useContext(MainContext);
+  const assetImage = Image.resolveAssetSource(
+    require('../assets/avatar.png')
+  ).uri;
+  const {getFilesByTag} = useTag();
+  const [senderAvatar, setSenderAvatar] = useState(assetImage);
+  const [receiverAvatar, setReceiverAvatar] = useState(assetImage);
 
   const {control, handleSubmit, reset} = useForm({
     defaultValues: {message: ''},
     mode: 'onBlur',
   });
 
-  const sendMessage = async (data) => {
-    if (user.user_id != item.user_id) {
-      console.log('Send clicked');
+  // getting sender Avatar
+  /*   const sendAvatar = async () => {
+    try {
+      const response = await loadUserAvatar(chatGroup[0].senderId);
+      console.log('senderAvatar response: ', response);
+      setSenderAvatar(senderAvatar);
+    } catch (error) {
+      throw new Error('senderAvatar error, ' + error.message);
+    }
+  }; */
 
-      console.log('Sender Id:', user.user_id);
-      console.log('Receiver Id', item.user_id);
-
-      console.log('data: ', data.message);
-
-      setLoading(true);
-      console.log('Loading', loading);
-
-      const commentObj = {
-        message: data.message,
-        receiverId: item.user_id,
-      };
-
-      console.log('commentObject: ', commentObj);
-      try {
-        const send = await postComment(
-          token,
-          item.file_id,
-          JSON.stringify(commentObj)
-        );
-        setLoading(false);
-        console.log('Loading', send);
-        reset();
-      } catch (error) {
-        throw new Error('sendMessage error, ' + error.message);
+  const sendAvatar = async () => {
+    try {
+      const avatarArray = await getFilesByTag(
+        'avatar_' + chatGroup[0].senderId
+      );
+      if (avatarArray.length > 0) {
+        setSenderAvatar(uploadsUrl + avatarArray.pop().filename);
       }
+    } catch (error) {
+      console.error('sender Avatar fetch failed', error.message);
     }
   };
 
-  /*
-  const moreData = {
-    message: 'Hey is this item available?',
-    receiverId: 2685,
+  // getting receiver Avatar
+  const receiveAvatar = async () => {
+    try {
+      const avatarArray = await getFilesByTag(
+        'avatar_' + chatGroup[0].receiverId
+      );
+      if (avatarArray.length > 0) {
+        setReceiverAvatar(uploadsUrl + avatarArray.pop().filename);
+      }
+    } catch (error) {
+      console.error('sender Avatar fetch failed', error.message);
+    }
   };
 
- const formData = new FormData();
+  /*   const receiveAvatar = async () => {
+    try {
+      const response = await loadUserAvatar(chatGroup[0].receiverId);
+      console.log('receiverAvatar response: ', response);
+      setReceiverAvatar(receiverAvatar);
+    } catch (error) {
+      throw new Error('receiverAvatar error, ' + error.message);
+    }
+  }; */
 
-  formData.append('description', JSON.stringify(moreData));
+  const sendMessage = async (data) => {
+    /* console.log('Click unsucessfull');
+    console.log('Send clicked');
+    console.log('Sender Id:', user.user_id);
+    console.log('Receiver Id', file.user_id);
+    console.log('data: ', data.message); */
 
-  console.log('Form Data Comment: ', formData);
+    const commentObj = {
+      message: data.message,
+      receiverId: file.user_id,
+    };
 
-  const allData = JSON.parse(formData._parts[0][1]);
-  const message = allData.message;
-  const someData = allData.receiverId;
+    console.log('commentObject: ', commentObj);
+    try {
+      const send = await postComment(
+        token,
+        file.file_id,
+        JSON.stringify(commentObj)
+      );
+      console.log('Loading', send);
+      reset();
+      setUpdateMessage(!updateMessage);
+    } catch (error) {
+      throw new Error('sendMessage error, ' + error.message);
+    }
+  };
 
-  console.log('messgae: ', message);
-  console.log('receiverId: ', someData); */
+  useEffect(() => {
+    sendAvatar();
+    receiveAvatar();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.titleBar}>
         <View style={styles.backIcon}>
-          <Icon
+          <Button
+            type="solid"
+            buttonStyle={styles.backBtn}
+            onPress={() => navigation.goBack()}
+          >
+            <Icon name="arrow-back" color="black" />
+          </Button>
+
+          {/*          <Icon
             onPress={() => {
               navigation.goBack();
             }}
             name="arrow-back"
             color="black"
-          />
+          /> */}
         </View>
         <View style={styles.itemContainer}>
           <Image
-            onPress={goToItemSingle}
+            onPress={() => {
+              navigation.navigate('ProductDetails', file);
+            }}
             style={styles.itemPicture}
-            source={{uri: uploadsUrl + filename}}
+            source={{uri: uploadsUrl + file.filename}}
           />
           <Text style={styles.itemTitle}>{title}</Text>
         </View>
       </View>
 
       <Divider />
-      <MessageList navigation={navigation} />
+      <MessageList
+        navigation={navigation}
+        singleItem={chatGroup}
+        senderAvatar={senderAvatar}
+        receiverAvatar={receiverAvatar}
+      />
       <Divider />
       <KeyboardAvoidingView>
         <View style={styles.sendMessage}>
@@ -193,6 +218,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: '30%',
     left: '10%',
+  },
+
+  backBtn: {
+    borderRadius: 25,
+    backgroundColor: '#81C784',
   },
 
   itemContainer: {

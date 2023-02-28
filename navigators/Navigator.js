@@ -35,12 +35,11 @@ const TabScreen = ({navigation}) => {
     if (isLoggedIn) {
       try {
         const avatarArray = await getFilesByTag('avatar_' + user.user_id);
-        // Checking if user has added avatar previously
         if (avatarArray.length > 0) {
           setAvatar(uploadsUrl + avatarArray.pop().filename);
         }
       } catch (error) {
-        // console
+        throw new Error('load avatar from tab navigator, ' + error.message);
       }
     }
   };
@@ -53,7 +52,7 @@ const TabScreen = ({navigation}) => {
 
   useEffect(() => {
     loadAvatar();
-  }, [user]);
+  }, [user, isLoggedIn]);
 
   return (
     <Tab.Navigator

@@ -1,17 +1,25 @@
 import {FlatList} from 'react-native';
-import {useMedia} from '../hooks/ApiHooks';
 import PropTypes from 'prop-types';
 import MessageListItem from './MessageListItem';
-import {categoryList} from '../utils/variables';
 
-const MessageList = ({navigation}) => {
-  const {mediaArray} = useMedia();
+const MessageList = ({
+  navigation,
+  singleItem,
+  senderAvatar,
+  receiverAvatar,
+}) => {
+  // console.log('Single Media', singleItem);
   return (
     <FlatList
-      data={mediaArray}
+      data={singleItem}
       keyExtractor={(item, index) => index.toString()}
       renderItem={({item}) => (
-        <MessageListItem navigation={navigation} singleMedia={item} />
+        <MessageListItem
+          navigation={navigation}
+          singleMedia={item}
+          senderAvatar={senderAvatar}
+          receiverAvatar={receiverAvatar}
+        />
       )}
     />
   );
@@ -19,6 +27,9 @@ const MessageList = ({navigation}) => {
 
 MessageList.propTypes = {
   navigation: PropTypes.object,
+  singleItem: PropTypes.array,
+  senderAvatar: PropTypes.string,
+  receiverAvatar: PropTypes.string,
 };
 
 export default MessageList;

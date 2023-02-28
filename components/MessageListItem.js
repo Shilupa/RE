@@ -1,31 +1,97 @@
-import {Image, StyleSheet, View, Text, TouchableOpacity} from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import PropTypes from 'prop-types';
-import {uploadsUrl, vw} from '../utils/variables';
+import {vw} from '../utils/variables';
+import {useContext} from 'react';
+import {MainContext} from '../contexts/MainContext';
+import {useComments} from '../hooks/ApiHooks';
 
-const MessageListItem = ({singleMedia, navigation}) => {
+const MessageListItem = ({
+  navigation,
+  singleMedia,
+  senderAvatar,
+  receiverAvatar,
+}) => {
   const item = singleMedia;
-  const sender = true;
+  const {user, token, updateMessage, setUpdateMessage} =
+    useContext(MainContext);
+
+  const {deleteComment} = useComments();
+  const sender = user.user_id === item.receiverId;
+
+  // console.log('Sender Avatar: ', senderAvatar);
+  // console.log('Receiver Avatar: ', receiverAvatar);
+
+  const commentUploadTime = new Date(item.commentAddedTime);
+  const month = commentUploadTime.toLocaleString('default', {month: 'short'});
+  const day = commentUploadTime.getUTCDate();
+  const year = commentUploadTime.getUTCFullYear();
+  const hours = commentUploadTime.getHours() % 12 || 12;
+  const minutes = commentUploadTime.getUTCMinutes();
+  const ampm = commentUploadTime.getHours() >= 12 ? 'PM' : 'AM';
+  const formattedDate = `${month} ${day} ${year} ${hours}:${minutes
+    .toString()
+    .padStart(2, '0')} ${ampm}`;
+
+  const timeNow = new Date();
+  const timeDiff = timeNow.getTime() - commentUploadTime.getTime();
+
+  let timeformat;
+  // Convert the time difference to seconds mins hours
+  if (timeDiff < 60000) {
+    timeformat = Math.floor(timeDiff / 1000) + 's ';
+  } else if (timeDiff >= 60000 && timeDiff < 3600000) {
+    timeformat = Math.round(Math.abs(timeDiff) / 60000) + 'm ';
+  } else if (timeDiff >= 3600000 && timeDiff < 24 * 3600000) {
+    timeformat = Math.floor(timeDiff / 3600000) + 'h ';
+  } else {
+    timeformat = formattedDate;
+  }
+
+  const deleteComm = () => {
+    !sender &&
+      Alert.alert('Delete', 'Are you sure you want to delete your chat?', [
+        {
+          text: 'Yes',
+          onPress: async () => {
+            try {
+              await deleteComment(item.commentId, token);
+              setUpdateMessage(!updateMessage);
+            } catch (error) {
+              throw new Error('deleteComment error, ' + error.message);
+            }
+          },
+        },
+        {text: 'No'},
+      ]);
+  };
 
   return (
     <TouchableOpacity
-      onPress={() => {
-        console.log('Go to message: ');
+      onLongPress={() => {
+        deleteComm();
       }}
     >
       <View style={sender ? styles.containerSender : styles.containerOwner}>
         <Image
           style={styles.avatar}
           source={{
-            uri: uploadsUrl + item.thumbnails?.w160,
+            uri: sender ? senderAvatar : receiverAvatar,
           }}
         />
 
         <View style={sender ? styles.messageBoxSender : styles.messageBoxOwner}>
           <Text style={sender ? styles.messageSender : styles.messageOwner}>
-            {item.description}
+            {item.message}
           </Text>
           <Text style={sender ? styles.timeSender : styles.timeOwner}>
-            1 Sept 2022
+            {timeformat}
           </Text>
         </View>
       </View>
@@ -108,6 +174,8 @@ const styles = StyleSheet.create({
 MessageListItem.propTypes = {
   singleMedia: PropTypes.object,
   navigation: PropTypes.object,
+  senderAvatar: PropTypes.string,
+  receiverAvatar: PropTypes.string,
 };
 
 export default MessageListItem;

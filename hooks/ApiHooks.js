@@ -3,6 +3,7 @@ import {MainContext} from '../contexts/MainContext';
 import {appId, baseUrl} from '../utils/variables';
 
 const doFetch = async (url, options) => {
+  console.log('Main do Fetch');
   const response = await fetch(url, options);
   const json = await response.json();
   if (!response.ok) {
@@ -19,7 +20,6 @@ const useMedia = (myFilesOnly) => {
   const {update, user} = useContext(MainContext);
 
   const loadMedia = async () => {
-    console.log('Get loadMedia ');
     try {
       /**
        * Looping through Category list and fetching one array list at a time by category name
@@ -333,10 +333,25 @@ const useComments = () => {
     }
   };
 
+  const deleteComment = async (commentId, token) => {
+    const options = {
+      method: 'delete',
+      headers: {
+        'x-access-token': token,
+      },
+    };
+    try {
+      return await doFetch(baseUrl + 'comments/' + commentId, options);
+    } catch (error) {
+      throw new Error('deleteFavourite error, ' + error.message);
+    }
+  };
+
   return {
     postComment,
     getCommentsByFileId,
     getCommentsByUser,
+    deleteComment,
   };
 };
 
