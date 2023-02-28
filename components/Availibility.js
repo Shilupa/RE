@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     padding: 0,
     marginTop: 10,
-    width: 30 * vw,
+    width: 40 * vw,
     height: 30,
     right: -35 * vw,
     alignSelf: 'center',
@@ -38,6 +38,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     elevation: 10,
     position: 'relative',
+    opacity: 0.8,
   },
   available: {
     backgroundColor: '#81C784',
@@ -49,7 +50,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#B81D13',
   },
   title: {
-    marginRight: 15,
+    marginRight: 25,
     color: 'white',
   },
 });
