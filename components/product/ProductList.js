@@ -12,7 +12,7 @@ import {Button, Icon} from '@rneui/themed';
 import {Card} from '@rneui/base';
 import {useContext, useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useFavourite, useRating, useTag, useUser} from '../../hooks/ApiHooks';
+import {useRating, useTag, useUser} from '../../hooks/ApiHooks';
 import {MainContext} from '../../contexts/MainContext';
 import {uploadsUrl} from '../../utils/variables';
 import Availibility from '../Availibility';
@@ -26,29 +26,15 @@ const ProductList = ({singleMedia, navigation}) => {
   const [avatar, setAvatar] = useState(assetImage);
   const {getUserById} = useUser();
   const [owner, setOwner] = useState({});
-  const {
-    isLoggedIn,
-    user,
-    update,
-    updateRating,
-    setUpdateRating,
-    userDislikesIt,
-  } = useContext(MainContext);
+  const {isLoggedIn, user, update, updateRating} = useContext(MainContext);
 
-  const {getFavouritesByFileId, deleteFavourite} = useFavourite();
-  const [ratings, setRatings] = useState([]);
-  const [likesArray, setLikesArray] = useState([]);
-  const [dislikesArray, setDislikesArray] = useState([]);
-  const [userLikesIt, setUserLikesIt] = useState(false);
-  //const [userDislikesIt, setUserDislikesIt] = useState(false);
-  const {postRating, deleteRating, getRatingsByFileId} = useRating();
+  const {getAllRatings} = useRating();
   const {favourites, addFavourite, removeFavourite} = userFavourites(
     singleMedia.file_id
   );
-  const {getAllRatings, userLiked} = userRatings(
-    singleMedia.file_id,
-    user.user_id
-  );
+  const {addLike, removeLike, findFile} = userRatings(user.user_id);
+  const [myLikedFile, setMyLikedFile] = useState();
+  const [myDisLikedFile, setMyDisLikedFile] = useState();
 
   // Parsing string object to json object
   const descriptionObj = JSON.parse(singleMedia.description);
@@ -82,77 +68,11 @@ const ProductList = ({singleMedia, navigation}) => {
 
   const getRatings = async () => {
     try {
-      const ratings = await getRatingsByFileId(singleMedia.file_id);
-      setRatings(ratings);
-
-      // checking if user likes or dislikes the item
-      for (const rating of ratings) {
-        if (rating.user_id === user.user_id && rating.rating === 1) {
-          setUserLikesIt(true);
-          break;
-        } else if (rating.user_id === user.user_id && rating.rating === 2) {
-          //setUserDislikesIt(true);
-          break;
-        }
-      }
-
-      // making new array of likes and dislikes
-      setLikesArray(ratings.filter((obj) => obj.rating === 1));
-      setDislikesArray(ratings.filter((obj) => obj.rating === 2));
+      const ratings = await getAllRatings();
+      setMyDisLikedFile(findFile(ratings, singleMedia.file_id, 2));
+      setMyLikedFile(findFile(ratings, singleMedia.file_id, 1));
     } catch (error) {
       // console.log('Product details [getRatings]', error);
-    }
-  };
-
-  const likeFile = async () => {
-    try {
-      const token = await AsyncStorage.getItem('userToken');
-      await postRating(singleMedia.file_id, token, 1);
-      //setUserLikesIt(true);
-      getRatings();
-      setUpdateRating(!updateRating);
-    } catch (error) {
-      // note: you cannot like same file multiple times
-      // console.log('Product details [rateFile]', error);
-    }
-  };
-
-  const unlikeFile = async () => {
-    try {
-      const token = await AsyncStorage.getItem('userToken');
-      await deleteRating(singleMedia.file_id, token);
-      setUserLikesIt(false);
-      getRatings();
-      setUpdateRating(!updateRating);
-    } catch (error) {
-      // note: you cannot like same file multiple times
-      // console.log(error);
-    }
-  };
-
-  const dislikeFile = async () => {
-    try {
-      const token = await AsyncStorage.getItem('userToken');
-      await postRating(singleMedia.file_id, token, 2);
-      //setUserDislikesIt(true);
-      getRatings();
-      setUpdateRating(!updateRating);
-    } catch (error) {
-      // note: you cannot like same file multiple times
-      // console.log('Product details [rateFile]', error);
-    }
-  };
-
-  const unDislikeFile = async () => {
-    try {
-      const token = await AsyncStorage.getItem('userToken');
-      await deleteRating(singleMedia.file_id, token);
-      //setUserDislikesIt(false);
-      getRatings();
-      setUpdateRating(!updateRating);
-    } catch (error) {
-      // note: you cannot like same file multiple times
-      // console.log(error);
     }
   };
 
@@ -161,26 +81,9 @@ const ProductList = ({singleMedia, navigation}) => {
     loadAvatar();
   }, [isLoggedIn]);
 
-
   useEffect(() => {
     getRatings();
   }, [update, updateRating]);
-
-  const handleLikePress = () => {
-    if (userDislikesIt) {
-      unDislikeFile();
-      likeFile();
-    }
-    likeFile();
-  };
-
-  const handleDislikePress = () => {
-    if (userLikesIt) {
-      unlikeFile();
-      dislikeFile();
-    }
-    dislikeFile();
-  };
 
   return (
     <View style={styles.column} elevation={5}>
@@ -217,38 +120,23 @@ const ProductList = ({singleMedia, navigation}) => {
 
           <View style={styles.icons}>
             <View style={styles.iconbox}>
-              {userLikesIt ? (
-                <Icon
-                  name="thumb-up"
-                  size={26}
-                  color="green"
-                  onPress={unlikeFile}
-                />
-              ) : (
-                <Icon
-                  name="thumb-up-off-alt"
-                  size={26}
-                  onPress={handleLikePress}
-                />
-              )}
-              <Text style={styles.iconText}>{likesArray.length}</Text>
+              <Icon
+                name="thumb-up"
+                size={26}
+                color={myLikedFile !== undefined ? 'green' : 'grey'}
+                onPress={() => addLike(singleMedia.file_id)}
+              />
+              {/* <Text style={styles.iconText}>{likesArray.length}</Text> */}
             </View>
             <View style={styles.iconbox}>
-              {userDislikesIt ? (
-                <Icon
-                  name="thumb-down"
-                  size={26}
-                  color="#EB212E"
-                  onPress={unDislikeFile}
-                />
-              ) : (
-                <Icon
-                  name="thumb-down-off-alt"
-                  size={26}
-                  onPress={handleDislikePress}
-                />
-              )}
-              <Text style={styles.iconText}>{dislikesArray.length}</Text>
+              {/* {userDislikesIt ? ( */}
+              <Icon
+                name="thumb-down"
+                size={26}
+                color={myDisLikedFile !== undefined ? '#EB212E' : 'grey'}
+                onPress={() => removeLike(singleMedia.file_id)}
+              />
+              {/* <Text style={styles.iconText}>{dislikesArray.length}</Text> */}
             </View>
             <View style={{alignSelf: 'flex-start'}}>
               <Icon

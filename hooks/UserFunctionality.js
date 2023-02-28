@@ -57,37 +57,113 @@ const userFavourites = (fileId) => {
   return {favourites, addFavourite, removeFavourite};
 };
 
-const userRatings = (fileId, userId) => {
-  const {updateRating, setUpdateRating, token} = useContext(MainContext);
-  const {getRatingsByFileId, postRating} = useRating();
-  const [ratings, setRatings] = useState([]);
-  let userLiked = false;
-  const getAllRatings = async () => {
+const userRatings = (userId) => {
+  const {updateRating, setUpdateRating} = useContext(MainContext);
+  const {getAllRatings, postRating, deleteRating} = useRating();
+  const likeValue = 1;
+  const disLikeValue = 2;
+  const [btnLikeDisable, setBtnLikeDisable] = useState(false);
+  const [btnDisLikeDisable, setBtnDisLikeDisable] = useState(false);
+
+  const getAllLikes = async () => {
     try {
-      const response = await getRatingsByFileId(fileId);
-      setRatings(response);
+      return await getAllRatings();
     } catch (error) {
       console.log('Get All Ratings: ', error);
     }
-    ratings.map((rating) => {
-      if (rating.user_id === userId && rating.rating === 1) {
-        userLiked = true;
-        return;
-      }
-    });
+    //console.log('rating', ratings);
   };
 
-  const addRating = async () => {
+  const postLike = async (file_id) => {
     try {
-      await postRating(singleMedia.file_id, token, 1);
-      //setUserLikesIt(true);
-      //getRatings();
-      setUpdateRating(!updateRating);
+      return await postRating(file_id, likeValue);
     } catch (error) {
-      // note: you cannot like same file multiple times
-      onsole.log('Add Rating: ]', error);
+      console.log('Post Like: ', error);
     }
   };
-  return {getAllRatings, userLiked};
+
+  const postDisLike = async (file_id) => {
+    try {
+      return await postRating(file_id, disLikeValue);
+    } catch (error) {
+      console.log('Post Like: ', error);
+    }
+  };
+
+  // {"file_id": 6296, "rating": 1, "rating_id": 1245, "user_id": 2970}
+  const addLike = async (file_id) => {
+    try {
+      const allLikes = await getAllRatings();
+      const result = findFile(allLikes, file_id, disLikeValue);
+      if (btnLikeDisable) {
+        console.log('Do nothing');
+        return;
+      }
+      if (result === undefined) {
+        await postLike(file_id);
+        setBtnLikeDisable(true);
+        setBtnDisLikeDisable(false);
+        setUpdateRating(!updateRating);
+        console.log('add', await getAllRatings());
+      } else {
+        await deleteRating(file_id);
+        await postLike(file_id);
+        setBtnLikeDisable(true);
+        setBtnDisLikeDisable(false);
+        setUpdateRating(!updateRating);
+        console.log('add', await getAllRatings());
+      }
+    } catch (error) {
+      // note: you cannot like same file multiple times
+      console.log('Add Rating: ', error);
+    }
+  };
+
+  const removeLike = async (file_id) => {
+    try {
+      const allLikes = await getAllRatings();
+      const result = findFile(allLikes, file_id, likeValue);
+      if (btnDisLikeDisable) {
+        console.log('Do nothing');
+        return;
+      }
+      if (result === undefined) {
+        postDisLike(file_id);
+        console.log('remove', await getAllRatings());
+        setBtnDisLikeDisable(true);
+        setBtnLikeDisable(false);
+        setUpdateRating(!updateRating);
+      } else {
+        await deleteRating(file_id);
+        await postDisLike(file_id);
+        setBtnDisLikeDisable(true);
+        setBtnLikeDisable(false);
+        setUpdateRating(!updateRating);
+        console.log('remove', await getAllRatings());
+      }
+    } catch (error) {
+      // note: you cannot like same file multiple times
+      console.log('Remove rating: ', error);
+    }
+  };
+
+  const findFile = (allLikes, file_id, value) => {
+    return allLikes.find(
+      (like) =>
+        like.user_id === userId &&
+        like.file_id === file_id &&
+        like.rating === value
+    );
+  };
+
+  useEffect(() => {
+    getAllLikes();
+  }, [updateRating]);
+
+  return {
+    addLike,
+    removeLike,
+    findFile,
+  };
 };
 export {userFavourites, userRatings};
