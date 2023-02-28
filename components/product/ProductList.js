@@ -80,7 +80,7 @@ const ProductList = ({singleMedia, navigation}) => {
       const favourites = await getFavouritesByFileId(singleMedia.file_id);
       // console.log('likes', likes, 'user', user);
       setFavourites(favourites);
-      // check if the current user id is included in the 'likes' array and
+      // check if the current user  id is included in the 'likes' array and
       // set the 'userLikesIt' state accordingly
       for (const favourite of favourites) {
         if (favourite.user_id === user.user_id) {
@@ -198,7 +198,7 @@ const ProductList = ({singleMedia, navigation}) => {
   useEffect(() => {
     getOwner();
     loadAvatar();
-  }, [isLoggedIn, owner]);
+  }, [isLoggedIn]);
 
   useEffect(() => {
     getFavourites();

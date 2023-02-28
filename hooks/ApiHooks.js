@@ -19,6 +19,7 @@ const useMedia = (myFilesOnly) => {
   const {update, user} = useContext(MainContext);
 
   const loadMedia = async () => {
+    console.log('Get loadMedia ');
     try {
       /**
        * Looping through Category list and fetching one array list at a time by category name
@@ -70,7 +71,7 @@ const useMedia = (myFilesOnly) => {
     // load media when update state changes in main context
     // by adding update state to the array below
     loadMedia();
-  }, [update]);
+  }, []);
 
   const postMedia = async (fileData, token) => {
     const options = {

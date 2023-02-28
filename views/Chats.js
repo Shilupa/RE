@@ -23,18 +23,20 @@ const Chats = ({navigation}) => {
     }
   }; */
 
-  // console.log('Media Array: ', mediaArray);
+  console.log('Media Array: ', mediaArray);
 
   const getAllComment = async () => {
     console.log('This function is called');
+
     const comments = await Promise.all(
       mediaArray.map(async (media) => {
         const response = await getCommentsByFileId(media.file_id);
         media.comments = await response;
-        // console.log('Response', response);
+        console.log('Response', response);
         return media;
       })
     );
+    console.log('Comments:', comments);
 
     const tempAllComment = [];
 
@@ -82,7 +84,7 @@ const Chats = ({navigation}) => {
     }));
 
     setAllComments(arrayList);
-    console.log('ArrayList', arrayList);
+    console.log('All comments', arrayList);
 
     /*   const commentsWithFile = arrayList.forEach((chat) => {
       console.log('Chat Group', chat[0].fileId);
@@ -106,7 +108,7 @@ const Chats = ({navigation}) => {
 
   useEffect(() => {
     getAllComment();
-  }, [update]);
+  }, [mediaArray]);
 
   return (
     <SafeAreaView style={styles.container}>
