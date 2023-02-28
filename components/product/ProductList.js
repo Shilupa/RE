@@ -40,7 +40,7 @@ const ProductList = ({singleMedia, navigation}) => {
   const [likesArray, setLikesArray] = useState([]);
   const [dislikesArray, setDislikesArray] = useState([]);
   const [userLikesIt, setUserLikesIt] = useState(false);
-  //const [userDislikesIt, setUserDislikesIt] = useState(false);
+  // const [userDislikesIt, setUserDislikesIt] = useState(false);
   const {postRating, deleteRating, getRatingsByFileId} = useRating();
   const {favourites, addFavourite, removeFavourite} = userFavourites(
     singleMedia.file_id
@@ -52,6 +52,7 @@ const ProductList = ({singleMedia, navigation}) => {
 
   // Parsing string object to json object
   const descriptionObj = JSON.parse(singleMedia.description);
+
   const loadAvatar = async () => {
     if (isLoggedIn) {
       try {
@@ -91,7 +92,7 @@ const ProductList = ({singleMedia, navigation}) => {
           setUserLikesIt(true);
           break;
         } else if (rating.user_id === user.user_id && rating.rating === 2) {
-          //setUserDislikesIt(true);
+          // setUserDislikesIt(true);
           break;
         }
       }
@@ -108,7 +109,7 @@ const ProductList = ({singleMedia, navigation}) => {
     try {
       const token = await AsyncStorage.getItem('userToken');
       await postRating(singleMedia.file_id, token, 1);
-      //setUserLikesIt(true);
+      // setUserLikesIt(true);
       getRatings();
       setUpdateRating(!updateRating);
     } catch (error) {
@@ -134,7 +135,7 @@ const ProductList = ({singleMedia, navigation}) => {
     try {
       const token = await AsyncStorage.getItem('userToken');
       await postRating(singleMedia.file_id, token, 2);
-      //setUserDislikesIt(true);
+      // setUserDislikesIt(true);
       getRatings();
       setUpdateRating(!updateRating);
     } catch (error) {
@@ -147,7 +148,7 @@ const ProductList = ({singleMedia, navigation}) => {
     try {
       const token = await AsyncStorage.getItem('userToken');
       await deleteRating(singleMedia.file_id, token);
-      //setUserDislikesIt(false);
+      // setUserDislikesIt(false);
       getRatings();
       setUpdateRating(!updateRating);
     } catch (error) {
@@ -160,7 +161,6 @@ const ProductList = ({singleMedia, navigation}) => {
     getOwner();
     loadAvatar();
   }, [isLoggedIn]);
-
 
   useEffect(() => {
     getRatings();
@@ -194,10 +194,7 @@ const ProductList = ({singleMedia, navigation}) => {
             style={styles.image}
             source={{uri: uploadsUrl + singleMedia.thumbnails?.w640}}
           >
-            <Availibility
-              text={descriptionObj.status}
-              style={styles.availibility}
-            />
+            <Availibility text={descriptionObj.status} />
           </ImageBackground>
         </View>
         <View style={styles.box}>

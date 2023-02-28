@@ -298,11 +298,11 @@ const ProductDetails = ({navigation, route}) => {
         </View>
 
         {isLoggedIn && user.user_id === owner.user_id ? (
-          <Button onPress={editItem} buttonStyle={styles.button}>
+          <Button onPress={editItem} buttonStyle={styles.editBtn}>
             Edit Item
           </Button>
         ) : (
-          <Button onPress={messageSeller} buttonStyle={styles.button}>
+          <Button onPress={messageSeller} buttonStyle={styles.messageBtn}>
             Message Seller
           </Button>
         )}
@@ -476,8 +476,16 @@ const styles = StyleSheet.create({
   box: {
     margin: 10,
   },
-  button: {
+  messageBtn: {
     backgroundColor: primaryColour,
+    borderRadius: 25,
+    height: 50,
+    width: '90%',
+    alignSelf: 'center',
+    marginBottom: 5,
+  },
+  editBtn: {
+    backgroundColor: '#F7B500',
     borderRadius: 25,
     height: 50,
     width: '90%',

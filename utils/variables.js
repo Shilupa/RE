@@ -13,7 +13,8 @@ const {width, height} = Dimensions.get('window');
 const vw = width / 100.0;
 const vh = height / 100.0;
 
-const categoryList = ['Clothing', 'Furniture', 'Electronics', 'Miscellaneous'];
+const categoryList = ['Clothing', 'Furniture', 'Electronics'];
+const availibilityList = ['Reserved', 'Available', 'Unavailable'];
 
 export {
   baseUrl,
@@ -25,4 +26,5 @@ export {
   vw,
   vh,
   categoryList,
+  availibilityList,
 };

@@ -1,4 +1,10 @@
-import {Image, StyleSheet, View, TouchableOpacity} from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  ImageBackground,
+} from 'react-native';
 import PropTypes from 'prop-types';
 import {uploadsUrl, vw} from '../../utils/variables';
 import {useEffect, useState} from 'react';
@@ -29,10 +35,10 @@ const UserList = ({singleMedia, navigation}) => {
           navigation.navigate('ProductDetails', item);
         }}
       >
-        <Image
+        <ImageBackground
           style={styles.image}
           source={{uri: uploadsUrl + item.thumbnails?.w160}}
-        />
+        ></ImageBackground>
       </TouchableOpacity>
     </View>
   );

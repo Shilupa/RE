@@ -229,7 +229,7 @@ const Upload = ({navigation}) => {
                 error={errors.description && errors.description.message}
                 autoCapitalize="none"
                 multiline={true}
-                numberOfLines={5}
+                numberOfLines={4}
               />
             )}
             name="description"
@@ -245,14 +245,14 @@ const Upload = ({navigation}) => {
             render={({field: {onChange, onBlur, value}}) => (
               <FormInput
                 label="Condition"
-                placeholder="Enter a condition of the item"
+                placeholder="Enter the condition of the item"
                 onBlur={onBlur}
                 onChange={onChange}
                 value={value}
                 error={errors.condition && errors.condition.message}
                 autoCapitalize="none"
                 multiline={true}
-                numberOfLines={5}
+                numberOfLines={1}
               />
             )}
             name="condition"
