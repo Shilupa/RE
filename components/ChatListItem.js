@@ -4,12 +4,13 @@ import {uploadsUrl, vw} from '../utils/variables';
 
 const ChatListItem = ({singleMedia, navigation}) => {
   const item = singleMedia;
+  const {message, commentAddedTime} = singleMedia.chatGroup[0];
 
   return (
     <TouchableOpacity
       onPress={() => {
         console.log('Go to message: ');
-        console.log('ItemSend: ', item);
+        console.log('ItemSend: ', item.chatGroup[0]);
         navigation.navigate('Message', item);
       }}
     >
@@ -24,12 +25,12 @@ const ChatListItem = ({singleMedia, navigation}) => {
           <View style={styles.messageBox}>
             <Text style={styles.title}>{item.title}</Text>
             <Text numberOfLines={1} style={styles.message}>
-              {item.description}
+              {message}
             </Text>
           </View>
         </View>
 
-        <Text style={styles.time}>1 Sept 2022</Text>
+        <Text style={styles.time}>{commentAddedTime}</Text>
       </View>
     </TouchableOpacity>
   );

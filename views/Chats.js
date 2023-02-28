@@ -9,76 +9,93 @@ import {MainContext} from '../contexts/MainContext';
 import {loadMediaById, useComments, useMedia} from '../hooks/ApiHooks';
 
 const Chats = ({navigation}) => {
-  const {user, token} = useContext(MainContext);
-  const {getCommentsByUser, getCommentsByFileId} = useComments();
+  const {user, token, update} = useContext(MainContext);
+  const {getCommentsByFileId} = useComments();
   const {mediaArray} = useMedia();
   const [allComments, setAllComments] = useState([]);
 
-  /* const getMessageOfUser = async () => {
-    const response = await getCommentsByUser(token);
-    console.log('getMessageOfUser: ', response.reverse());
-  }; */
-
-  // const mediaArray = [{file_id: 6200}, {file_id: 6200}, {file_id: 6200}];
-
-  // getting one comment based on file id
-  const loadCommentofFile = async () => {
+  /*   const loadCommentofFile = async () => {
     try {
       const response = await getCommentsByFileId(6296);
       console.log('load Comment for File id: ', response);
     } catch (error) {
       console.error('loadCommentofFile error', error.message);
     }
-  };
-
-  /*   const loadAllComments = async () => {
-    let list = [];
-    try {
-      const elem = mediaArray.forEach(async (element) => {
-        if (element != undefined) {
-          // console.log('Testing array: ', element.file_id);
-          const response = await getCommentsByFileId(element.file_id);
-          list = list.concat(response);
-          return list;
-        }
-      });
-      console.log('All list: ', elem);
-    } catch (error) {
-      console.error('Load comments error', error.message);
-    }
   }; */
 
+  // console.log('Media Array: ', mediaArray);
+
   const getAllComment = async () => {
+    console.log('This function is called');
     const comments = await Promise.all(
       mediaArray.map(async (media) => {
         const response = await getCommentsByFileId(media.file_id);
-        return response;
+        media.comments = await response;
+        // console.log('Response', response);
+        return media;
       })
     );
-    setAllComments(comments);
+
+    const tempAllComment = [];
+
+    comments.forEach((file) => {
+      file.comments.forEach((element) => {
+        const {message, receiverId} = JSON.parse(element.comment);
+
+        if (element.user_id === user.user_id || receiverId === user.user_id) {
+          // console.log('Item inside the loop', file);
+          tempAllComment.push({
+            commentId: element.comment_id,
+            fileId: element.file_id,
+            senderId: element.user_id,
+            receiverId: receiverId,
+            message: message,
+            commentAddedTime: element.time_added,
+          });
+        }
+      });
+    });
+    tempAllComment.sort((a, b) => b.comment_id - a.comment_id);
+
+    // grouping the data based on sender, receiver and file id
+    const groupedData = tempAllComment.reduce((result, item) => {
+      const {senderId, receiverId, fileId} = item;
+
+      const key1 = `${senderId}-${receiverId}-${fileId}`;
+      const key2 = `${receiverId}-${senderId}-${fileId}`;
+
+      if (!result[key1] && !result[key2]) {
+        result[key1] = [];
+      }
+
+      if (!result[key1]) {
+        result[key2].push(item);
+      } else {
+        result[key1].push(item);
+      }
+
+      return result;
+    }, {});
+
+    const arrayList = Object.values(groupedData).map((chatGroup) => ({
+      chatGroup,
+    }));
+
+    setAllComments(arrayList);
+    console.log('ArrayList', arrayList);
+
+    /*   const commentsWithFile = arrayList.forEach((chat) => {
+      console.log('Chat Group', chat[0].fileId);
+      for (const item in mediaArray) {
+        if (item.file_id === chat[0].fileId) {
+          return (chat.file = item);
+        }
+      }
+    });
+    console.log('comments With File', commentsWithFile); */
   };
 
-  console.log('All files: ', mediaArray);
-
-  /*   const getAllComment = async () => {
-    let list = [];
-    for await (const media of mediaArray) {
-      const response = await getCommentsByFileId(media.file_id);
-      console.log('Response: ', response);
-      if (response.length > 0) {
-        list = list.concat(response);
-        console.log('All Comment inside for: ', list);
-      }
-    }
-    setAllComments(list);
-    console.log('All Comment outside function: ', allComments);
-  }; */
-
-  // console.log('All Comment all outside function: ', allComments);
-
-  /* const testObj = {message: 'When can I get this product?', receiverId: 2685};
-  const stringObj = JSON.stringify(testObj);
-  console.log('Stringyfy: ', stringObj); */
+  // console.log('All grouped comments:', allComments);
 
   /*   useEffect(() => {
     const interval = setInterval(() => {
@@ -88,16 +105,8 @@ const Chats = ({navigation}) => {
   }, []); */
 
   useEffect(() => {
-    loadCommentofFile();
     getAllComment();
-  }, []);
-
-  /* const comments = await Promise.all(
-        mediaArray.map(async (file) => {
-          const fileResponse = await getCommentsByFileId(file.file_id);
-          return await fileResponse.json();
-        })
-      ); */
+  }, [update]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -105,8 +114,7 @@ const Chats = ({navigation}) => {
         <Text style={styles.title}>Chats</Text>
       </View>
       <Divider />
-      {/* <Text>{allComments}</Text> */}
-      <ChatList navigation={navigation} />
+      <ChatList navigation={navigation} allComments={allComments} />
     </SafeAreaView>
   );
 };

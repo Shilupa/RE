@@ -30,8 +30,6 @@ const Message = ({navigation, route}) => {
     user_id: userId,
   } = route.params;
 
-  const receiverId = 2702;
-
   const item = {
     title: title,
     description: description,
@@ -67,12 +65,16 @@ const Message = ({navigation, route}) => {
 
       const commentObj = {
         message: data.message,
-        receiverId: receiverId,
+        receiverId: item.user_id,
       };
 
       console.log('commentObject: ', commentObj);
       try {
-        const send = await postComment(token, item.file_id, commentObj);
+        const send = await postComment(
+          token,
+          item.file_id,
+          JSON.stringify(commentObj)
+        );
         setLoading(false);
         console.log('Loading', send);
         reset();
