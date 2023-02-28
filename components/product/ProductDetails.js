@@ -231,6 +231,9 @@ const ProductDetails = ({navigation, route}) => {
     dislikeFile();
   };
 
+  // Parsing string object to json object
+  const descriptionObj = JSON.parse(description);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.imageContainer}>
@@ -262,7 +265,9 @@ const ProductDetails = ({navigation, route}) => {
           }}
         >
           <View style={styles.box}>
-            <Text style={styles.listTitle}>{title}</Text>
+            <Text style={styles.listTitle}>
+              {descriptionObj.title.toUpperCase()}
+            </Text>
             <Text style={styles.time}>listed {time}ago</Text>
           </View>
           {isLoggedIn && (
@@ -398,8 +403,16 @@ const ProductDetails = ({navigation, route}) => {
         )}
 
         <Card.Divider />
+        <Text style={styles.listHeader}>Details</Text>
+        <Text style={{padding: 10}}>
+          Condition {'->'} {descriptionObj.condition}
+        </Text>
+        <Text style={{padding: 10}}>
+          Availibility {'->'} {descriptionObj.status}
+        </Text>
+        <Card.Divider />
         <Text style={styles.listHeader}>Description</Text>
-        <Text style={{padding: 10}}>{description}</Text>
+        <Text style={{padding: 10}}>{descriptionObj.detail}</Text>
       </ScrollView>
     </SafeAreaView>
   );

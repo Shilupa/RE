@@ -5,6 +5,7 @@ import {
   Text,
   TouchableOpacity,
   Alert,
+  ImageBackground,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import {Button, Icon} from '@rneui/themed';
@@ -14,6 +15,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useFavourite, useRating, useTag, useUser} from '../../hooks/ApiHooks';
 import {MainContext} from '../../contexts/MainContext';
 import {uploadsUrl} from '../../utils/variables';
+import Availibility from '../Availibility';
 import {userFavourites, userRatings} from '../../hooks/UserFunctionality';
 
 const ProductList = ({singleMedia, navigation}) => {
@@ -188,17 +190,21 @@ const ProductList = ({singleMedia, navigation}) => {
         }}
       >
         <View style={styles.box}>
-          <Image
+          <ImageBackground
             style={styles.image}
             source={{uri: uploadsUrl + singleMedia.thumbnails?.w640}}
-          />
+          >
+            <Availibility
+              text={descriptionObj.status}
+              style={styles.availibility}
+            />
+          </ImageBackground>
         </View>
         <View style={styles.box}>
-          <Text style={styles.listTitle}>{singleMedia.title}</Text>
+          <Text style={styles.listTitle}>
+            {descriptionObj.title.toUpperCase()}
+          </Text>
           <Text numberOfLines={1}>{descriptionObj.detail}</Text>
-          <Text numberOfLines={1}>{descriptionObj.condition}</Text>
-          <Text numberOfLines={1}>{descriptionObj.status}</Text>
-          <Text numberOfLines={1}>{descriptionObj.title}</Text>
         </View>
       </TouchableOpacity>
       <Card.Divider />

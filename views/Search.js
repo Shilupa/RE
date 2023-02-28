@@ -104,16 +104,32 @@ const Search = ({navigation}) => {
             navigation={navigation}
             search={search}
             setSearch={setSearch}
+            category={''}
           />
         </TabView.Item>
         <TabView.Item style={{backgroundColor: 'none', width: '100%'}}>
-          <MainView navigation={navigation} category={categoryList[1]} />
+          <SearchList
+            navigation={navigation}
+            search={search}
+            setSearch={setSearch}
+            category={categoryList[1]}
+          />
         </TabView.Item>
         <TabView.Item style={{backgroundColor: 'none', width: '100%'}}>
-          <MainView navigation={navigation} category={categoryList[0]} />
+          <SearchList
+            navigation={navigation}
+            search={search}
+            setSearch={setSearch}
+            category={categoryList[0]}
+          />
         </TabView.Item>
         <TabView.Item style={{backgroundColor: 'none', width: '100%'}}>
-          <MainView navigation={navigation} category={categoryList[2]} />
+          <SearchList
+            navigation={navigation}
+            search={search}
+            setSearch={setSearch}
+            category={categoryList[2]}
+          />
         </TabView.Item>
       </TabView>
     </SafeAreaView>
