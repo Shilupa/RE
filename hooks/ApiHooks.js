@@ -359,7 +359,9 @@ const useComments = () => {
 
 // Hooks for likes and dislikes
 const useRating = () => {
-  const postRating = async (fileId, token, rating) => {
+  const {token} = useContext(MainContext);
+  
+  const postRating = async (fileId, rating) => {
     const options = {
       method: 'post',
       headers: {
@@ -375,7 +377,7 @@ const useRating = () => {
     }
   };
 
-  const deleteRating = async (fileId, token) => {
+  const deleteRating = async (fileId) => {
     const options = {
       method: 'delete',
       headers: {
@@ -398,8 +400,14 @@ const useRating = () => {
   };
 
   const getAllRatings = async () => {
+    const options = {
+      method: 'GET',
+      headers: {
+        'x-access-token': token,
+      },
+    };
     try {
-      return await doFetch(baseUrl + 'ratings/');
+      return await doFetch(baseUrl + 'ratings/', options);
     } catch (error) {
       throw new Error('getAllRatings error, ' + error.message);
     }

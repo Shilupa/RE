@@ -16,7 +16,7 @@ import MainView from '../components/product/MainView';
 const Home = ({navigation}) => {
   const [index, setIndex] = useState();
   const {isLoggedIn, user} = useContext(MainContext);
-  
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.titleBar}>
@@ -74,6 +74,11 @@ const Home = ({navigation}) => {
           titleStyle={{fontSize: 12, color: 'black'}}
           icon={{name: 'tv', type: 'ionicon', color: 'black'}}
         />
+        <Tab.Item
+          title="Miscellaneous"
+          titleStyle={{fontSize: 12, color: 'black'}}
+          icon={{name: 'add-outline', type: 'ionicon', color: 'black'}}
+        />
       </Tab>
       <Card.Divider />
       <TabView value={index} onChange={setIndex} animationType="spring">
@@ -88,6 +93,9 @@ const Home = ({navigation}) => {
         </TabView.Item>
         <TabView.Item style={{backgroundColor: 'none', width: '100%'}}>
           <MainView navigation={navigation} category={categoryList[2]} />
+        </TabView.Item>
+        <TabView.Item style={{backgroundColor: 'none', width: '100%'}}>
+          <MainView navigation={navigation} category={categoryList[3]} />
         </TabView.Item>
       </TabView>
     </SafeAreaView>
