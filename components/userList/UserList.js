@@ -1,4 +1,10 @@
-import {Image, StyleSheet, View, TouchableOpacity} from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  ImageBackground,
+} from 'react-native';
 import PropTypes from 'prop-types';
 import {uploadsUrl, vw} from '../../utils/variables';
 import {useContext, useEffect, useState} from 'react';
@@ -16,7 +22,7 @@ const UserList = ({singleMedia, navigation}) => {
       const user = await getUserById(singleMedia.user_id, token);
       setOwner(user);
     } catch (error) {
-      throw new Error('getOwner error hahaha, ' + error.message);
+      throw new Error('getOwner error, ' + error.message);
     }
   };
 
@@ -31,10 +37,10 @@ const UserList = ({singleMedia, navigation}) => {
           navigation.navigate('ProductDetails', item);
         }}
       >
-        <Image
+        <ImageBackground
           style={styles.image}
           source={{uri: uploadsUrl + item.thumbnails?.w160}}
-        />
+        ></ImageBackground>
       </TouchableOpacity>
     </View>
   );

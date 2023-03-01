@@ -15,6 +15,7 @@ const vw = width / 100.0;
 const vh = height / 100.0;
 
 const categoryList = ['Clothing', 'Furniture', 'Electronics', 'Miscellaneous'];
+const availibilityList = ['Reserved', 'Available', 'Unavailable'];
 
 export {
   baseUrl,
@@ -27,4 +28,5 @@ export {
   vh,
   categoryList,
   messageId,
+  availibilityList,
 };

@@ -7,7 +7,7 @@ import {
   Alert,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import {useCallback, useContext, useState} from 'react';
+import {useCallback, useContext, useRef, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import FormInput from '../components/formComponent/FormInput';
 import FormButton from '../components/formComponent/FormButton';
@@ -26,11 +26,13 @@ import {
 import {useFocusEffect} from '@react-navigation/native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {SelectList} from 'react-native-dropdown-select-list';
+import {Video} from 'expo-av';
 
 const Upload = ({navigation}) => {
   const {update, setUpdate, token} = useContext(MainContext);
   const [mediafile, setMediafile] = useState({});
   const [loading, setLoading] = useState(false);
+  const video = useRef(null);
   const {postMedia} = useMedia();
   const {postTag} = useTag();
   const [selectedCategory, setSelectedCategory] = useState();
@@ -177,15 +179,28 @@ const Upload = ({navigation}) => {
             activeOpacity={1}
           >
             <View style={styles.box}>
-              <Image
-                style={styles.image}
-                source={{
-                  uri:
-                    mediafile.uri ||
-                    'https://i0.wp.com/getstamped.co.uk/wp-content/uploads/WebsiteAssets/Placeholder.jpg',
-                }}
-                onPress={pickFile}
-              />
+              {mediafile.type === 'video' ? (
+                <Video
+                  ref={video}
+                  source={{uri: mediafile.uri}}
+                  style={{width: '100%', height: 200}}
+                  resizeMode="cover"
+                  useNativeControls
+                  onError={(error) => {
+                    console.log(error);
+                  }}
+                />
+              ) : (
+                <Image
+                  style={styles.image}
+                  source={{
+                    uri:
+                      mediafile.uri ||
+                      'https://i0.wp.com/getstamped.co.uk/wp-content/uploads/WebsiteAssets/Placeholder.jpg',
+                  }}
+                  onPress={pickFile}
+                />
+              )}
             </View>
           </TouchableOpacity>
           <Controller
@@ -229,7 +244,7 @@ const Upload = ({navigation}) => {
                 error={errors.description && errors.description.message}
                 autoCapitalize="none"
                 multiline={true}
-                numberOfLines={5}
+                numberOfLines={4}
               />
             )}
             name="description"
@@ -245,14 +260,14 @@ const Upload = ({navigation}) => {
             render={({field: {onChange, onBlur, value}}) => (
               <FormInput
                 label="Condition"
-                placeholder="Enter a condition of the item"
+                placeholder="Enter the condition of the item"
                 onBlur={onBlur}
                 onChange={onChange}
                 value={value}
                 error={errors.condition && errors.condition.message}
                 autoCapitalize="none"
                 multiline={true}
-                numberOfLines={5}
+                numberOfLines={1}
               />
             )}
             name="condition"

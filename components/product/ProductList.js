@@ -10,13 +10,14 @@ import {
 import PropTypes from 'prop-types';
 import {Button, Icon} from '@rneui/themed';
 import {Card} from '@rneui/base';
-import {useContext, useEffect, useState} from 'react';
+import {useContext, useEffect, useRef, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useRating, useTag, useUser} from '../../hooks/ApiHooks';
 import {MainContext} from '../../contexts/MainContext';
 import {uploadsUrl} from '../../utils/variables';
 import Availibility from '../Availibility';
 import {userFavourites, userRatings} from '../../hooks/UserFunctionality';
+import {Video} from 'expo-av';
 
 const ProductList = ({singleMedia, navigation}) => {
   const assetImage = Image.resolveAssetSource(
@@ -28,6 +29,14 @@ const ProductList = ({singleMedia, navigation}) => {
   const [owner, setOwner] = useState({});
   const {isLoggedIn, user} = useContext(MainContext);
 
+  const video = useRef(null);
+  const {getFavouritesByFileId, deleteFavourite} = useFavourite();
+  const [ratings, setRatings] = useState([]);
+  const [likesArray, setLikesArray] = useState([]);
+  const [dislikesArray, setDislikesArray] = useState([]);
+  const [userLikesIt, setUserLikesIt] = useState(false);
+  // const [userDislikesIt, setUserDislikesIt] = useState(false);
+  const {postRating, deleteRating, getRatingsByFileId} = useRating();
   const {favourites, addFavourite, removeFavourite} = userFavourites(
     singleMedia.file_id
   );
@@ -42,6 +51,7 @@ const ProductList = ({singleMedia, navigation}) => {
 
   // Parsing string object to json object
   const descriptionObj = JSON.parse(singleMedia.description);
+
   const loadAvatar = async () => {
     if (isLoggedIn) {
       try {
@@ -72,33 +82,61 @@ const ProductList = ({singleMedia, navigation}) => {
   useEffect(() => {
     getOwner();
     loadAvatar();
+    // getFile();
   }, [isLoggedIn]);
 
   return (
     <View style={styles.column} elevation={5}>
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate('ProductDetails', singleMedia);
-        }}
-      >
-        <View style={styles.box}>
-          <ImageBackground
-            style={styles.image}
-            source={{uri: uploadsUrl + singleMedia.thumbnails?.w640}}
-          >
-            <Availibility
-              text={descriptionObj.status}
-              style={styles.availibility}
-            />
-          </ImageBackground>
-        </View>
-        <View style={styles.box}>
-          <Text style={styles.listTitle}>
-            {descriptionObj.title.toUpperCase()}
-          </Text>
-          <Text numberOfLines={1}>{descriptionObj.detail}</Text>
-        </View>
-      </TouchableOpacity>
+      {singleMedia.media_type === 'video' ? (
+        <TouchableOpacity
+          onLongPress={() => {
+            navigation.navigate('ProductDetails', singleMedia);
+          }}
+        >
+          <View style={styles.box}>
+            <Video
+              ref={video}
+              source={{uri: uploadsUrl + singleMedia.filename}}
+              style={{width: '100%', height: 200}}
+              resizeMode="cover"
+              useNativeControls
+              onError={(error) => {
+                console.log(error);
+              }}
+              isLooping
+            >
+              <Availibility text={descriptionObj.status} />
+            </Video>
+          </View>
+          <View style={styles.box}>
+            <Text style={styles.listTitle}>
+              {descriptionObj.title.toUpperCase()}
+            </Text>
+            <Text numberOfLines={1}>{descriptionObj.detail}</Text>
+          </View>
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('ProductDetails', singleMedia);
+          }}
+        >
+          <View style={styles.box}>
+            <ImageBackground
+              style={styles.image}
+              source={{uri: uploadsUrl + singleMedia.thumbnails?.w640}}
+            >
+              <Availibility text={descriptionObj.status} />
+            </ImageBackground>
+          </View>
+          <View style={styles.box}>
+            <Text style={styles.listTitle}>
+              {descriptionObj.title.toUpperCase()}
+            </Text>
+            <Text numberOfLines={1}>{descriptionObj.detail}</Text>
+          </View>
+        </TouchableOpacity>
+      )}
       <Card.Divider />
       {isLoggedIn ? (
         <View style={styles.userInteraction}>

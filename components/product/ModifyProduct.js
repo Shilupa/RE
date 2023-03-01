@@ -1,5 +1,13 @@
 import React, {useContext, useState} from 'react';
-import {appId, primaryColour, uploadsUrl} from '../../utils/variables';
+import {
+  appId,
+  availibilityList,
+  inputBackground,
+  primaryColour,
+  uploadsUrl,
+  vh,
+  vw,
+} from '../../utils/variables';
 import PropTypes from 'prop-types';
 import {Button, Card, Icon, Text} from '@rneui/themed';
 import {
@@ -17,6 +25,11 @@ import {Controller, useForm} from 'react-hook-form';
 import {useMedia} from '../../hooks/ApiHooks';
 import FormInput from '../formComponent/FormInput';
 import FormButton from '../formComponent/FormButton';
+import {
+  MultipleSelectList,
+  SelectList,
+} from 'react-native-dropdown-select-list';
+import {MultiSelect} from 'react-native-element-dropdown';
 
 const ModifyProduct = ({navigation, route}) => {
   const {file} = route.params;
@@ -24,6 +37,7 @@ const ModifyProduct = ({navigation, route}) => {
   const {token} = useContext(MainContext);
   const {putMedia, deleteMedia} = useMedia();
   const {update, setUpdate} = useContext(MainContext);
+  const [selectedAvailibility, setSelectedAvailibility] = useState();
   // Converting json string to json object
   const descriptionObj = JSON.parse(file.description);
 
@@ -45,7 +59,9 @@ const ModifyProduct = ({navigation, route}) => {
     const mediaDescription = {
       detail: data.description,
       condition: data.condition,
-      status: data.status,
+      status: selectedAvailibility
+        ? selectedAvailibility
+        : descriptionObj.status,
       title: data.title,
     };
     // Converting json object to string
@@ -175,26 +191,20 @@ const ModifyProduct = ({navigation, route}) => {
           )}
           name="condition"
         />
-        <Controller
-          control={control}
-          rules={{
-            required: {value: true, message: 'This is required'},
-            minLength: {
-              value: 3,
-              message: 'min 3 characters.',
-            },
+        <SelectList
+          setSelected={(val) => setSelectedAvailibility(val)}
+          data={availibilityList}
+          save="value"
+          inputStyles={{fontSize: 18, color: '#808080'}}
+          search={false}
+          placeholder={descriptionObj.status}
+          boxStyles={{
+            backgroundColor: inputBackground,
+            borderColor: 'transparent',
+            marginHorizontal: 2 * vw,
+            marginTop: 0.5 * vh,
+            marginBottom: 1 * vh,
           }}
-          render={({field: {onChange, onBlur, value}}) => (
-            <FormInput
-              placeholder="Enter a status of the item"
-              label="Status"
-              onBlur={onBlur}
-              onChange={onChange}
-              value={value}
-              error={errors.status && errors.status.message}
-            />
-          )}
-          name="status"
         />
         <Controller
           control={control}
