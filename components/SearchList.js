@@ -18,8 +18,12 @@ const SearchList = ({navigation, search, category}) => {
           return <SearchListItem navigation={navigation} singleMedia={item} />;
         }
         if (
-          item.title.toLowerCase().includes(search.toLowerCase()) ||
-          item.description.toLowerCase().includes(search.toLowerCase())
+          JSON.parse(item.description)
+            .title.toLowerCase()
+            .includes(search.toLowerCase()) ||
+          JSON.parse(item.description)
+            .detail.toLowerCase()
+            .includes(search.toLowerCase())
         ) {
           return <SearchListItem navigation={navigation} singleMedia={item} />;
         }

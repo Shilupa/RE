@@ -28,6 +28,7 @@ const userFavourites = (fileId) => {
    * Adds file as favourite for user
    */
   const addFavourite = async (fileId) => {
+    console.log('Add favourite:', fileId);
     try {
       await postFavourite(fileId, token);
       setUpdateFavourite(!updateFavourite);

@@ -1,10 +1,12 @@
 import {Image, StyleSheet, View, TouchableOpacity, Text} from 'react-native';
 import PropTypes from 'prop-types';
 import {uploadsUrl, vw} from '../utils/variables';
+import {TabItem} from '@rneui/base/dist/Tab/Tab.Item';
 
 const SearchListItem = ({singleMedia, navigation}) => {
   const item = singleMedia;
-  // console.log('Item: ', item);
+  const descriptionObj = JSON.parse(item.description);
+  // console.log('Desc: ', descriptionObj);
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -14,16 +16,12 @@ const SearchListItem = ({singleMedia, navigation}) => {
       >
         <Image
           style={styles.image}
-          source={{uri: uploadsUrl + item.thumbnails?.w160}}
+          source={{uri: uploadsUrl + item.thumbnails?.w640}}
         />
       </TouchableOpacity>
 
       <View style={styles.profileAndInfo}>
-        {/* <Image
-          style={styles.profilePic}
-          source={{uri: uploadsUrl + item.thumbnails?.w160}}
-        /> */}
-        <Text style={{marginLeft: 10}}>{item.title}</Text>
+        <Text style={{marginLeft: 10}}>{descriptionObj.detail}</Text>
       </View>
     </View>
   );

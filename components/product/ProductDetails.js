@@ -15,7 +15,13 @@ import {
   Modal,
 } from 'react-native';
 import {MainContext} from '../../contexts/MainContext';
-import {useFavourite, useRating, useTag, useUser} from '../../hooks/ApiHooks';
+import {
+  useFavourite,
+  useMedia,
+  useRating,
+  useTag,
+  useUser,
+} from '../../hooks/ApiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {userFavourites, userRatings} from '../../hooks/UserFunctionality';
 import {Video} from 'expo-av';
@@ -30,6 +36,7 @@ const ProductDetails = ({navigation, route}) => {
   const [avatar, setAvatar] = useState(assetImage);
   const {getFilesByTag} = useTag();
   const {user} = useContext(MainContext);
+  const {mediaArray} = useMedia();
 
   const {
     title,
@@ -149,7 +156,9 @@ const ProductDetails = ({navigation, route}) => {
             <Button
               type="solid"
               buttonStyle={styles.backBtn}
-              onPress={() => navigation.goBack()}
+              onPress={() => {
+                navigation.goBack();
+              }}
             >
               <Icon name="arrow-back" color="black" />
             </Button>
