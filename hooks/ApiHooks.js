@@ -71,7 +71,7 @@ const useMedia = (myFilesOnly) => {
     // load media when update state changes in main context
     // by adding update state to the array below
     loadMedia();
-  }, []);
+  }, [update]);
 
   const postMedia = async (fileData, token) => {
     const options = {
@@ -360,7 +360,7 @@ const useComments = () => {
 // Hooks for likes and dislikes
 const useRating = () => {
   const {token} = useContext(MainContext);
-  
+
   const postRating = async (fileId, rating) => {
     const options = {
       method: 'post',

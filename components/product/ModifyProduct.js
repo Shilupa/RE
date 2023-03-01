@@ -79,7 +79,7 @@ const ModifyProduct = ({navigation, route}) => {
           text: 'OK',
           onPress: () => {
             setUpdate(!update);
-            navigation.navigate('Profile');
+            navigation.goBack();
           },
         },
       ]);

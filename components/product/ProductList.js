@@ -30,13 +30,6 @@ const ProductList = ({singleMedia, navigation}) => {
   const {isLoggedIn, user} = useContext(MainContext);
 
   const video = useRef(null);
-  const {getFavouritesByFileId, deleteFavourite} = useFavourite();
-  const [ratings, setRatings] = useState([]);
-  const [likesArray, setLikesArray] = useState([]);
-  const [dislikesArray, setDislikesArray] = useState([]);
-  const [userLikesIt, setUserLikesIt] = useState(false);
-  // const [userDislikesIt, setUserDislikesIt] = useState(false);
-  const {postRating, deleteRating, getRatingsByFileId} = useRating();
   const {favourites, addFavourite, removeFavourite} = userFavourites(
     singleMedia.file_id
   );
@@ -103,7 +96,6 @@ const ProductList = ({singleMedia, navigation}) => {
               onError={(error) => {
                 console.log(error);
               }}
-              isLooping
             >
               <Availibility text={descriptionObj.status} />
             </Video>
