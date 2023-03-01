@@ -26,15 +26,19 @@ const ProductList = ({singleMedia, navigation}) => {
   const [avatar, setAvatar] = useState(assetImage);
   const {getUserById} = useUser();
   const [owner, setOwner] = useState({});
-  const {isLoggedIn, user, token} = useContext(MainContext);
+  const {isLoggedIn, user} = useContext(MainContext);
 
   const {favourites, addFavourite, removeFavourite} = userFavourites(
     singleMedia.file_id
   );
-  const {addLike, removeLike, btnLikeDisable, btnDisLikeDisable} = userRatings(
-    user.user_id,
-    singleMedia.file_id
-  );
+  const {
+    addLike,
+    removeLike,
+    btnLikeDisable,
+    btnDisLikeDisable,
+    likeCount,
+    disLikeCount,
+  } = userRatings(user.user_id, singleMedia.file_id);
 
   // Parsing string object to json object
   const descriptionObj = JSON.parse(singleMedia.description);
@@ -56,6 +60,7 @@ const ProductList = ({singleMedia, navigation}) => {
   const getOwner = async () => {
     if (isLoggedIn) {
       try {
+        const token = await AsyncStorage.getItem('userToken');
         const owner = await getUserById(singleMedia.user_id, token);
         setOwner(owner);
       } catch (error) {
@@ -110,7 +115,7 @@ const ProductList = ({singleMedia, navigation}) => {
                 color={btnLikeDisable !== undefined ? 'green' : 'grey'}
                 onPress={() => addLike(singleMedia.file_id)}
               />
-              {/* <Text style={styles.iconText}>{likesArray.length}</Text> */}
+              <Text style={styles.iconText}>{likeCount}</Text>
             </View>
             <View style={styles.iconbox}>
               {/* {userDislikesIt ? ( */}
@@ -120,7 +125,7 @@ const ProductList = ({singleMedia, navigation}) => {
                 color={btnDisLikeDisable !== undefined ? '#EB212E' : 'grey'}
                 onPress={() => removeLike(singleMedia.file_id)}
               />
-              {/* <Text style={styles.iconText}>{dislikesArray.length}</Text> */}
+              <Text style={styles.iconText}>{disLikeCount}</Text>
             </View>
             <View style={{alignSelf: 'flex-start'}}>
               <Icon

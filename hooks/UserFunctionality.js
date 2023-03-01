@@ -60,18 +60,29 @@ const userFavourites = (fileId) => {
 const userRatings = (userId, fileId) => {
   const {updateRating, setUpdateRating, update, token} =
     useContext(MainContext);
-  const {getAllRatings, postRating, deleteRating} = useRating();
+  const {getAllRatings, postRating, deleteRating, getRatingsByFileId} =
+    useRating();
   const likeValue = 1;
   const disLikeValue = 2;
   const [btnLikeDisable, setBtnLikeDisable] = useState();
   const [btnDisLikeDisable, setBtnDisLikeDisable] = useState();
+  const [likeCount, setLikeCount] = useState(0);
+  const [disLikeCount, setDisLikeCount] = useState(0);
 
   const getAllLikes = async () => {
     if (token !== null) {
       try {
         const allLikes = await getAllRatings();
-        setBtnLikeDisable(findFile(allLikes, fileId, likeValue));
-        setBtnDisLikeDisable(findFile(allLikes, fileId, disLikeValue));
+        const getLikesByFileId = await getRatingsByFileId(fileId);
+        setBtnLikeDisable(findFile(allLikes, fileId, likeValue, userId));
+        setBtnDisLikeDisable(findFile(allLikes, fileId, disLikeValue, userId));
+
+        const countLike = getLikesByFileId.filter((obj) => obj.rating === 1);
+        const countDislike = getLikesByFileId.filter((obj) => obj.rating === 2);
+        //console.log('Likes', countLike.length, countDislike.length);
+        //console.log('Likes', btnLikeDisable, btnDisLikeDisable);
+        setLikeCount(countLike.length);
+        setDisLikeCount(countDislike.length);
       } catch (error) {
         console.log('Get All Likes: ', error);
       }
@@ -97,21 +108,17 @@ const userRatings = (userId, fileId) => {
   const addLike = async (file_id) => {
     try {
       const allLikes = await getAllRatings();
-      const result = findFile(allLikes, file_id, disLikeValue);
+      const result = findFile(allLikes, file_id, disLikeValue, userId);
       if (btnLikeDisable !== undefined) {
         console.log('Do nothing');
         return;
       }
       if (result === undefined) {
         await postLike(file_id);
-        setBtnLikeDisable(true);
-        setBtnDisLikeDisable(false);
         setUpdateRating(!updateRating);
       } else {
         await deleteRating(file_id);
         await postLike(file_id);
-        setBtnLikeDisable(true);
-        setBtnDisLikeDisable(false);
         setUpdateRating(!updateRating);
       }
     } catch (error) {
@@ -123,20 +130,18 @@ const userRatings = (userId, fileId) => {
   const removeLike = async (file_id) => {
     try {
       const allLikes = await getAllRatings();
-      const result = findFile(allLikes, file_id, likeValue);
+      const result = findFile(allLikes, file_id, likeValue, userId);
       if (btnDisLikeDisable !== undefined) {
         console.log('Do nothing');
         return;
       }
       if (result === undefined) {
         postDisLike(file_id);
-        console.log('remove', await getAllRatings());
         setUpdateRating(!updateRating);
       } else {
         await deleteRating(file_id);
         await postDisLike(file_id);
         setUpdateRating(!updateRating);
-        console.log('remove', await getAllRatings());
       }
     } catch (error) {
       // note: you cannot un-like same file multiple times
@@ -144,15 +149,20 @@ const userRatings = (userId, fileId) => {
     }
   };
 
-  const findFile = (allLikes, file_id, value) => {
+  const findFile = (allLikes, file_id, value, user_id) => {
     return allLikes.find(
       (like) =>
-        like.user_id === userId &&
         like.file_id === file_id &&
-        like.rating === value
+        like.rating === value &&
+        like.user_id === user_id
     );
   };
 
+  const findCount = (allLikes, file_id, value) => {
+    return allLikes.find(
+      (like) => like.file_id === file_id && like.rating === value
+    );
+  };
   useEffect(() => {
     getAllLikes();
   }, [update, updateRating, token]);
@@ -163,6 +173,8 @@ const userRatings = (userId, fileId) => {
     findFile,
     btnLikeDisable,
     btnDisLikeDisable,
+    likeCount,
+    disLikeCount,
   };
 };
 export {userFavourites, userRatings};
