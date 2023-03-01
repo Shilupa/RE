@@ -8,7 +8,13 @@ import {
 import PropTypes from 'prop-types';
 import {Button, Divider, Icon, Image, Input, Text} from '@rneui/themed';
 import {StatusBar} from 'react-native';
-import {inputBackground, primaryColour, uploadsUrl} from '../utils/variables';
+import {
+  inputBackground,
+  primaryColour,
+  uploadsUrl,
+  appId,
+  messageId,
+} from '../utils/variables';
 import MessageList from '../components/MessageList';
 import {Controller, useForm} from 'react-hook-form';
 import {useContext, useEffect, useState} from 'react';
@@ -80,6 +86,36 @@ const Message = ({navigation, route}) => {
       throw new Error('receiverAvatar error, ' + error.message);
     }
   }; */
+
+  const uploadMessage = async (existChatGroup, chatGroupName) => {
+    try {
+      if (!existChatGroup) {
+        console.log(
+          'Create a media item with specificTag,  title and description'
+        );
+
+        const formData = new FormData();
+        // find the media item and post the comment
+
+        formData.append('file', {
+          uri: mediafile.uri,
+          name: filename,
+          type: mimeType,
+        });
+        formData.append('title', 'SenderReceiverFile');
+
+        const result = await postMedia(formData, token);
+
+        const appTag = {
+          file_id: result.file_id,
+          tag: appId + messageId,
+        };
+        await postTag(appTag, token);
+      }
+    } catch (error) {
+      console.error('file upload failed', error);
+    }
+  };
 
   const sendMessage = async (data) => {
     /* console.log('Click unsucessfull');

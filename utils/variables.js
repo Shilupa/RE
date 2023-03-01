@@ -4,6 +4,7 @@ const baseUrl = 'https://media.mw.metropolia.fi/wbma/';
 const uploadsUrl = 'https://media.mw.metropolia.fi/wbma/uploads/';
 // const appId = 'Trinity-recycle-app';
 const appId = 'abjfjabjdvcuayvavsucs';
+const messageId = 'hahaha';
 
 const primaryColour = '#2DCC70';
 const primaryColourDark = '#238D50';
@@ -25,4 +26,5 @@ export {
   vw,
   vh,
   categoryList,
+  messageId,
 };
