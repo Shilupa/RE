@@ -72,6 +72,10 @@ const Search = ({navigation}) => {
             title="Electronics"
             titleStyle={{fontSize: 12, color: 'black'}}
           />
+          <Tab.Item
+            title="Miscellaneous"
+            titleStyle={{fontSize: 12, color: 'black'}}
+          />
         </Tab>
       </View>
 
@@ -131,6 +135,14 @@ const Search = ({navigation}) => {
             category={categoryList[2]}
           />
         </TabView.Item>
+        <TabView.Item style={{backgroundColor: 'none', width: '100%'}}>
+          <SearchList
+            navigation={navigation}
+            search={search}
+            setSearch={setSearch}
+            category={categoryList[3]}
+          />
+         </TabView.Item>
       </TabView>
     </SafeAreaView>
   );
