@@ -1,29 +1,24 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {
-  inputBackground,
-  primaryColour,
-  uploadsUrl,
-  vw,
-} from '../../utils/variables';
+import React, {useContext, useEffect, useRef, useState} from 'react';
+import {primaryColour, uploadsUrl, vw} from '../../utils/variables';
 import PropTypes from 'prop-types';
-import {Card, Icon, Button} from '@rneui/themed';
+import {Card, Icon, Button, Image} from '@rneui/themed';
 import {
   StyleSheet,
   View,
   Text,
-  Image,
   Platform,
   SafeAreaView,
   ScrollView,
-  ImageBackground,
   StatusBar,
   Alert,
   TouchableOpacity,
+  Modal,
 } from 'react-native';
 import {MainContext} from '../../contexts/MainContext';
 import {useFavourite, useRating, useTag, useUser} from '../../hooks/ApiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {userFavourites} from '../../hooks/UserFunctionality';
+import {Video} from 'expo-av';
 
 const ProductDetails = ({navigation, route}) => {
   const assetImage = Image.resolveAssetSource(
@@ -52,9 +47,12 @@ const ProductDetails = ({navigation, route}) => {
     file_id: fileId,
     time_added: timeAdded,
     user_id: userId,
+    media_type: type,
   } = route.params;
-  const {favourites, addFavourite, removeFavourite} = userFavourites(fileId);
 
+  const video = useRef(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const {favourites, addFavourite, removeFavourite} = userFavourites(fileId);
   const mediaUploded = new Date(timeAdded);
   const timeNow = new Date();
   const timeDiff = timeNow.getTime() - mediaUploded.getTime();
@@ -107,7 +105,7 @@ const ProductDetails = ({navigation, route}) => {
     try {
       const token = await AsyncStorage.getItem('userToken');
       const owner = await getUserById(userId, token);
-      console.log('owner', owner);
+      // console.log('owner', owner);
       setOwner(owner);
     } catch (error) {
       throw new Error('getOwner error, ' + error.message);
@@ -237,18 +235,52 @@ const ProductDetails = ({navigation, route}) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.imageContainer}>
-        <ImageBackground
-          source={{uri: uploadsUrl + filename}}
-          style={styles.backgroundImage}
-        >
-          <Button
-            type="solid"
-            buttonStyle={styles.backBtn}
-            onPress={() => navigation.goBack()}
-          >
-            <Icon name="arrow-back" color="black" />
-          </Button>
-        </ImageBackground>
+        {type === 'image' ? (
+          <View style={{flex: 1}}>
+            <Image
+              source={{uri: uploadsUrl + filename}}
+              containerStyle={styles.backgroundImage}
+              onPress={() => setModalVisible(true)}
+            />
+            <Button
+              type="solid"
+              buttonStyle={styles.backBtn}
+              onPress={() => navigation.goBack()}
+            >
+              <Icon name="arrow-back" color="black" />
+            </Button>
+          </View>
+        ) : (
+          <View style={{flex: 1}}>
+            <Video
+              ref={video}
+              source={{uri: uploadsUrl + filename}}
+              resizeMode="cover"
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                bottom: 0,
+                right: 0,
+              }}
+              useNativeControls
+              onError={(error) => {
+                console.log(error);
+              }}
+              isLooping
+            />
+            <Button
+              type="solid"
+              buttonStyle={styles.backBtn}
+              onPress={() => navigation.goBack()}
+            >
+              <Icon name="arrow-back" color="black" />
+            </Button>
+            {/* <TouchableOpacity style={{position: 'absolute', top: 20, left: 20}}>
+              <Text style={{color: 'white'}}>Play/Pause</Text>
+            </TouchableOpacity> */}
+          </View>
+        )}
       </View>
       <ScrollView
       /* style={{
@@ -414,6 +446,20 @@ const ProductDetails = ({navigation, route}) => {
         <Text style={styles.listHeader}>Description</Text>
         <Text style={{padding: 10}}>{descriptionObj.detail}</Text>
       </ScrollView>
+      <Modal
+        visible={modalVisible}
+        style={{flex: 1}}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <Image
+          resizeMode="contain"
+          onPress={() => setModalVisible(false)}
+          style={{height: '100%'}}
+          source={{uri: uploadsUrl + filename}}
+        />
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -512,9 +558,11 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   backgroundImage: {
-    flex: 1,
-    width: null,
-    height: null,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
   },
   iconbox: {
     flexDirection: 'column',

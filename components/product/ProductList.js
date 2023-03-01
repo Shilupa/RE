@@ -10,13 +10,14 @@ import {
 import PropTypes from 'prop-types';
 import {Button, Icon} from '@rneui/themed';
 import {Card} from '@rneui/base';
-import {useContext, useEffect, useState} from 'react';
+import {useContext, useEffect, useRef, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useFavourite, useRating, useTag, useUser} from '../../hooks/ApiHooks';
 import {MainContext} from '../../contexts/MainContext';
 import {uploadsUrl} from '../../utils/variables';
 import Availibility from '../Availibility';
 import {userFavourites, userRatings} from '../../hooks/UserFunctionality';
+import {Video} from 'expo-av';
 
 const ProductList = ({singleMedia, navigation}) => {
   const assetImage = Image.resolveAssetSource(
@@ -26,6 +27,7 @@ const ProductList = ({singleMedia, navigation}) => {
   const [avatar, setAvatar] = useState(assetImage);
   const {getUserById} = useUser();
   const [owner, setOwner] = useState({});
+  /*   const [files, setFiles] = useState({}); */
   const {
     isLoggedIn,
     user,
@@ -35,6 +37,7 @@ const ProductList = ({singleMedia, navigation}) => {
     userDislikesIt,
   } = useContext(MainContext);
 
+  const video = useRef(null);
   const {getFavouritesByFileId, deleteFavourite} = useFavourite();
   const [ratings, setRatings] = useState([]);
   const [likesArray, setLikesArray] = useState([]);
@@ -49,6 +52,7 @@ const ProductList = ({singleMedia, navigation}) => {
     singleMedia.file_id,
     user.user_id
   );
+  /*   const {getMediaById} = useMedia(); */
 
   // Parsing string object to json object
   const descriptionObj = JSON.parse(singleMedia.description);
@@ -80,6 +84,18 @@ const ProductList = ({singleMedia, navigation}) => {
       }
     }
   };
+
+  /*   const getFile = async () => {
+    if (isLoggedIn) {
+      try {
+        const files = await getMediaById(singleMedia.file_id);
+        // console.log('owner', owner);
+        setFiles(files);
+      } catch (error) {
+        // console.error('owner set failed', singleMedia.user_id);
+      }
+    }
+  }; */
 
   const getRatings = async () => {
     try {
@@ -160,6 +176,7 @@ const ProductList = ({singleMedia, navigation}) => {
   useEffect(() => {
     getOwner();
     loadAvatar();
+    // getFile();
   }, [isLoggedIn]);
 
   useEffect(() => {
@@ -182,28 +199,59 @@ const ProductList = ({singleMedia, navigation}) => {
     dislikeFile();
   };
 
+  console.log('product', singleMedia);
   return (
     <View style={styles.column} elevation={5}>
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate('ProductDetails', singleMedia);
-        }}
-      >
-        <View style={styles.box}>
-          <ImageBackground
-            style={styles.image}
-            source={{uri: uploadsUrl + singleMedia.thumbnails?.w640}}
-          >
-            <Availibility text={descriptionObj.status} />
-          </ImageBackground>
-        </View>
-        <View style={styles.box}>
-          <Text style={styles.listTitle}>
-            {descriptionObj.title.toUpperCase()}
-          </Text>
-          <Text numberOfLines={1}>{descriptionObj.detail}</Text>
-        </View>
-      </TouchableOpacity>
+      {singleMedia.media_type === 'video' ? (
+        <TouchableOpacity
+          onLongPress={() => {
+            navigation.navigate('ProductDetails', singleMedia);
+          }}
+        >
+          <View style={styles.box}>
+            <Video
+              ref={video}
+              source={{uri: uploadsUrl + singleMedia.filename}}
+              style={{width: '100%', height: 200}}
+              resizeMode="cover"
+              useNativeControls
+              onError={(error) => {
+                console.log(error);
+              }}
+              isLooping
+            >
+              <Availibility text={descriptionObj.status} />
+            </Video>
+          </View>
+          <View style={styles.box}>
+            <Text style={styles.listTitle}>
+              {descriptionObj.title.toUpperCase()}
+            </Text>
+            <Text numberOfLines={1}>{descriptionObj.detail}</Text>
+          </View>
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('ProductDetails', singleMedia);
+          }}
+        >
+          <View style={styles.box}>
+            <ImageBackground
+              style={styles.image}
+              source={{uri: uploadsUrl + singleMedia.thumbnails?.w640}}
+            >
+              <Availibility text={descriptionObj.status} />
+            </ImageBackground>
+          </View>
+          <View style={styles.box}>
+            <Text style={styles.listTitle}>
+              {descriptionObj.title.toUpperCase()}
+            </Text>
+            <Text numberOfLines={1}>{descriptionObj.detail}</Text>
+          </View>
+        </TouchableOpacity>
+      )}
       <Card.Divider />
       {isLoggedIn ? (
         <View style={styles.userInteraction}>
