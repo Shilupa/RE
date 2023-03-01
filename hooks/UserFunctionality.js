@@ -62,6 +62,7 @@ const userRatings = (userId, fileId) => {
     useContext(MainContext);
   const {getAllRatings, postRating, deleteRating, getRatingsByFileId} =
     useRating();
+  // Rating 1 for user like and Rating 2 for user dislike
   const likeValue = 1;
   const disLikeValue = 2;
   const [btnLikeDisable, setBtnLikeDisable] = useState();
@@ -74,14 +75,26 @@ const userRatings = (userId, fileId) => {
       try {
         const allLikes = await getAllRatings();
         const getLikesByFileId = await getRatingsByFileId(fileId);
+        /**
+         * Checking if media is  already liked or disliked by user
+         * If media is already liked/disliked findFile returns media object
+         * If media is not already liked/disliked findFile returns undefined
+         * Depending on findfile return like and disblike buttons are disabled
+         */
         setBtnLikeDisable(findFile(allLikes, fileId, likeValue, userId));
         setBtnDisLikeDisable(findFile(allLikes, fileId, disLikeValue, userId));
 
-        const countLike = getLikesByFileId.filter((obj) => obj.rating === 1);
-        const countDislike = getLikesByFileId.filter((obj) => obj.rating === 2);
-        //console.log('Likes', countLike.length, countDislike.length);
-        //console.log('Likes', btnLikeDisable, btnDisLikeDisable);
+        // Fetching total count of likes for a file as an array
+        const countLike = getLikesByFileId.filter(
+          (like) => like.rating === likeValue
+        );
+        // Fetching total count of dislikes for a file as an array
+        const countDislike = getLikesByFileId.filter(
+          (like) => like.rating === disLikeValue
+        );
+        // Sets total like counts for a media
         setLikeCount(countLike.length);
+        // Sets total dislike counts for a media
         setDisLikeCount(countDislike.length);
       } catch (error) {
         console.log('Get All Likes: ', error);
@@ -89,6 +102,7 @@ const userRatings = (userId, fileId) => {
     }
   };
 
+  // Posts user like having rating value 1
   const postLike = async (file_id) => {
     try {
       return await postRating(file_id, likeValue);
@@ -97,6 +111,7 @@ const userRatings = (userId, fileId) => {
     }
   };
 
+  // Post user likes having rating value 2
   const postDisLike = async (file_id) => {
     try {
       return await postRating(file_id, disLikeValue);
@@ -105,19 +120,30 @@ const userRatings = (userId, fileId) => {
     }
   };
 
+  /**
+   * Removes file having rating 2 if exists
+   * Adds file with rating  value 1
+   */
   const addLike = async (file_id) => {
     try {
       const allLikes = await getAllRatings();
+      /**
+       * Checking if media is alredy disliked
+       * If it is disliked then findFile returns media object else returns undefined
+       */
       const result = findFile(allLikes, file_id, disLikeValue, userId);
       if (btnLikeDisable !== undefined) {
         console.log('Do nothing');
         return;
       }
       if (result === undefined) {
+        // Adds media having rating 1
         await postLike(file_id);
         setUpdateRating(!updateRating);
       } else {
+        // Deletes media having rating 2
         await deleteRating(file_id);
+        // Adds media having rating 1
         await postLike(file_id);
         setUpdateRating(!updateRating);
       }
@@ -127,9 +153,17 @@ const userRatings = (userId, fileId) => {
     }
   };
 
-  const removeLike = async (file_id) => {
+  /**
+   * Removes file having rating 1 if exists
+   * Adds file with rating  value 2
+   */
+  const addDisLike = async (file_id) => {
     try {
       const allLikes = await getAllRatings();
+      /**
+       * Checking if media is alredy disliked
+       * If it is liked then findFile returns media object else returns undefined
+       */
       const result = findFile(allLikes, file_id, likeValue, userId);
       if (btnDisLikeDisable !== undefined) {
         console.log('Do nothing');
@@ -139,7 +173,9 @@ const userRatings = (userId, fileId) => {
         postDisLike(file_id);
         setUpdateRating(!updateRating);
       } else {
+        // Deleting media having rating 1
         await deleteRating(file_id);
+        // Adding media having rating 2
         await postDisLike(file_id);
         setUpdateRating(!updateRating);
       }
@@ -149,6 +185,10 @@ const userRatings = (userId, fileId) => {
     }
   };
 
+  /**
+   * Finds file in total array of ratins having given values
+   * retuns file object if found else retuns undefined
+   **/
   const findFile = (allLikes, file_id, value, user_id) => {
     return allLikes.find(
       (like) =>
@@ -158,18 +198,13 @@ const userRatings = (userId, fileId) => {
     );
   };
 
-  const findCount = (allLikes, file_id, value) => {
-    return allLikes.find(
-      (like) => like.file_id === file_id && like.rating === value
-    );
-  };
   useEffect(() => {
     getAllLikes();
   }, [update, updateRating, token]);
 
   return {
     addLike,
-    removeLike,
+    addDisLike,
     findFile,
     btnLikeDisable,
     btnDisLikeDisable,

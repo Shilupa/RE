@@ -33,7 +33,7 @@ const ProductList = ({singleMedia, navigation}) => {
   );
   const {
     addLike,
-    removeLike,
+    addDisLike,
     btnLikeDisable,
     btnDisLikeDisable,
     likeCount,
@@ -118,12 +118,11 @@ const ProductList = ({singleMedia, navigation}) => {
               <Text style={styles.iconText}>{likeCount}</Text>
             </View>
             <View style={styles.iconbox}>
-              {/* {userDislikesIt ? ( */}
               <Icon
                 name="thumb-down"
                 size={26}
                 color={btnDisLikeDisable !== undefined ? '#EB212E' : 'grey'}
-                onPress={() => removeLike(singleMedia.file_id)}
+                onPress={() => addDisLike(singleMedia.file_id)}
               />
               <Text style={styles.iconText}>{disLikeCount}</Text>
             </View>
@@ -135,7 +134,7 @@ const ProductList = ({singleMedia, navigation}) => {
                   navigation.navigate('Chats'); // opens a new chat
                 }}
               />
-              {/* <Text style={styles.iconText}>chat</Text> */}
+              <Text style={styles.iconText}>chat</Text>
             </View>
             <View style={styles.iconbox}>
               {favourites.length > 0 ? (

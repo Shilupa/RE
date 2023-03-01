@@ -23,7 +23,7 @@ import {
 import {MainContext} from '../../contexts/MainContext';
 import {useFavourite, useRating, useTag, useUser} from '../../hooks/ApiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {userFavourites} from '../../hooks/UserFunctionality';
+import {userFavourites, userRatings} from '../../hooks/UserFunctionality';
 
 const ProductDetails = ({navigation, route}) => {
   const assetImage = Image.resolveAssetSource(
@@ -54,6 +54,14 @@ const ProductDetails = ({navigation, route}) => {
     user_id: userId,
   } = route.params;
   const {favourites, addFavourite, removeFavourite} = userFavourites(fileId);
+  const {
+    addLike,
+    addDisLike,
+    btnLikeDisable,
+    btnDisLikeDisable,
+    likeCount,
+    disLikeCount,
+  } = userRatings(user.user_id, fileId);
 
   const mediaUploded = new Date(timeAdded);
   const timeNow = new Date();
