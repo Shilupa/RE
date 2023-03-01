@@ -57,21 +57,25 @@ const userFavourites = (fileId) => {
   return {favourites, addFavourite, removeFavourite};
 };
 
-const userRatings = (userId) => {
-  const {updateRating, setUpdateRating} = useContext(MainContext);
+const userRatings = (userId, fileId) => {
+  const {updateRating, setUpdateRating, update, token} =
+    useContext(MainContext);
   const {getAllRatings, postRating, deleteRating} = useRating();
   const likeValue = 1;
   const disLikeValue = 2;
-  const [btnLikeDisable, setBtnLikeDisable] = useState(false);
-  const [btnDisLikeDisable, setBtnDisLikeDisable] = useState(false);
+  const [btnLikeDisable, setBtnLikeDisable] = useState();
+  const [btnDisLikeDisable, setBtnDisLikeDisable] = useState();
 
   const getAllLikes = async () => {
-    try {
-      return await getAllRatings();
-    } catch (error) {
-      console.log('Get All Ratings: ', error);
+    if (token !== null) {
+      try {
+        const allLikes = await getAllRatings();
+        setBtnLikeDisable(findFile(allLikes, fileId, likeValue));
+        setBtnDisLikeDisable(findFile(allLikes, fileId, disLikeValue));
+      } catch (error) {
+        console.log('Get All Likes: ', error);
+      }
     }
-    //console.log('rating', ratings);
   };
 
   const postLike = async (file_id) => {
@@ -90,12 +94,11 @@ const userRatings = (userId) => {
     }
   };
 
-  // {"file_id": 6296, "rating": 1, "rating_id": 1245, "user_id": 2970}
   const addLike = async (file_id) => {
     try {
       const allLikes = await getAllRatings();
       const result = findFile(allLikes, file_id, disLikeValue);
-      if (btnLikeDisable) {
+      if (btnLikeDisable !== undefined) {
         console.log('Do nothing');
         return;
       }
@@ -104,14 +107,12 @@ const userRatings = (userId) => {
         setBtnLikeDisable(true);
         setBtnDisLikeDisable(false);
         setUpdateRating(!updateRating);
-        console.log('add', await getAllRatings());
       } else {
         await deleteRating(file_id);
         await postLike(file_id);
         setBtnLikeDisable(true);
         setBtnDisLikeDisable(false);
         setUpdateRating(!updateRating);
-        console.log('add', await getAllRatings());
       }
     } catch (error) {
       // note: you cannot like same file multiple times
@@ -123,26 +124,22 @@ const userRatings = (userId) => {
     try {
       const allLikes = await getAllRatings();
       const result = findFile(allLikes, file_id, likeValue);
-      if (btnDisLikeDisable) {
+      if (btnDisLikeDisable !== undefined) {
         console.log('Do nothing');
         return;
       }
       if (result === undefined) {
         postDisLike(file_id);
         console.log('remove', await getAllRatings());
-        setBtnDisLikeDisable(true);
-        setBtnLikeDisable(false);
         setUpdateRating(!updateRating);
       } else {
         await deleteRating(file_id);
         await postDisLike(file_id);
-        setBtnDisLikeDisable(true);
-        setBtnLikeDisable(false);
         setUpdateRating(!updateRating);
         console.log('remove', await getAllRatings());
       }
     } catch (error) {
-      // note: you cannot like same file multiple times
+      // note: you cannot un-like same file multiple times
       console.log('Remove rating: ', error);
     }
   };
@@ -158,12 +155,14 @@ const userRatings = (userId) => {
 
   useEffect(() => {
     getAllLikes();
-  }, [updateRating]);
+  }, [update, updateRating, token]);
 
   return {
     addLike,
     removeLike,
     findFile,
+    btnLikeDisable,
+    btnDisLikeDisable,
   };
 };
 export {userFavourites, userRatings};

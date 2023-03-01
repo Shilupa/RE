@@ -26,15 +26,15 @@ const ProductList = ({singleMedia, navigation}) => {
   const [avatar, setAvatar] = useState(assetImage);
   const {getUserById} = useUser();
   const [owner, setOwner] = useState({});
-  const {isLoggedIn, user, update, updateRating} = useContext(MainContext);
+  const {isLoggedIn, user, token} = useContext(MainContext);
 
-  const {getAllRatings} = useRating();
   const {favourites, addFavourite, removeFavourite} = userFavourites(
     singleMedia.file_id
   );
-  const {addLike, removeLike, findFile} = userRatings(user.user_id);
-  const [myLikedFile, setMyLikedFile] = useState();
-  const [myDisLikedFile, setMyDisLikedFile] = useState();
+  const {addLike, removeLike, btnLikeDisable, btnDisLikeDisable} = userRatings(
+    user.user_id,
+    singleMedia.file_id
+  );
 
   // Parsing string object to json object
   const descriptionObj = JSON.parse(singleMedia.description);
@@ -48,7 +48,7 @@ const ProductList = ({singleMedia, navigation}) => {
           setAvatar(uploadsUrl + avatarArray.pop().filename);
         }
       } catch (error) {
-        // console.error('user avatar fetch failed', error.message);
+        console.error('user avatar fetch failed', error.message);
       }
     }
   };
@@ -56,23 +56,11 @@ const ProductList = ({singleMedia, navigation}) => {
   const getOwner = async () => {
     if (isLoggedIn) {
       try {
-        const token = await AsyncStorage.getItem('userToken');
         const owner = await getUserById(singleMedia.user_id, token);
-        // console.log('owner', owner);
         setOwner(owner);
       } catch (error) {
-        // console.error('owner set failed', singleMedia.user_id);
+        console.error('owner set failed', error);
       }
-    }
-  };
-
-  const getRatings = async () => {
-    try {
-      const ratings = await getAllRatings();
-      setMyDisLikedFile(findFile(ratings, singleMedia.file_id, 2));
-      setMyLikedFile(findFile(ratings, singleMedia.file_id, 1));
-    } catch (error) {
-      // console.log('Product details [getRatings]', error);
     }
   };
 
@@ -80,10 +68,6 @@ const ProductList = ({singleMedia, navigation}) => {
     getOwner();
     loadAvatar();
   }, [isLoggedIn]);
-
-  useEffect(() => {
-    getRatings();
-  }, [update, updateRating]);
 
   return (
     <View style={styles.column} elevation={5}>
@@ -123,7 +107,7 @@ const ProductList = ({singleMedia, navigation}) => {
               <Icon
                 name="thumb-up"
                 size={26}
-                color={myLikedFile !== undefined ? 'green' : 'grey'}
+                color={btnLikeDisable !== undefined ? 'green' : 'grey'}
                 onPress={() => addLike(singleMedia.file_id)}
               />
               {/* <Text style={styles.iconText}>{likesArray.length}</Text> */}
@@ -133,7 +117,7 @@ const ProductList = ({singleMedia, navigation}) => {
               <Icon
                 name="thumb-down"
                 size={26}
-                color={myDisLikedFile !== undefined ? '#EB212E' : 'grey'}
+                color={btnDisLikeDisable !== undefined ? '#EB212E' : 'grey'}
                 onPress={() => removeLike(singleMedia.file_id)}
               />
               {/* <Text style={styles.iconText}>{dislikesArray.length}</Text> */}

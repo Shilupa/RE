@@ -345,8 +345,8 @@ const useComments = () => {
 // Hooks for likes and dislikes
 const useRating = () => {
   const {token} = useContext(MainContext);
+  
   const postRating = async (fileId, rating) => {
-    console.log('file', fileId, rating);
     const options = {
       method: 'post',
       headers: {
