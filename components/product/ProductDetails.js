@@ -224,17 +224,23 @@ const ProductDetails = ({navigation, route}) => {
                 marginTop: 0,
               }}
             >
-              <Image
-                style={{
-                  resizeMode: 'cover',
-                  width: 40,
-                  height: 30,
-                  borderRadius: 15,
-                  alignSelf: 'center',
-                  marginRight: 10,
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('Profile', owner.user_id);
                 }}
-                source={{uri: avatar}}
-              ></Image>
+              >
+                <Image
+                  style={{
+                    resizeMode: 'cover',
+                    width: 40,
+                    height: 30,
+                    borderRadius: 15,
+                    alignSelf: 'center',
+                    marginRight: 10,
+                  }}
+                  source={{uri: avatar}}
+                ></Image>
+              </TouchableOpacity>
               <View style={styles.box}>
                 <Text>{owner.username} </Text>
               </View>

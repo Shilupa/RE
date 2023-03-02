@@ -15,7 +15,7 @@ const doFetch = async (url, options) => {
   return json;
 };
 
-const useMedia = (myFilesOnly) => {
+const useMedia = (myFilesOnly, userId) => {
   const [mediaArray, setMediaArray] = useState([]);
   const {update, user} = useContext(MainContext);
 
@@ -28,7 +28,7 @@ const useMedia = (myFilesOnly) => {
 
       // keep users files if MyFilesOnly
       if (myFilesOnly) {
-        json = json.filter((file) => file.user_id === user.user_id);
+        json = json.filter((file) => file.user_id === userId);
       }
 
       json.reverse();
@@ -71,7 +71,7 @@ const useMedia = (myFilesOnly) => {
     // load media when update state changes in main context
     // by adding update state to the array below
     loadMedia();
-  }, [update]);
+  }, [update, userId]);
 
   const postMedia = async (fileData, token) => {
     const options = {

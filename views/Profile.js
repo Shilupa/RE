@@ -8,9 +8,9 @@ import {
   StatusBar,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import {Tab, TabView, Text, Button} from '@rneui/themed';
-import {useTag} from '../hooks/ApiHooks';
-import {primaryColour, uploadsUrl} from '../utils/variables';
+import {Tab, TabView, Text, Button, Icon} from '@rneui/themed';
+import {useTag, useUser} from '../hooks/ApiHooks';
+import {primaryColour, uploadsUrl, vw} from '../utils/variables';
 import React, {useContext, useEffect, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -18,20 +18,34 @@ import {Divider} from '@rneui/base';
 import Favourite from '../components/userList/Favourite';
 import MyList from '../components/userList/MyList';
 
-const Profile = ({navigation}) => {
+const Profile = ({navigation, route}) => {
   const assetImage = Image.resolveAssetSource(
     require('../assets/avatar.png')
   ).uri;
   const {getFilesByTag} = useTag();
-  const {setIsLoggedIn, isLoggedIn, user, setUser, updateUser} =
+  const {setIsLoggedIn, isLoggedIn, updateUser, user, setUser, token} =
     useContext(MainContext);
   const [avatar, setAvatar] = useState(assetImage);
   const [index, setIndex] = useState();
+  const {getUserById} = useUser();
+  const [owner, setOwner] = useState({});
+
+  const userId = route.params !== undefined ? route.params : user.user_id;
+
+  const getOwner = async () => {
+    try {
+      // const token = await AsyncStorage.getItem('userToken');
+      const owner = await getUserById(userId, token);
+      setOwner(owner);
+    } catch (error) {
+      throw new Error('getOwner error, ' + error.message);
+    }
+  };
 
   const loadAvatar = async () => {
     if (isLoggedIn) {
       try {
-        const avatarArray = await getFilesByTag('avatar_' + user.user_id);
+        const avatarArray = await getFilesByTag('avatar_' + userId);
         // Checking if user has added avatar previously
         if (avatarArray.length > 0) {
           setAvatar(uploadsUrl + avatarArray.pop().filename);
@@ -71,43 +85,12 @@ const Profile = ({navigation}) => {
   };
 
   useEffect(() => {
+    getOwner();
     loadAvatar();
-  }, [updateUser]);
+  }, [userId, updateUser]);
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.titleBar}>
-        <Text style={styles.title}>Profile</Text>
-        <Text style={styles.logOut} onPress={logOut}>
-          Log Out
-        </Text>
-      </View>
-
-      <Divider />
-
-      <View style={styles.userProfile}>
-        <Image style={styles.avatar} source={{uri: avatar}} />
-        <Text style={{textAlign: 'center', fontSize: 18}}>
-          {user !== null ? user.username : ''}
-        </Text>
-        <Text style={{textAlign: 'center', fontSize: 12}}>
-          {user !== null ? user.email : ''}
-        </Text>
-        <Button
-          containerStyle={{
-            width: '40%',
-            marginHorizontal: 50,
-            marginVertical: 10,
-            alignSelf: 'center',
-          }}
-          type="solid"
-          size="md"
-          color={'#4CBB17'}
-          radius={6}
-          title={'Edit Profile'}
-          onPress={navigateToEditProfile}
-        />
-      </View>
+  const UserTab = () => {
+    return (
       <Tab
         value={index}
         onChange={(e) => setIndex(e)}
@@ -125,13 +108,98 @@ const Profile = ({navigation}) => {
           titleStyle={{fontSize: 12, color: 'black'}}
         />
       </Tab>
+    );
+  };
+
+  const OwnerTab = () => {
+    return (
+      <Tab
+        value={index}
+        onChange={(e) => setIndex(e)}
+        indicatorStyle={{
+          backgroundColor: 'black',
+          height: 3,
+        }}
+      >
+        <Tab.Item
+          title={`${owner.username}'s Listings`}
+          titleStyle={{fontSize: 12, color: 'black'}}
+        />
+      </Tab>
+    );
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      {route.params !== undefined && route.params !== user.user_id ? (
+        <Button
+          type="solid"
+          buttonStyle={styles.backBtn}
+          onPress={() => {
+            navigation.goBack();
+          }}
+        >
+          <Icon name="arrow-back" color="black" />
+        </Button>
+      ) : (
+        ''
+      )}
+      <View style={styles.titleBar}>
+        <Text style={styles.title}>Profile</Text>
+        {route.params !== undefined && route.params !== user.user_id ? (
+          ''
+        ) : (
+          <Text style={styles.logOut} onPress={logOut}>
+            Log Out
+          </Text>
+        )}
+      </View>
+
+      <Divider />
+
+      <View style={styles.userProfile}>
+        <Image style={styles.avatar} source={{uri: avatar}} />
+        <Text style={{textAlign: 'center', fontSize: 18}}>
+          {owner !== null ? owner.username : ''}
+        </Text>
+        <Text style={{textAlign: 'center', fontSize: 12}}>
+          {owner !== null ? owner.email : ''}
+        </Text>
+        {route.params !== undefined && route.params !== user.user_id ? (
+          ''
+        ) : (
+          <Button
+            containerStyle={{
+              width: '40%',
+              marginHorizontal: 50,
+              marginVertical: 10,
+              alignSelf: 'center',
+            }}
+            type="solid"
+            size="md"
+            color={'#4CBB17'}
+            radius={6}
+            title={'Edit Profile'}
+            onPress={navigateToEditProfile}
+          />
+        )}
+      </View>
+      {route.params !== undefined && route.params !== user.user_id ? (
+        <OwnerTab />
+      ) : (
+        <UserTab />
+      )}
       <TabView value={index} onChange={setIndex} animationType="spring">
         <TabView.Item>
-          <MyList navigation={navigation} />
+          <MyList navigation={navigation} userId={owner.user_id} />
         </TabView.Item>
-        <TabView.Item>
-          <Favourite navigation={navigation} />
-        </TabView.Item>
+        {route.params !== undefined ? (
+          ''
+        ) : (
+          <TabView.Item>
+            <Favourite navigation={navigation} />
+          </TabView.Item>
+        )}
       </TabView>
     </SafeAreaView>
   );
@@ -177,6 +245,20 @@ const styles = StyleSheet.create({
     height: 150,
     borderRadius: 75,
     alignSelf: 'center',
+  },
+  backBtn: {
+    borderRadius: 25,
+    padding: 0,
+    marginTop: 10,
+    width: 45,
+    height: 45,
+    left: -40 * vw,
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#81C784',
+    elevation: 10,
+    position: 'relative',
   },
 });
 

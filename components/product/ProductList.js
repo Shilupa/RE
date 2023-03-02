@@ -133,8 +133,14 @@ const ProductList = ({singleMedia, navigation}) => {
       {isLoggedIn ? (
         <View style={styles.userInteraction}>
           <View style={styles.userInfo}>
-            <Image style={styles.avatar} source={{uri: avatar}}></Image>
-            <Text style={{fontSize: 10}}>{owner.username}</Text>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('Profile', owner.user_id);
+              }}
+            >
+              <Image style={styles.avatar} source={{uri: avatar}}></Image>
+              <Text style={{fontSize: 10}}>{owner.username}</Text>
+            </TouchableOpacity>
           </View>
 
           <View style={styles.icons}>

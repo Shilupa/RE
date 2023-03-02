@@ -3,8 +3,9 @@ import {useMedia} from '../../hooks/ApiHooks';
 import PropTypes from 'prop-types';
 import UserList from './UserList';
 
-const MyList = ({navigation}) => {
-  const {mediaArray} = useMedia(true);
+const MyList = ({navigation, userId}) => {
+  console.log("MyList:", userId);
+  const {mediaArray} = useMedia(true, userId);
   return (
     <FlatList
       horizontal={false}
