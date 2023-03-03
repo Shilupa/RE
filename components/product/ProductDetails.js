@@ -105,7 +105,6 @@ const ProductDetails = ({navigation, route}) => {
     try {
       const token = await AsyncStorage.getItem('userToken');
       const owner = await getUserById(userId, token);
-      console.log('ProductDetails owner', owner);
       setOwner(owner);
     } catch (error) {
       throw new Error('getOwner error, ' + error.message);

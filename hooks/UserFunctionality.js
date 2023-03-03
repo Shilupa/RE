@@ -4,6 +4,11 @@ import {uploadsUrl} from '../utils/variables';
 import {useFavourite, useRating, useTag} from './ApiHooks';
 import {Image} from 'react-native';
 
+/**
+ * User can add or remove favourite
+ * @param {*} fileId: clicked file Id
+ * @returns functions and states
+ */
 const userFavourites = (fileId) => {
   const {updateFavourite, setUpdateFavourite, token, update, setUpdate} =
     useContext(MainContext);
@@ -26,9 +31,9 @@ const userFavourites = (fileId) => {
 
   /**
    * Adds file as favourite for user
+   * @param {*} fileId: id of media file
    */
   const addFavourite = async (fileId) => {
-    console.log('Add favourite:', fileId);
     try {
       await postFavourite(fileId, token);
       setUpdateFavourite(!updateFavourite);
@@ -41,6 +46,7 @@ const userFavourites = (fileId) => {
 
   /**
    * Deletes file from favourite of user
+   * @param {*} fileId: id of media file
    */
   const removeFavourite = async (fileId) => {
     try {
@@ -60,6 +66,12 @@ const userFavourites = (fileId) => {
   return {favourites, addFavourite, removeFavourite};
 };
 
+/**
+ * User can like, dislike media / can remove existing own like or dislike in media file
+ * @param {*} userId: current user Id
+ * @param {*} fileId: cliked file Id
+ * @returns functions and states
+ */
 const userRatings = (userId, fileId) => {
   const {updateRating, setUpdateRating, update, token} =
     useContext(MainContext);
@@ -73,6 +85,11 @@ const userRatings = (userId, fileId) => {
   const [likeCount, setLikeCount] = useState(0);
   const [disLikeCount, setDisLikeCount] = useState(0);
 
+  /**
+   * Fetches list of media having with ratings(likes/dislikes)
+   * Counts total likes and dislikes of a file
+   * Sets the color of like-thumb and dislike-thumb
+   */
   const getAllLikes = async () => {
     if (token !== null) {
       try {
@@ -82,7 +99,7 @@ const userRatings = (userId, fileId) => {
          * Checking if media is  already liked or disliked by user
          * If media is already liked/disliked findFile returns media object
          * If media is not already liked/disliked findFile returns undefined
-         * Depending on findfile return like and disblike buttons are disabled
+         * Depending on findfile return likeColor and dislikeColor are set
          */
         setBtnLikeColor(findFile(allLikes, fileId, likeValue, userId));
         setBtnDislikeColor(findFile(allLikes, fileId, disLikeValue, userId));
@@ -124,8 +141,11 @@ const userRatings = (userId, fileId) => {
   };
 
   /**
+   * Removes own like if exists
    * Removes file having rating 2 if exists
    * Adds file with rating  value 1
+   * @param {*} file_id: id of media which is clicked
+   * @returns Nothing
    */
   const addLike = async (file_id) => {
     try {
@@ -135,22 +155,23 @@ const userRatings = (userId, fileId) => {
        * If it is disliked then findFile returns media object else returns undefined
        */
       const result = findFile(allLikes, file_id, disLikeValue, userId);
+      // Deletes like rating if it already exists
       if (btnLikeColor !== undefined) {
         await deleteRating(file_id);
         setUpdateRating(!updateRating);
         return;
       }
+      // Post initial media having rating 1
       if (result === undefined) {
-        // Adds media having rating 1
         await postLike(file_id);
         setUpdateRating(!updateRating);
-      } else {
-        // Deletes media having rating 2
-        await deleteRating(file_id);
-        // Adds media having rating 1
-        await postLike(file_id);
-        setUpdateRating(!updateRating);
+        return;
       }
+      // Deletes media having rating 2
+      await deleteRating(file_id);
+      // Adds media having rating 1
+      await postLike(file_id);
+      setUpdateRating(!updateRating);
     } catch (error) {
       // note: you cannot like same file multiple times
       console.log('Add Rating: ', error);
@@ -158,8 +179,11 @@ const userRatings = (userId, fileId) => {
   };
 
   /**
+   * Removes own dislike if exists
    * Removes file having rating 1 if exists
    * Adds file with rating  value 2
+   * @param {*} file_id : id of media clicked
+   * @returns Nothing
    */
   const addDisLike = async (file_id) => {
     try {
@@ -169,21 +193,23 @@ const userRatings = (userId, fileId) => {
        * If it is liked then findFile returns media object else returns undefined
        */
       const result = findFile(allLikes, file_id, likeValue, userId);
+      // Deletes dislike rating if it already exists
       if (btnDislikeColor !== undefined) {
         await deleteRating(file_id);
         setUpdateRating(!updateRating);
         return;
       }
+      // Post initial media having rating 2
       if (result === undefined) {
         postDisLike(file_id);
         setUpdateRating(!updateRating);
-      } else {
-        // Deleting media having rating 1
-        await deleteRating(file_id);
-        // Adding media having rating 2
-        await postDisLike(file_id);
-        setUpdateRating(!updateRating);
+        return;
       }
+      // Deleting media having rating 1
+      await deleteRating(file_id);
+      // Adding media having rating 2
+      await postDisLike(file_id);
+      setUpdateRating(!updateRating);
     } catch (error) {
       // note: you cannot un-like same file multiple times
       console.log('Remove rating: ', error);
@@ -191,9 +217,14 @@ const userRatings = (userId, fileId) => {
   };
 
   /**
+   *
    * Finds file in total array of ratins having given values
-   * retuns file object if found else retuns undefined
-   **/
+   * @param {*} allLikes: array of media files with ratings
+   * @param {*} file_id: id of media file whose ratings ot be checked
+   * @param {*} value: either rating 1 or rating 2
+   * @param {*} user_id: current user
+   * @returns file object if found else returns undefined
+   */
   const findFile = (allLikes, file_id, value, user_id) => {
     return allLikes.find(
       (like) =>
