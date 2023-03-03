@@ -136,7 +136,9 @@ const userRatings = (userId, fileId) => {
        */
       const result = findFile(allLikes, file_id, disLikeValue, userId);
       if (btnLikeDisable !== undefined) {
-        console.log('Do nothing');
+        const res = await deleteRating(file_id);
+        setUpdateRating(!updateRating);
+        console.log('Do nothing', res);
         return;
       }
       if (result === undefined) {
@@ -169,7 +171,9 @@ const userRatings = (userId, fileId) => {
        */
       const result = findFile(allLikes, file_id, likeValue, userId);
       if (btnDisLikeDisable !== undefined) {
-        console.log('Do nothing');
+        const res = await deleteRating(file_id);
+        console.log('Do nothing', res);
+        setUpdateRating(!updateRating);
         return;
       }
       if (result === undefined) {

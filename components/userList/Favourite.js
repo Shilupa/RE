@@ -35,7 +35,7 @@ const Favourite = ({navigation}) => {
         })
       );
       setFavouriteList(media);
-      console.log('set List from favourite:', media);
+      // console.log('set List from favourite:', media);
     } catch (error) {
       throw new Error('setList error, ' + error.message);
     }

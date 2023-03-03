@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import UserList from './UserList';
 
 const MyList = ({navigation, userId}) => {
-  console.log("MyList:", userId);
   const {mediaArray} = useMedia(true, userId);
   return (
     <FlatList

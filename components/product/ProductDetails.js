@@ -15,13 +15,7 @@ import {
   Modal,
 } from 'react-native';
 import {MainContext} from '../../contexts/MainContext';
-import {
-  useFavourite,
-  useMedia,
-  useRating,
-  useTag,
-  useUser,
-} from '../../hooks/ApiHooks';
+import {useTag, useUser} from '../../hooks/ApiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {userFavourites, userRatings} from '../../hooks/UserFunctionality';
 import {Video} from 'expo-av';
@@ -36,7 +30,6 @@ const ProductDetails = ({navigation, route}) => {
   const [avatar, setAvatar] = useState(assetImage);
   const {getFilesByTag} = useTag();
   const {user} = useContext(MainContext);
-  const {mediaArray} = useMedia();
 
   const {
     title,
