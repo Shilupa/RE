@@ -68,8 +68,8 @@ const userRatings = (userId, fileId) => {
   // Rating 1 for user like and Rating 2 for user dislike
   const likeValue = 1;
   const disLikeValue = 2;
-  const [btnLikeDisable, setBtnLikeDisable] = useState();
-  const [btnDisLikeDisable, setBtnDisLikeDisable] = useState();
+  const [btnLikeColor, setBtnLikeColor] = useState();
+  const [btnDislikeColor, setBtnDislikeColor] = useState();
   const [likeCount, setLikeCount] = useState(0);
   const [disLikeCount, setDisLikeCount] = useState(0);
 
@@ -84,8 +84,8 @@ const userRatings = (userId, fileId) => {
          * If media is not already liked/disliked findFile returns undefined
          * Depending on findfile return like and disblike buttons are disabled
          */
-        setBtnLikeDisable(findFile(allLikes, fileId, likeValue, userId));
-        setBtnDisLikeDisable(findFile(allLikes, fileId, disLikeValue, userId));
+        setBtnLikeColor(findFile(allLikes, fileId, likeValue, userId));
+        setBtnDislikeColor(findFile(allLikes, fileId, disLikeValue, userId));
 
         // Fetching total count of likes for a file as an array
         const countLike = getLikesByFileId.filter(
@@ -135,10 +135,9 @@ const userRatings = (userId, fileId) => {
        * If it is disliked then findFile returns media object else returns undefined
        */
       const result = findFile(allLikes, file_id, disLikeValue, userId);
-      if (btnLikeDisable !== undefined) {
-        const res = await deleteRating(file_id);
+      if (btnLikeColor !== undefined) {
+        await deleteRating(file_id);
         setUpdateRating(!updateRating);
-        console.log('Do nothing', res);
         return;
       }
       if (result === undefined) {
@@ -170,9 +169,8 @@ const userRatings = (userId, fileId) => {
        * If it is liked then findFile returns media object else returns undefined
        */
       const result = findFile(allLikes, file_id, likeValue, userId);
-      if (btnDisLikeDisable !== undefined) {
-        const res = await deleteRating(file_id);
-        console.log('Do nothing', res);
+      if (btnDislikeColor !== undefined) {
+        await deleteRating(file_id);
         setUpdateRating(!updateRating);
         return;
       }
@@ -213,8 +211,8 @@ const userRatings = (userId, fileId) => {
     addLike,
     addDisLike,
     findFile,
-    btnLikeDisable,
-    btnDisLikeDisable,
+    btnLikeColor,
+    btnDislikeColor,
     likeCount,
     disLikeCount,
   };

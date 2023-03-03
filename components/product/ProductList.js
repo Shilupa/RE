@@ -36,8 +36,8 @@ const ProductList = ({singleMedia, navigation}) => {
   const {
     addLike,
     addDisLike,
-    btnLikeDisable,
-    btnDisLikeDisable,
+    btnLikeColor,
+    btnDislikeColor,
     likeCount,
     disLikeCount,
   } = userRatings(user.user_id, singleMedia.file_id);
@@ -148,7 +148,7 @@ const ProductList = ({singleMedia, navigation}) => {
               <Icon
                 name="thumb-up"
                 size={26}
-                color={btnLikeDisable !== undefined ? 'green' : 'grey'}
+                color={btnLikeColor !== undefined ? 'green' : 'grey'}
                 onPress={() => addLike(singleMedia.file_id)}
               />
               <Text style={styles.iconText}>{likeCount}</Text>
@@ -157,7 +157,7 @@ const ProductList = ({singleMedia, navigation}) => {
               <Icon
                 name="thumb-down"
                 size={26}
-                color={btnDisLikeDisable !== undefined ? '#EB212E' : 'grey'}
+                color={btnDislikeColor !== undefined ? '#EB212E' : 'grey'}
                 onPress={() => addDisLike(singleMedia.file_id)}
               />
               <Text style={styles.iconText}>{disLikeCount}</Text>
