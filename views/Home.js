@@ -77,7 +77,7 @@ const Home = ({navigation}) => {
         <Tab.Item
           title="Miscellaneous"
           titleStyle={{fontSize: 12, color: 'black'}}
-          icon={{name: 'add-outline', type: 'ionicon', color: 'black'}}
+          icon={{name: 'apps', type: 'ionicon', color: 'black'}}
         />
       </Tab>
       <Card.Divider />

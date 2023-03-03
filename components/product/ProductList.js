@@ -8,11 +8,11 @@ import {
   ImageBackground,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import {Button, Icon} from '@rneui/themed';
+import {Icon} from '@rneui/themed';
 import {Card} from '@rneui/base';
 import {useContext, useEffect, useRef, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useRating, useTag, useUser} from '../../hooks/ApiHooks';
+import {useTag, useUser} from '../../hooks/ApiHooks';
 import {MainContext} from '../../contexts/MainContext';
 import {uploadsUrl} from '../../utils/variables';
 import Availibility from '../Availibility';
@@ -79,34 +79,37 @@ const ProductList = ({singleMedia, navigation}) => {
   }, [isLoggedIn]);
 
   return (
-    <View style={styles.column} elevation={5}>
+    <View style={styles.mainContainer} elevation={5}>
       {singleMedia.media_type === 'video' ? (
-        <TouchableOpacity
-          onLongPress={() => {
-            navigation.navigate('ProductDetails', singleMedia);
-          }}
-        >
-          <View style={styles.box}>
-            <Video
-              ref={video}
-              source={{uri: uploadsUrl + singleMedia.filename}}
-              style={{width: '100%', height: 200}}
-              resizeMode="cover"
-              useNativeControls
-              onError={(error) => {
-                console.log(error);
-              }}
-            >
+        <>
+          <View style={styles.videoContainer}>
+            <View style={styles.box}>
+              <Video
+                ref={video}
+                source={{uri: uploadsUrl + singleMedia.filename}}
+                style={styles.video}
+                resizeMode="cover"
+                useNativeControls
+                onError={(error) => {
+                  console.log(error);
+                }}
+              />
               <Availibility text={descriptionObj.status} />
-            </Video>
+            </View>
           </View>
-          <View style={styles.box}>
-            <Text style={styles.listTitle}>
-              {descriptionObj.title.toUpperCase()}
-            </Text>
-            <Text numberOfLines={1}>{descriptionObj.detail}</Text>
-          </View>
-        </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('ProductDetails', singleMedia);
+            }}
+          >
+            <View style={styles.box}>
+              <Text style={styles.listTitle}>
+                {descriptionObj.title.toUpperCase()}
+              </Text>
+              <Text numberOfLines={1}>{descriptionObj.detail}</Text>
+            </View>
+          </TouchableOpacity>
+        </>
       ) : (
         <TouchableOpacity
           onPress={() => {
@@ -229,7 +232,7 @@ const ProductList = ({singleMedia, navigation}) => {
 };
 
 const styles = StyleSheet.create({
-  column: {
+  mainContainer: {
     flexDirection: 'column',
     backgroundColor: '#F2F0F0',
     margin: 10,
@@ -238,6 +241,10 @@ const styles = StyleSheet.create({
   box: {
     flex: 1,
     padding: 10,
+  },
+  videoContainer: {
+    width: '100%',
+    height: 300,
   },
   rowBigbox: {
     flexDirection: 'row',
@@ -289,6 +296,14 @@ const styles = StyleSheet.create({
   },
   iconText: {
     fontSize: 10,
+  },
+  video: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+    margin: 10,
   },
 });
 

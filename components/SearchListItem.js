@@ -1,7 +1,6 @@
 import {Image, StyleSheet, View, TouchableOpacity, Text} from 'react-native';
 import PropTypes from 'prop-types';
 import {uploadsUrl, vw} from '../utils/variables';
-import {TabItem} from '@rneui/base/dist/Tab/Tab.Item';
 
 const SearchListItem = ({singleMedia, navigation}) => {
   const item = singleMedia;
@@ -21,7 +20,7 @@ const SearchListItem = ({singleMedia, navigation}) => {
       </TouchableOpacity>
 
       <View style={styles.profileAndInfo}>
-        <Text style={{marginLeft: 10}}>{descriptionObj.detail}</Text>
+        <Text style={{marginLeft: 10}}>{descriptionObj.title}</Text>
       </View>
     </View>
   );

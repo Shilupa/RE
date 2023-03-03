@@ -4,6 +4,8 @@ import {
   SafeAreaView,
   View,
   StatusBar,
+  Modal,
+  TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import {Card, Icon, SearchBar, Tab, TabView, Text} from '@rneui/themed';
@@ -11,12 +13,13 @@ import {categoryList, primaryColour} from '../utils/variables';
 import {useContext, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
 import SearchList from '../components/SearchList';
-import MainView from '../components/product/MainView';
 
 const Search = ({navigation}) => {
   const [searchIndex, setSearchIndex] = useState(0);
   const {isLoggedIn, user} = useContext(MainContext);
   const [search, setSearch] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedSortOptions, setSelectedSortoptions] = useState('Newest');
 
   const updateSearch = (search) => {
     setSearch(search);
@@ -34,18 +37,6 @@ const Search = ({navigation}) => {
             Sign In
           </Text>
         )}
-        {/* {!isLoggedIn ? (
-          <Text
-            style={styles.logIn}
-            onPress={() => navigation.navigate('Login')}
-          >
-            Sign In
-          </Text>
-        ) : (
-          <Text style={styles.logIn}>
-            Hi {user !== null ? user.username : 'User'}!
-          </Text>
-        )} */}
       </View>
       <View style={{marginBottom: 10}}>
         <Tab
@@ -79,13 +70,19 @@ const Search = ({navigation}) => {
         </Tab>
       </View>
 
-      <View style={{alignItems: 'center'}}>
+      <View
+        style={{
+          alignItems: 'center',
+          flexDirection: 'row',
+          justifyContent: 'space-evenly',
+        }}
+      >
         <SearchBar
           lightTheme={true}
           round={true}
           showCancel={true}
           containerStyle={{
-            width: '95%',
+            width: '80%',
             backgroundColor: 'white',
             borderBottomWidth: 0,
             borderTopWidth: 0,
@@ -95,6 +92,11 @@ const Search = ({navigation}) => {
           onChangeText={updateSearch}
           value={search}
         />
+        <Icon
+          name="sort"
+          size={30}
+          onPress={() => setModalVisible(true)}
+        ></Icon>
       </View>
 
       <Card.Divider />
@@ -108,6 +110,7 @@ const Search = ({navigation}) => {
             navigation={navigation}
             search={search}
             setSearch={setSearch}
+            selectedSortOption={selectedSortOptions}
             category={''}
           />
         </TabView.Item>
@@ -116,6 +119,7 @@ const Search = ({navigation}) => {
             navigation={navigation}
             search={search}
             setSearch={setSearch}
+            selectedSortOption={selectedSortOptions}
             category={categoryList[1]}
           />
         </TabView.Item>
@@ -124,6 +128,7 @@ const Search = ({navigation}) => {
             navigation={navigation}
             search={search}
             setSearch={setSearch}
+            selectedSortOption={selectedSortOptions}
             category={categoryList[0]}
           />
         </TabView.Item>
@@ -132,6 +137,7 @@ const Search = ({navigation}) => {
             navigation={navigation}
             search={search}
             setSearch={setSearch}
+            selectedSortOption={selectedSortOptions}
             category={categoryList[2]}
           />
         </TabView.Item>
@@ -140,10 +146,77 @@ const Search = ({navigation}) => {
             navigation={navigation}
             search={search}
             setSearch={setSearch}
+            selectedSortOption={selectedSortOptions}
             category={categoryList[3]}
           />
-         </TabView.Item>
+        </TabView.Item>
       </TabView>
+      <TouchableOpacity onPress={() => setModalVisible(false)}>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          style={{flex: 1}}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'rgba(0,0,0,.5)',
+            }}
+          >
+            <View
+              style={{
+                width: '80%',
+                height: 200,
+                borderRadius: 10,
+                backgroundColor: '#fff',
+              }}
+            >
+              <TouchableOpacity
+                style={styles.sortOptions}
+                onPress={() => {
+                  setSelectedSortoptions('Newest');
+                  setModalVisible(false);
+                }}
+              >
+                <Text>Newest</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.sortOptions}
+                onPress={() => {
+                  setSelectedSortoptions('Oldest');
+                  setModalVisible(false);
+                }}
+              >
+                <Text>Oldest</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.sortOptions}
+                onPress={() => {
+                  setSelectedSortoptions('titleAsc');
+                  setModalVisible(false);
+                }}
+              >
+                <Text>Title (A-Z)</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.sortOptions}
+                onPress={() => {
+                  setSelectedSortoptions('titleDesc');
+                  setModalVisible(false);
+                }}
+              >
+                <Text>Title (Z-A)</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
@@ -176,6 +249,13 @@ const styles = StyleSheet.create({
     color: primaryColour,
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  sortOptions: {
+    width: '100%',
+    height: 50,
+    borderBottomWidth: 0.5,
+    justifyContent: 'center',
+    paddingHorizontal: 20,
   },
 });
 
