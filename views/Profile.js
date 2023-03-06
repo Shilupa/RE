@@ -123,7 +123,7 @@ const Profile = ({navigation, route}) => {
       >
         <Tab.Item
           title={`${owner.username}'s Listings`}
-          titleStyle={{fontSize: 12, color: 'black'}}
+          titleStyle={{fontSize: 16, color: primaryColour}}
         />
       </Tab>
     );
@@ -145,17 +145,23 @@ const Profile = ({navigation, route}) => {
         ''
       )}
       <View style={styles.titleBar}>
-        <Text style={styles.title}>Profile</Text>
         {route.params !== undefined && route.params !== user.user_id ? (
           ''
         ) : (
-          <Text style={styles.logOut} onPress={logOut}>
-            Log Out
-          </Text>
+          <>
+            <Text style={styles.title}>Profile</Text>
+            <Text style={styles.logOut} onPress={logOut}>
+              Log Out
+            </Text>
+          </>
         )}
       </View>
 
-      <Divider />
+      {route.params !== undefined && route.params !== user.user_id ? (
+        ''
+      ) : (
+        <Divider />
+      )}
 
       <View style={styles.userProfile}>
         <Image style={styles.avatar} source={{uri: avatar}} />
@@ -189,7 +195,16 @@ const Profile = ({navigation, route}) => {
       ) : (
         <UserTab />
       )}
-      <TabView value={index} onChange={setIndex} animationType="spring">
+      <TabView
+        value={index}
+        onChange={setIndex}
+        animationType="spring"
+        disableSwipe={
+          route.params !== undefined && route.params !== user.user_id
+            ? true
+            : false
+        }
+      >
         <TabView.Item>
           <MyList navigation={navigation} userId={owner.user_id} />
         </TabView.Item>

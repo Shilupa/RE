@@ -207,7 +207,6 @@ const ProductDetails = ({navigation, route}) => {
         <View
           style={{
             flexDirection: 'row',
-            alignContent: 'space-between',
             justifyContent: 'space-between',
           }}
         >
@@ -220,10 +219,10 @@ const ProductDetails = ({navigation, route}) => {
           {isLoggedIn && (
             <View
               style={{
-                flexDirection: 'row',
+                flexDirection: 'column',
                 alignItems: 'center',
-                margin: 5,
-                marginTop: 0,
+                justifyContent: 'center',
+                marginHorizontal: 15,
               }}
             >
               <TouchableOpacity
@@ -238,12 +237,11 @@ const ProductDetails = ({navigation, route}) => {
                     height: 30,
                     borderRadius: 15,
                     alignSelf: 'center',
-                    marginRight: 10,
                   }}
                   source={{uri: avatar}}
                 ></Image>
               </TouchableOpacity>
-              <View style={styles.box}>
+              <View style={styles.userNameBox}>
                 <Text>{owner.username} </Text>
               </View>
             </View>
@@ -419,6 +417,7 @@ const styles = StyleSheet.create({
   listTitle: {
     fontWeight: 'bold',
     fontSize: 20,
+    maxWidth: '100%',
   },
   time: {
     fontSize: 11,
@@ -426,7 +425,13 @@ const styles = StyleSheet.create({
   },
   box: {
     margin: 10,
+    maxWidth: 70 * vw,
   },
+
+  userNameBox: {
+    maxWidth: 30 * vw,
+  },
+
   messageBtn: {
     backgroundColor: primaryColour,
     borderRadius: 25,

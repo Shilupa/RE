@@ -4,11 +4,10 @@ import {uploadsUrl, vw} from '../utils/variables';
 
 const ChatListItem = ({navigation, singleChatGroup}) => {
   const item = singleChatGroup;
-  console.log('Item: ', item);
-  const {comment, time_added: timeAdded} = item.allComments.pop();
+  const {comment, time_added} = item.allComments[item.allComments.length - 1];
   const description = JSON.parse(item.file.description);
 
-  const commentUploadTime = new Date(timeAdded);
+  const commentUploadTime = new Date(time_added);
   const month = commentUploadTime.toLocaleString('default', {month: 'short'});
   const day = commentUploadTime.getUTCDate();
   const year = commentUploadTime.getUTCFullYear();
@@ -58,7 +57,6 @@ const ChatListItem = ({navigation, singleChatGroup}) => {
             </Text>
           </View>
         </View>
-
         <Text style={styles.time}>{timeformat}</Text>
       </View>
     </TouchableOpacity>

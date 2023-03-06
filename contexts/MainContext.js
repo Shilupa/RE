@@ -14,7 +14,7 @@ const MainProvider = (props) => {
   const [token, setToken] = useState(null);
   const [updateAvatar, setUpdateAvatar] = useState(0);
   const [updateUser, setUpdateUser] = useState(0);
-  const [updateMessage, setUpdateMessage] = useState(false);
+  const [updateMessage, setUpdateMessage] = useState(0);
   /**
    * Saving user data and token from async storage to global variables
    */

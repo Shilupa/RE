@@ -9,7 +9,7 @@ import {MainContext} from '../contexts/MainContext';
 import {useComments, useMedia, useUser} from '../hooks/ApiHooks';
 
 const Chats = ({navigation}) => {
-  const {user, token} = useContext(MainContext);
+  const {user, token, updateMessage} = useContext(MainContext);
   const {searchMedia} = useMedia();
   const [chatGroupList, setChatGroupList] = useState();
   const {getMediaByFileId} = useMedia();
@@ -17,23 +17,27 @@ const Chats = ({navigation}) => {
   const {getUserById} = useUser();
 
   const loadChatGroups = async () => {
-    console.log('load message function called');
+    // console.log('load message function called');
     const title = user.user_id + messageId;
-    console.log('Title: ', title);
+    // console.log('Title: ', title);
 
     try {
       const chatGroups = await searchMedia(title, token);
       // console.log('allChatGroups: ', chatGroups);
-      const allChatGroups = await Promise.all(
+      const chatGroupWithComment = await Promise.all(
         chatGroups.map(async (group) => {
           const fileId = group.title.split('_').pop();
           const id1 = group.title.split('_')[0].replace(messageId, '');
           const id2 = group.title.split('_')[1].replace(messageId, '');
 
-          const fileResponse = await getMediaByFileId(fileId);
-          group.file = await fileResponse;
           const commentResponse = await getCommentsByFileId(group.file_id);
           group.allComments = await commentResponse;
+          // console.log('COmment Response', commentResponse);
+
+          const fileResponse = await getMediaByFileId(fileId);
+          group.file = await fileResponse;
+
+          // console.log('Group file Id: ', group.file_id);
 
           if (id1 == user.user_id) {
             const ownerResponse = await getUserById(id2, token);
@@ -42,13 +46,20 @@ const Chats = ({navigation}) => {
             const ownerResponse = await getUserById(id1, token);
             group.owner = await ownerResponse;
           }
-          return group;
+          return await group;
         })
       );
-      console.log('Chat group with files: ', allChatGroups);
 
-      setChatGroupList(allChatGroups);
-      // console.log('response: ', allChatGroups);
+      chatGroupWithComment.sort((a, b) => {
+        return (
+          b.allComments[b.allComments.length - 1].comment_id -
+          a.allComments[a.allComments.length - 1].comment_id
+        );
+      });
+
+      setChatGroupList(chatGroupWithComment);
+
+      console.log('All file with comment: ', chatGroupWithComment);
     } catch (error) {
       throw new Error('loadMessageGroup error: ' + error.message);
     }
@@ -63,7 +74,7 @@ const Chats = ({navigation}) => {
 
   useEffect(() => {
     loadChatGroups();
-  }, []);
+  }, [updateMessage]);
 
   return (
     <SafeAreaView style={styles.container}>

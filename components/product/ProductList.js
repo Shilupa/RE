@@ -147,16 +147,16 @@ const ProductList = ({singleMedia, navigation}) => {
       <Card.Divider />
       {isLoggedIn ? (
         <View style={styles.userInteraction}>
-          <View style={styles.userInfo}>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('Profile', owner.user_id);
-              }}
-            >
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('Profile', owner.user_id);
+            }}
+          >
+            <View style={styles.userInfo}>
               <Image style={styles.avatar} source={{uri: avatar}}></Image>
               <Text style={{fontSize: 10}}>{owner.username}</Text>
-            </TouchableOpacity>
-          </View>
+            </View>
+          </TouchableOpacity>
 
           <View style={styles.icons}>
             <View style={styles.iconbox}>
@@ -177,7 +177,7 @@ const ProductList = ({singleMedia, navigation}) => {
               />
               <Text style={styles.iconText}>{disLikeCount}</Text>
             </View>
-            <View style={{alignSelf: 'flex-start'}}>
+            <View style={{alignItems: 'center'}}>
               <Icon name="chat" size={26} onPress={navigateToMessage} />
               <Text style={styles.iconText}>chat</Text>
             </View>
@@ -264,8 +264,6 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   userInfo: {
-    width: '40%',
-    flexDirection: 'row',
     padding: 10,
     alignItems: 'center',
   },
@@ -300,7 +298,6 @@ const styles = StyleSheet.create({
     height: 30,
     borderRadius: 15,
     alignSelf: 'center',
-    marginRight: 10,
   },
   iconbox: {
     flexDirection: 'column',

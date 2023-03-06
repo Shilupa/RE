@@ -8,10 +8,12 @@ const MessageList = ({
   senderAvatar,
   receiverAvatar,
 }) => {
-  // console.log('Single Media', singleItem);
+  let reversedMedia = singleItem;
+  reversedMedia.reverse();
   return (
     <FlatList
-      data={singleItem}
+      inverted
+      data={reversedMedia}
       keyExtractor={(item, index) => index.toString()}
       renderItem={({item}) => (
         <MessageListItem

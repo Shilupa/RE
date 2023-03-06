@@ -24,14 +24,11 @@ import {MainContext} from '../contexts/MainContext';
 const Message = ({navigation, route}) => {
   const {file, owner} = route.params;
   const {user} = useContext(MainContext);
-  // const [senderId, setSenderId] = useState();
-  console.log('File:::', file);
 
   const senderId = user.user_id === file.user_id ? owner.user_id : file.user_id;
   const userId = user.user_id;
   const fileId = file.file_id;
 
-  // console.log('chatGroup, ', chatGroup);
   const {title} = JSON.parse(file.description);
   const {postComment, getCommentsByFileId} = useComments();
   const {token, updateMessage, setUpdateMessage} = useContext(MainContext);
@@ -83,10 +80,9 @@ const Message = ({navigation, route}) => {
     try {
       if (groupName != undefined) {
         const searchResponse = await searchMedia(groupName, token);
-        console.log('Response length: ', searchResponse.length);
+        // console.log('Response length: ', searchResponse.length);
 
         if (searchResponse.length > 0) {
-          // console.log('Hahaha: ', searchResponse);
           const commentResponse = await getCommentsByFileId(
             searchResponse[0].file_id
           );
@@ -105,17 +101,25 @@ const Message = ({navigation, route}) => {
     const name2 =
       userId + messageId + '_' + senderId + messageId + '_' + fileId;
 
+    console.log('Name 1: ', name1);
+    console.log('Name 2: ', name2);
+
     try {
       const response = await getFilesByTag(appId + messageId);
+
+      console.log('Response Length', response.length);
 
       if (response.length > 0) {
         response.forEach((element) => {
           if (element.title === name1) {
             setGroupName(name1);
             setExistChatGroup(true);
+            return;
           } else {
             if (element.title === name2) {
               setExistChatGroup(true);
+              setGroupName(name2);
+              return;
             }
             setGroupName(name2);
           }
@@ -128,9 +132,9 @@ const Message = ({navigation, route}) => {
     }
   };
 
-  console.log('Group Name: ', groupName);
+  // console.log('Group Name: ', groupName);
 
-  console.log('All message', allMessage);
+  // console.log('All message', allMessage);
 
   const sendMessage = async (data) => {
     try {
@@ -169,7 +173,7 @@ const Message = ({navigation, route}) => {
 
       console.log('message send', send);
       reset();
-      setUpdateMessage(!updateMessage);
+      setUpdateMessage(updateMessage + 1);
     } catch (error) {
       throw new Error('sendMessage error: ' + error.message);
     }
