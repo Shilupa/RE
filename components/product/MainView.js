@@ -2,7 +2,6 @@ import {FlatList} from 'react-native';
 import PropTypes from 'prop-types';
 import {useMedia} from '../../hooks/ApiHooks';
 import ProductList from './ProductList';
-import {categoryList} from '../../utils/variables';
 
 const MainView = ({navigation, category}) => {
   const {mediaArray} = useMedia();

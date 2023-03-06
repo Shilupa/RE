@@ -8,11 +8,11 @@ import {
   ImageBackground,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import {Button, Icon} from '@rneui/themed';
+import {Icon} from '@rneui/themed';
 import {Card} from '@rneui/base';
 import {useContext, useEffect, useRef, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useRating, useTag, useUser} from '../../hooks/ApiHooks';
+import {useTag, useUser} from '../../hooks/ApiHooks';
 import {MainContext} from '../../contexts/MainContext';
 import {uploadsUrl} from '../../utils/variables';
 import Availibility from '../Availibility';
@@ -33,6 +33,10 @@ const ProductList = ({singleMedia, navigation}) => {
   const {favourites, addFavourite, removeFavourite} = userFavourites(
     singleMedia.file_id
   );
+  const media = {
+    file: singleMedia,
+  };
+
   const {
     addLike,
     addDisLike,
@@ -69,6 +73,14 @@ const ProductList = ({singleMedia, navigation}) => {
       } catch (error) {
         console.error('owner set failed', error);
       }
+    }
+  };
+
+  const navigateToMessage = () => {
+    if (user.user_id === singleMedia.user_id) {
+      navigation.navigate('Chats', singleMedia); // opens a new chat
+    } else {
+      navigation.navigate('Message', media); // opens a new chat
     }
   };
 
@@ -157,13 +169,7 @@ const ProductList = ({singleMedia, navigation}) => {
               <Text style={styles.iconText}>{disLikeCount}</Text>
             </View>
             <View style={{alignSelf: 'flex-start'}}>
-              <Icon
-                name="chat"
-                size={26}
-                onPress={() => {
-                  navigation.navigate('Chat'); // opens a new chat
-                }}
-              />
+              <Icon name="chat" size={26} onPress={navigateToMessage} />
               <Text style={styles.iconText}>chat</Text>
             </View>
             <View style={styles.iconbox}>

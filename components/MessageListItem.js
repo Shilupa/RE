@@ -21,14 +21,15 @@ const MessageListItem = ({
   const item = singleMedia;
   const {user, token, updateMessage, setUpdateMessage} =
     useContext(MainContext);
-
   const {deleteComment} = useComments();
-  const sender = user.user_id === item.receiverId;
+
+  // console.log('Item, ', item);
+  const sender = user.user_id === item.user_id ? false : true;
 
   // console.log('Sender Avatar: ', senderAvatar);
   // console.log('Receiver Avatar: ', receiverAvatar);
 
-  const commentUploadTime = new Date(item.commentAddedTime);
+  const commentUploadTime = new Date(item.time_added);
   const month = commentUploadTime.toLocaleString('default', {month: 'short'});
   const day = commentUploadTime.getUTCDate();
   const year = commentUploadTime.getUTCFullYear();
@@ -88,7 +89,7 @@ const MessageListItem = ({
 
         <View style={sender ? styles.messageBoxSender : styles.messageBoxOwner}>
           <Text style={sender ? styles.messageSender : styles.messageOwner}>
-            {item.message}
+            {item.comment}
           </Text>
           <Text style={sender ? styles.timeSender : styles.timeOwner}>
             {timeformat}

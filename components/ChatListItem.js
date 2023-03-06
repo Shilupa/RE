@@ -2,13 +2,13 @@ import {Image, StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 import PropTypes from 'prop-types';
 import {uploadsUrl, vw} from '../utils/variables';
 
-const ChatListItem = ({singleComment, navigation}) => {
-  const item = singleComment;
-  const {message, commentAddedTime} = singleComment.chatGroup[0];
-  const file = singleComment.file;
-  const {title} = JSON.parse(file.description);
+const ChatListItem = ({navigation, singleChatGroup}) => {
+  const item = singleChatGroup;
+  console.log('Item: ', item);
+  const {comment, time_added: timeAdded} = item.allComments.pop();
+  const description = JSON.parse(item.file.description);
 
-  const commentUploadTime = new Date(commentAddedTime);
+  const commentUploadTime = new Date(timeAdded);
   const month = commentUploadTime.toLocaleString('default', {month: 'short'});
   const day = commentUploadTime.getUTCDate();
   const year = commentUploadTime.getUTCFullYear();
@@ -18,7 +18,6 @@ const ChatListItem = ({singleComment, navigation}) => {
   const formattedDate = `${month} ${day} ${year} ${hours}:${minutes
     .toString()
     .padStart(2, '0')} ${ampm}`;
-
   const timeNow = new Date();
   const timeDiff = timeNow.getTime() - commentUploadTime.getTime();
 
@@ -47,13 +46,15 @@ const ChatListItem = ({singleComment, navigation}) => {
           <Image
             style={styles.itemPic}
             source={{
-              uri: uploadsUrl + file.thumbnails?.w160,
+              uri: uploadsUrl + item.file.thumbnails?.w160,
             }}
           />
           <View style={styles.messageBox}>
-            <Text style={styles.title}>{title}</Text>
+            <Text style={styles.title}>
+              {description.title + ' - ' + item.owner.username}
+            </Text>
             <Text numberOfLines={1} style={styles.message}>
-              {message}
+              {comment}
             </Text>
           </View>
         </View>
@@ -110,7 +111,7 @@ const styles = StyleSheet.create({
 });
 
 ChatListItem.propTypes = {
-  singleComment: PropTypes.object,
+  singleChatGroup: PropTypes.object,
   navigation: PropTypes.object,
 };
 

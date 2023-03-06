@@ -100,6 +100,16 @@ const useMedia = (myFilesOnly) => {
     }
   };
 
+  const getMediaByFileId = async (id) => {
+    try {
+      return await doFetch(baseUrl + 'media/' + id, {
+        method: 'GET',
+      });
+    } catch (error) {
+      throw new Error('getMediaByFileId error, ' + error.message);
+    }
+  };
+
   const putMedia = async (id, data, token) => {
     const options = {
       method: 'put',
@@ -115,8 +125,33 @@ const useMedia = (myFilesOnly) => {
       throw new Error('putMedia: ' + error.message);
     }
   };
-  return {mediaArray, postMedia, deleteMedia, putMedia};
+
+  const searchMedia = async (title, token) => {
+    const options = {
+      method: 'post',
+      headers: {
+        'x-access-token': token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({title: title}),
+    };
+    try {
+      return await doFetch(baseUrl + 'media/search', options);
+    } catch (error) {
+      throw new Error('searchMedia error: ' + error.message);
+    }
+  };
+
+  return {
+    mediaArray,
+    postMedia,
+    getMediaByFileId,
+    deleteMedia,
+    putMedia,
+    searchMedia,
+  };
 };
+
 // ******* use media ENDS
 
 const useAuthentication = () => {

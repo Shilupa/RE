@@ -94,7 +94,7 @@ const Upload = ({navigation}) => {
       let fileExt = filename.split('.').pop();
       if (fileExt === 'jpg') fileExt = 'jpeg';
       const mimeType = mediafile.type + '/' + fileExt;
-      console.log('MimeType:', mimeType);
+      console.log('MimeType:', filename);
 
       formData.append('file', {
         uri: mediafile.uri,

@@ -18,43 +18,47 @@ import {
 import MessageList from '../components/MessageList';
 import {Controller, useForm} from 'react-hook-form';
 import {useContext, useEffect, useState} from 'react';
-import {useComments, useTag} from '../hooks/ApiHooks';
+import {useComments, useMedia, useTag} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 
 const Message = ({navigation, route}) => {
-  const {chatGroup, file} = route.params;
+  const {file, owner} = route.params;
+  const {user} = useContext(MainContext);
+  // const [senderId, setSenderId] = useState();
+  console.log('File:::', file);
+
+  const senderId = user.user_id === file.user_id ? owner.user_id : file.user_id;
+  const userId = user.user_id;
+  const fileId = file.file_id;
+
   // console.log('chatGroup, ', chatGroup);
   const {title} = JSON.parse(file.description);
-  const {postComment} = useComments();
+  const {postComment, getCommentsByFileId} = useComments();
   const {token, updateMessage, setUpdateMessage} = useContext(MainContext);
   const assetImage = Image.resolveAssetSource(
     require('../assets/avatar.png')
   ).uri;
+  const commentImage = Image.resolveAssetSource(
+    require('../assets/comment.png')
+  ).uri;
   const {getFilesByTag} = useTag();
   const [senderAvatar, setSenderAvatar] = useState(assetImage);
   const [receiverAvatar, setReceiverAvatar] = useState(assetImage);
+  const {postMedia, searchMedia} = useMedia();
+  const {postTag} = useTag();
+  // const [chatGroupList, setChatGroupList] = useState();
+  const [groupName, setGroupName] = useState();
+  const [allMessage, setAllMessage] = useState();
+  const [existChatGroup, setExistChatGroup] = useState(false);
 
   const {control, handleSubmit, reset} = useForm({
     defaultValues: {message: ''},
     mode: 'onBlur',
   });
 
-  // getting sender Avatar
-  /*   const sendAvatar = async () => {
-    try {
-      const response = await loadUserAvatar(chatGroup[0].senderId);
-      console.log('senderAvatar response: ', response);
-      setSenderAvatar(senderAvatar);
-    } catch (error) {
-      throw new Error('senderAvatar error, ' + error.message);
-    }
-  }; */
-
   const sendAvatar = async () => {
     try {
-      const avatarArray = await getFilesByTag(
-        'avatar_' + chatGroup[0].senderId
-      );
+      const avatarArray = await getFilesByTag('avatar_' + senderId);
       if (avatarArray.length > 0) {
         setSenderAvatar(uploadsUrl + avatarArray.pop().filename);
       }
@@ -63,12 +67,10 @@ const Message = ({navigation, route}) => {
     }
   };
 
-  // getting receiver Avatar
+  // getting user avatar
   const receiveAvatar = async () => {
     try {
-      const avatarArray = await getFilesByTag(
-        'avatar_' + chatGroup[0].receiverId
-      );
+      const avatarArray = await getFilesByTag('avatar_' + userId);
       if (avatarArray.length > 0) {
         setReceiverAvatar(uploadsUrl + avatarArray.pop().filename);
       }
@@ -77,17 +79,60 @@ const Message = ({navigation, route}) => {
     }
   };
 
-  /*   const receiveAvatar = async () => {
+  const loadAllMessage = async () => {
     try {
-      const response = await loadUserAvatar(chatGroup[0].receiverId);
-      console.log('receiverAvatar response: ', response);
-      setReceiverAvatar(receiverAvatar);
-    } catch (error) {
-      throw new Error('receiverAvatar error, ' + error.message);
-    }
-  }; */
+      if (groupName != undefined) {
+        const searchResponse = await searchMedia(groupName, token);
+        console.log('Response length: ', searchResponse.length);
 
-  const uploadMessage = async (existChatGroup, chatGroupName) => {
+        if (searchResponse.length > 0) {
+          // console.log('Hahaha: ', searchResponse);
+          const commentResponse = await getCommentsByFileId(
+            searchResponse[0].file_id
+          );
+
+          setAllMessage(commentResponse);
+        }
+      }
+    } catch (error) {
+      throw new Error('loadAllMessage error: ' + error.message);
+    }
+  };
+
+  const searchSetGroupName = async () => {
+    const name1 =
+      senderId + messageId + '_' + userId + messageId + '_' + fileId;
+    const name2 =
+      userId + messageId + '_' + senderId + messageId + '_' + fileId;
+
+    try {
+      const response = await getFilesByTag(appId + messageId);
+
+      if (response.length > 0) {
+        response.forEach((element) => {
+          if (element.title === name1) {
+            setGroupName(name1);
+            setExistChatGroup(true);
+          } else {
+            if (element.title === name2) {
+              setExistChatGroup(true);
+            }
+            setGroupName(name2);
+          }
+        });
+      } else {
+        setGroupName(name2);
+      }
+    } catch (error) {
+      throw new Error('searchSetGroupName error: ' + error.message);
+    }
+  };
+
+  console.log('Group Name: ', groupName);
+
+  console.log('All message', allMessage);
+
+  const sendMessage = async (data) => {
     try {
       if (!existChatGroup) {
         console.log(
@@ -95,59 +140,52 @@ const Message = ({navigation, route}) => {
         );
 
         const formData = new FormData();
-        // find the media item and post the comment
-
         formData.append('file', {
-          uri: mediafile.uri,
-          name: filename,
-          type: mimeType,
+          uri: commentImage,
+          name: 'commentFile',
+          type: 'image/png',
         });
-        formData.append('title', 'SenderReceiverFile');
+        formData.append('title', groupName);
 
         const result = await postMedia(formData, token);
-
         const appTag = {
           file_id: result.file_id,
           tag: appId + messageId,
         };
         await postTag(appTag, token);
       }
-    } catch (error) {
-      console.error('file upload failed', error);
-    }
-  };
+      console.log('Group Name: ', groupName);
 
-  const sendMessage = async (data) => {
-    /* console.log('Click unsucessfull');
-    console.log('Send clicked');
-    console.log('Sender Id:', user.user_id);
-    console.log('Receiver Id', file.user_id);
-    console.log('data: ', data.message); */
+      // find the file with title with chatGroupName
+      const ChatGroupFile = await searchMedia(groupName, token);
+      console.log('CHatGroup: ', ChatGroupFile);
 
-    const commentObj = {
-      message: data.message,
-      receiverId: file.user_id,
-    };
-
-    console.log('commentObject: ', commentObj);
-    try {
+      // post a comment / message
       const send = await postComment(
         token,
-        file.file_id,
-        JSON.stringify(commentObj)
+        ChatGroupFile[0].file_id,
+        data.message
       );
-      console.log('Loading', send);
+
+      console.log('message send', send);
       reset();
       setUpdateMessage(!updateMessage);
     } catch (error) {
-      throw new Error('sendMessage error, ' + error.message);
+      throw new Error('sendMessage error: ' + error.message);
     }
   };
+
+  // console.log('All message: ', allMessage);
 
   useEffect(() => {
     sendAvatar();
     receiveAvatar();
+    searchSetGroupName();
   }, []);
+
+  useEffect(() => {
+    loadAllMessage();
+  }, [groupName, updateMessage]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -184,7 +222,7 @@ const Message = ({navigation, route}) => {
       <Divider />
       <MessageList
         navigation={navigation}
-        singleItem={chatGroup}
+        singleItem={allMessage}
         senderAvatar={senderAvatar}
         receiverAvatar={receiverAvatar}
       />

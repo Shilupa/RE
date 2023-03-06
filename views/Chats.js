@@ -3,84 +3,54 @@ import PropTypes from 'prop-types';
 import ChatList from '../components/ChatList';
 import {Divider, Text} from '@rneui/themed';
 import {StatusBar} from 'react-native';
-import {appId, baseUrl, categoryList, primaryColour} from '../utils/variables';
+import {messageId, primaryColour} from '../utils/variables';
 import {useContext, useEffect, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
-import {loadMediaById, useComments, useMedia} from '../hooks/ApiHooks';
+import {useComments, useMedia, useUser} from '../hooks/ApiHooks';
 
 const Chats = ({navigation}) => {
-  const {user, updateMessage, setUpdateMessage} = useContext(MainContext);
+  const {user, token} = useContext(MainContext);
+  const {searchMedia} = useMedia();
+  const [chatGroupList, setChatGroupList] = useState();
+  const {getMediaByFileId} = useMedia();
   const {getCommentsByFileId} = useComments();
-  const {mediaArray} = useMedia();
-  const [allComments, setAllComments] = useState([]);
+  const {getUserById} = useUser();
 
-  const getAllComment = async () => {
+  const loadChatGroups = async () => {
+    console.log('load message function called');
+    const title = user.user_id + messageId;
+    console.log('Title: ', title);
+
     try {
-      console.log('This function is called');
+      const chatGroups = await searchMedia(title, token);
+      // console.log('allChatGroups: ', chatGroups);
+      const allChatGroups = await Promise.all(
+        chatGroups.map(async (group) => {
+          const fileId = group.title.split('_').pop();
+          const id1 = group.title.split('_')[0].replace(messageId, '');
+          const id2 = group.title.split('_')[1].replace(messageId, '');
 
-      const comments = await Promise.all(
-        mediaArray.map(async (media) => {
-          const response = await getCommentsByFileId(media.file_id);
-          media.comments = await response;
-          return media;
+          const fileResponse = await getMediaByFileId(fileId);
+          group.file = await fileResponse;
+          const commentResponse = await getCommentsByFileId(group.file_id);
+          group.allComments = await commentResponse;
+
+          if (id1 == user.user_id) {
+            const ownerResponse = await getUserById(id2, token);
+            group.owner = await ownerResponse;
+          } else {
+            const ownerResponse = await getUserById(id1, token);
+            group.owner = await ownerResponse;
+          }
+          return group;
         })
       );
+      console.log('Chat group with files: ', allChatGroups);
 
-      const tempAllComment = [];
-
-      comments.forEach((file) => {
-        file.comments.forEach((element) => {
-          const {message, receiverId} = JSON.parse(element.comment);
-
-          if (element.user_id === user.user_id || receiverId === user.user_id) {
-            tempAllComment.push({
-              commentId: element.comment_id,
-              fileId: element.file_id,
-              senderId: element.user_id,
-              receiverId: receiverId,
-              message: message,
-              commentAddedTime: element.time_added,
-            });
-          }
-        });
-      });
-      tempAllComment.sort((a, b) => a.comment_id - b.comment_id);
-
-      // grouping the data based on sender, receiver and file id
-      const groupedData = tempAllComment.reduce((result, item) => {
-        const {senderId, receiverId, fileId} = item;
-
-        const key1 = `${senderId}-${receiverId}-${fileId}`;
-        const key2 = `${receiverId}-${senderId}-${fileId}`;
-
-        if (!result[key1] && !result[key2]) {
-          result[key1] = [];
-        }
-
-        if (!result[key1]) {
-          result[key2].push(item);
-        } else {
-          result[key1].push(item);
-        }
-
-        return result;
-      }, {});
-
-      const arrayList = Object.values(groupedData).map((chatGroup) => ({
-        chatGroup,
-      }));
-
-      arrayList.forEach((chat) => {
-        mediaArray.forEach((item) => {
-          if (item.file_id === chat.chatGroup[0].fileId) {
-            chat.file = item;
-          }
-        });
-      });
-      setAllComments(arrayList);
-      // console.log('Allcomments', arrayList);
+      setChatGroupList(allChatGroups);
+      // console.log('response: ', allChatGroups);
     } catch (error) {
-      throw new Error('getAllComment error: ' + error.message);
+      throw new Error('loadMessageGroup error: ' + error.message);
     }
   };
 
@@ -92,8 +62,8 @@ const Chats = ({navigation}) => {
   }, []); */
 
   useEffect(() => {
-    getAllComment();
-  }, [mediaArray, updateMessage]);
+    loadChatGroups();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -101,7 +71,7 @@ const Chats = ({navigation}) => {
         <Text style={styles.title}>Chats</Text>
       </View>
       <Divider />
-      <ChatList navigation={navigation} allComments={allComments} />
+      <ChatList navigation={navigation} chatGroupList={chatGroupList} />
     </SafeAreaView>
   );
 };

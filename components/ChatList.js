@@ -2,16 +2,13 @@ import {FlatList} from 'react-native';
 import PropTypes from 'prop-types';
 import ChatListItem from './ChatListItem';
 
-const ChatList = ({navigation, allComments}) => {
-  // console.log('All Comments in ChatList: ', item);
-  // console.log('MediaArray: ', mediaArray);
-
+const ChatList = ({navigation, chatGroupList}) => {
   return (
     <FlatList
-      data={allComments}
+      data={chatGroupList}
       keyExtractor={(item, index) => index.toString()}
       renderItem={({item}) => (
-        <ChatListItem navigation={navigation} singleComment={item} />
+        <ChatListItem navigation={navigation} singleChatGroup={item} />
       )}
     />
   );
@@ -19,7 +16,7 @@ const ChatList = ({navigation, allComments}) => {
 
 ChatList.propTypes = {
   navigation: PropTypes.object,
-  allComments: PropTypes.array,
+  chatGroupList: PropTypes.array,
 };
 
 export default ChatList;
