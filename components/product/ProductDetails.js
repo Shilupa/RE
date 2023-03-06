@@ -15,7 +15,7 @@ import {
   Modal,
 } from 'react-native';
 import {MainContext} from '../../contexts/MainContext';
-import {useTag, useUser} from '../../hooks/ApiHooks';
+import {useMedia, useTag, useUser} from '../../hooks/ApiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {userFavourites, userRatings} from '../../hooks/UserFunctionality';
 import {Video} from 'expo-av';

@@ -3,6 +3,7 @@ import {MainContext} from '../contexts/MainContext';
 import {uploadsUrl} from '../utils/variables';
 import {useFavourite, useRating, useTag} from './ApiHooks';
 import {Image} from 'react-native';
+import * as ScreenOrientation from 'expo-screen-orientation';
 
 const userFavourites = (fileId) => {
   const {updateFavourite, setUpdateFavourite, token, update, setUpdate} =
@@ -216,4 +217,49 @@ const userRatings = (userId, fileId) => {
   };
 };
 
-export {userFavourites, userRatings};
+const videoOrientation = ({video}) => {
+  const unlock = async () => {
+    try {
+      await ScreenOrientation.unlockAsync();
+    } catch (error) {
+      console.error('unlock', error.message);
+    }
+  };
+
+  const lock = async () => {
+    try {
+      await ScreenOrientation.lockAsync(
+        ScreenOrientation.OrientationLock.PORTRAIT_UP
+      );
+    } catch (error) {
+      console.error('lock', error.message);
+    }
+  };
+
+  const showVideoInFullScreen = async () => {
+    try {
+      await video.current.presentFullscreenPlayer();
+    } catch (error) {
+      console.error('showVideoInFullScreen', error.message);
+    }
+  };
+
+  useEffect(() => {
+    unlock();
+
+    const orientSub = ScreenOrientation.addOrientationChangeListener((evt) => {
+      console.log('orientation', evt);
+      if (evt.orientationInfo.orientation > 2) {
+        // show video in fullscreen
+        if (video.current) showVideoInFullScreen();
+      }
+    });
+
+    return () => {
+      ScreenOrientation.removeOrientationChangeListener(orientSub);
+      lock();
+    };
+  }, []);
+};
+
+export {userFavourites, userRatings, videoOrientation};
