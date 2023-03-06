@@ -48,8 +48,8 @@ const ProductDetails = ({navigation, route}) => {
   const {
     addLike,
     addDisLike,
-    btnLikeDisable,
-    btnDisLikeDisable,
+    btnLikeColor,
+    btnDislikeColor,
     likeCount,
     disLikeCount,
   } = userRatings(user.user_id, fileId);
@@ -115,7 +115,6 @@ const ProductDetails = ({navigation, route}) => {
     try {
       const token = await AsyncStorage.getItem('userToken');
       const owner = await getUserById(userId, token);
-      console.log('ProductDetails owner', owner);
       setOwner(owner);
     } catch (error) {
       throw new Error('getOwner error, ' + error.message);
@@ -227,17 +226,23 @@ const ProductDetails = ({navigation, route}) => {
                 marginTop: 0,
               }}
             >
-              <Image
-                style={{
-                  resizeMode: 'cover',
-                  width: 40,
-                  height: 30,
-                  borderRadius: 15,
-                  alignSelf: 'center',
-                  marginRight: 10,
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('Profile', owner.user_id);
                 }}
-                source={{uri: avatar}}
-              ></Image>
+              >
+                <Image
+                  style={{
+                    resizeMode: 'cover',
+                    width: 40,
+                    height: 30,
+                    borderRadius: 15,
+                    alignSelf: 'center',
+                    marginRight: 10,
+                  }}
+                  source={{uri: avatar}}
+                ></Image>
+              </TouchableOpacity>
               <View style={styles.box}>
                 <Text>{owner.username} </Text>
               </View>
@@ -260,7 +265,7 @@ const ProductDetails = ({navigation, route}) => {
               <Icon
                 name="thumb-up"
                 size={26}
-                color={btnLikeDisable !== undefined ? 'green' : 'grey'}
+                color={btnLikeColor !== undefined ? 'green' : 'grey'}
                 onPress={() => addLike(fileId)}
               />
               <Text style={styles.iconText}>{likeCount}</Text>
@@ -269,7 +274,7 @@ const ProductDetails = ({navigation, route}) => {
               <Icon
                 name="thumb-down"
                 size={26}
-                color={btnDisLikeDisable !== undefined ? '#EB212E' : 'grey'}
+                color={btnDislikeColor !== undefined ? '#EB212E' : 'grey'}
                 onPress={() => addDisLike(fileId)}
               />
               <Text style={styles.iconText}>{disLikeCount}</Text>
