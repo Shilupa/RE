@@ -9,9 +9,6 @@ const MessageList = ({
   receiverAvatar,
 }) => {
   singleItem ? singleItem.reverse() : singleItem;
-  /*   reversedMedia?
-  let reversedMedia = singleItem;
-  reversedMedia.reverse(); */
   return (
     <FlatList
       inverted

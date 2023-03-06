@@ -35,9 +35,10 @@ const ChatListItem = ({navigation, singleChatGroup}) => {
   return (
     <TouchableOpacity
       onPress={() => {
-        // console.log('Go to  message: ');
-        // console.log('ItemSend: ', item.chatGroup[0]);
         navigation.navigate('Message', item);
+      }}
+      onLongPress={() => {
+        console.log('Long pressed');
       }}
     >
       <View style={styles.container}>

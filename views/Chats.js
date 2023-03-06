@@ -16,6 +16,15 @@ const Chats = ({navigation}) => {
   const {getCommentsByFileId} = useComments();
   const {getUserById} = useUser();
 
+  /*   const id1 = 111;
+  const id2 = 222;
+
+  const description = {};
+  description[id1] = false;
+  description[id2] = false;
+
+  console.log('Description Test: ', JSON.stringify(description));
+ */
   const loadChatGroups = async () => {
     // console.log('load message function called');
     const title = user.user_id + messageId;

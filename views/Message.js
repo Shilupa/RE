@@ -151,6 +151,20 @@ const Message = ({navigation, route}) => {
         });
         formData.append('title', groupName);
 
+        const id1 = groupName.split('_')[0].replace(messageId, '');
+        const id2 = groupName.split('_')[1].replace(messageId, '');
+
+        /*   const id1 = 111;
+        const id2 = 222; */
+
+        const description = {};
+        description[id1] = user.user_id == id1 ? true : false;
+        description[id2] = user.user_id == id2 ? true : false;
+
+        console.log('Description Test: ', description);
+
+        formData.append('description', JSON.stringify(description));
+
         const result = await postMedia(formData, token);
         const appTag = {
           file_id: result.file_id,
@@ -158,6 +172,7 @@ const Message = ({navigation, route}) => {
         };
         await postTag(appTag, token);
       }
+
       console.log('Group Name: ', groupName);
 
       // find the file with title with chatGroupName
