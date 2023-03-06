@@ -90,6 +90,13 @@ const ProductList = ({singleMedia, navigation}) => {
     // getFile();
   }, [isLoggedIn]);
 
+  const handlePlaybackStatusUpdate = (playbackStatus) => {
+    if (playbackStatus.didJustFinish) {
+      video.current.setPositionAsync(0); // Set the video position to 0 (start of the video)
+      video.current.pauseAsync(); // Pause the video instead of restarting it
+    }
+  };
+
   return (
     <View style={styles.mainContainer} elevation={5}>
       {singleMedia.media_type === 'video' ? (
@@ -102,6 +109,7 @@ const ProductList = ({singleMedia, navigation}) => {
                 style={styles.video}
                 resizeMode="cover"
                 useNativeControls
+                onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
                 onError={(error) => {
                   console.log(error);
                 }}

@@ -30,6 +30,7 @@ const ProductDetails = ({navigation, route}) => {
   const [avatar, setAvatar] = useState(assetImage);
   const {getFilesByTag} = useTag();
   const {user} = useContext(MainContext);
+  const {mediaArray} = useMedia();
 
   const {
     title,
@@ -40,7 +41,6 @@ const ProductDetails = ({navigation, route}) => {
     user_id: userId,
     media_type: type,
   } = route.params;
-  console.log('FileID: ', fileId);
 
   const video = useRef(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -48,8 +48,8 @@ const ProductDetails = ({navigation, route}) => {
   const {
     addLike,
     addDisLike,
-    btnLikeColor,
-    btnDislikeColor,
+    btnLikeDisable,
+    btnDisLikeDisable,
     likeCount,
     disLikeCount,
   } = userRatings(user.user_id, fileId);
@@ -98,16 +98,7 @@ const ProductDetails = ({navigation, route}) => {
         ]
       );
     } else {
-      navigation.navigate('Message', {
-        file: {
-          title,
-          description,
-          filename,
-          file_id: fileId,
-          time_added: timeAdded,
-          user_id: userId,
-        },
-      });
+      navigation.navigate('Chats');
     }
   };
 
@@ -115,6 +106,7 @@ const ProductDetails = ({navigation, route}) => {
     try {
       const token = await AsyncStorage.getItem('userToken');
       const owner = await getUserById(userId, token);
+      console.log('ProductDetails owner', owner);
       setOwner(owner);
     } catch (error) {
       throw new Error('getOwner error, ' + error.message);
@@ -144,6 +136,14 @@ const ProductDetails = ({navigation, route}) => {
 
   // Parsing string object to json object
   const descriptionObj = JSON.parse(description);
+
+  const handlePlaybackStatusUpdate = (playbackStatus) => {
+    if (playbackStatus.didJustFinish) {
+      video.current.setPositionAsync(0); // Set the video position to 0 (start of the video)
+      video.current.pauseAsync(); // Pause the video instead of restarting it
+    }
+  };
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -179,6 +179,7 @@ const ProductDetails = ({navigation, route}) => {
                 right: 0,
               }}
               useNativeControls
+              onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
               onError={(error) => {
                 console.log(error);
               }}
@@ -207,6 +208,7 @@ const ProductDetails = ({navigation, route}) => {
         <View
           style={{
             flexDirection: 'row',
+            alignContent: 'space-between',
             justifyContent: 'space-between',
           }}
         >
@@ -219,29 +221,24 @@ const ProductDetails = ({navigation, route}) => {
           {isLoggedIn && (
             <View
               style={{
-                flexDirection: 'column',
+                flexDirection: 'row',
                 alignItems: 'center',
-                justifyContent: 'center',
-                marginHorizontal: 15,
+                margin: 5,
+                marginTop: 0,
               }}
             >
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate('Profile', owner.user_id);
+              <Image
+                style={{
+                  resizeMode: 'cover',
+                  width: 40,
+                  height: 30,
+                  borderRadius: 15,
+                  alignSelf: 'center',
+                  marginRight: 10,
                 }}
-              >
-                <Image
-                  style={{
-                    resizeMode: 'cover',
-                    width: 40,
-                    height: 30,
-                    borderRadius: 15,
-                    alignSelf: 'center',
-                  }}
-                  source={{uri: avatar}}
-                ></Image>
-              </TouchableOpacity>
-              <View style={styles.userNameBox}>
+                source={{uri: avatar}}
+              ></Image>
+              <View style={styles.box}>
                 <Text>{owner.username} </Text>
               </View>
             </View>
@@ -263,7 +260,7 @@ const ProductDetails = ({navigation, route}) => {
               <Icon
                 name="thumb-up"
                 size={26}
-                color={btnLikeColor !== undefined ? 'green' : 'grey'}
+                color={btnLikeDisable !== undefined ? 'green' : 'grey'}
                 onPress={() => addLike(fileId)}
               />
               <Text style={styles.iconText}>{likeCount}</Text>
@@ -272,7 +269,7 @@ const ProductDetails = ({navigation, route}) => {
               <Icon
                 name="thumb-down"
                 size={26}
-                color={btnDislikeColor !== undefined ? '#EB212E' : 'grey'}
+                color={btnDisLikeDisable !== undefined ? '#EB212E' : 'grey'}
                 onPress={() => addDisLike(fileId)}
               />
               <Text style={styles.iconText}>{disLikeCount}</Text>
@@ -417,7 +414,6 @@ const styles = StyleSheet.create({
   listTitle: {
     fontWeight: 'bold',
     fontSize: 20,
-    maxWidth: '100%',
   },
   time: {
     fontSize: 11,
@@ -425,13 +421,7 @@ const styles = StyleSheet.create({
   },
   box: {
     margin: 10,
-    maxWidth: 70 * vw,
   },
-
-  userNameBox: {
-    maxWidth: 30 * vw,
-  },
-
   messageBtn: {
     backgroundColor: primaryColour,
     borderRadius: 25,
