@@ -110,16 +110,16 @@ const Message = ({navigation, route}) => {
       console.log('Response Length', response.length);
 
       if (response.length > 0) {
-        response.forEach((element) => {
+        response.every((element) => {
           if (element.title === name1) {
             setGroupName(name1);
             setExistChatGroup(true);
-            return;
+            return false;
           } else {
             if (element.title === name2) {
               setExistChatGroup(true);
               setGroupName(name2);
-              return;
+              return false;
             }
             setGroupName(name2);
           }
