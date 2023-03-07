@@ -6,6 +6,9 @@ import {
   StatusBar,
   Modal,
   TouchableOpacity,
+  Image,
+  TouchableNativeFeedback,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import {Card, Icon, SearchBar, Tab, TabView, Text} from '@rneui/themed';
@@ -151,7 +154,6 @@ const Search = ({navigation}) => {
           />
         </TabView.Item>
       </TabView>
-      <TouchableOpacity onPress={() => setModalVisible(false)}>
         <Modal
           animationType="slide"
           transparent={true}
@@ -161,12 +163,13 @@ const Search = ({navigation}) => {
             setModalVisible(!modalVisible);
           }}
         >
+          <TouchableWithoutFeedback onPress={() => {setModalVisible(false)}}>
           <View
             style={{
               flex: 1,
               justifyContent: 'center',
               alignItems: 'center',
-              backgroundColor: 'rgba(0,0,0,.5)',
+              backgroundColor: 'rgba(0,0,0,0.5)',
             }}
           >
             <View
@@ -184,7 +187,7 @@ const Search = ({navigation}) => {
                   setModalVisible(false);
                 }}
               >
-                <Text>Newest</Text>
+                <Text style={(selectedSortOptions === 'Newest' && styles.selected)}>Newest</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.sortOptions}
@@ -193,7 +196,7 @@ const Search = ({navigation}) => {
                   setModalVisible(false);
                 }}
               >
-                <Text>Oldest</Text>
+                <Text style={(selectedSortOptions === 'Oldest' && styles.selected)}>Oldest</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.sortOptions}
@@ -202,7 +205,7 @@ const Search = ({navigation}) => {
                   setModalVisible(false);
                 }}
               >
-                <Text>Title (A-Z)</Text>
+                <Text style={(selectedSortOptions === 'titleAsc' && styles.selected)}>Title (A-Z)</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.sortOptions}
@@ -211,12 +214,12 @@ const Search = ({navigation}) => {
                   setModalVisible(false);
                 }}
               >
-                <Text>Title (Z-A)</Text>
+                <Text style={(selectedSortOptions === 'titleDesc' && styles.selected)}>Title (Z-A)</Text>
               </TouchableOpacity>
             </View>
           </View>
+          </TouchableWithoutFeedback>
         </Modal>
-      </TouchableOpacity>
     </SafeAreaView>
   );
 };
@@ -256,6 +259,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     justifyContent: 'center',
     paddingHorizontal: 20,
+  },
+  selected: {
+    color: primaryColour,
   },
 });
 

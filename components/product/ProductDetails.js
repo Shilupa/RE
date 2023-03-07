@@ -134,6 +134,13 @@ const ProductDetails = ({navigation, route}) => {
     }
   }
 
+  const handlePlaybackStatusUpdate = (playbackStatus) => {
+    if (playbackStatus.didJustFinish) {
+      video.current.setPositionAsync(0); // Set the video position to 0 (start of the video)
+      video.current.pauseAsync(); // Pause the video instead of restarting it
+    }
+  };
+
   useEffect(() => {
     getOwner();
   }, []);
@@ -179,6 +186,7 @@ const ProductDetails = ({navigation, route}) => {
                 right: 0,
               }}
               useNativeControls
+              onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
               onError={(error) => {
                 console.log(error);
               }}
