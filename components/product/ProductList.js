@@ -84,18 +84,18 @@ const ProductList = ({singleMedia, navigation}) => {
     }
   };
 
-  useEffect(() => {
-    getOwner();
-    loadAvatar();
-    // getFile();
-  }, [isLoggedIn]);
-
   const handlePlaybackStatusUpdate = (playbackStatus) => {
     if (playbackStatus.didJustFinish) {
       video.current.setPositionAsync(0); // Set the video position to 0 (start of the video)
       video.current.pauseAsync(); // Pause the video instead of restarting it
     }
   };
+
+  useEffect(() => {
+    getOwner();
+    loadAvatar();
+    // getFile();
+  }, [isLoggedIn]);
 
   return (
     <View style={styles.mainContainer} elevation={5}>
