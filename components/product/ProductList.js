@@ -27,7 +27,7 @@ const ProductList = ({singleMedia, navigation}) => {
   const [avatar, setAvatar] = useState(assetImage);
   const {getUserById} = useUser();
   const [owner, setOwner] = useState({});
-  const {isLoggedIn, user} = useContext(MainContext);
+  const {isLoggedIn, user, token} = useContext(MainContext);
 
   const video = useRef(null);
   const {favourites, addFavourite, removeFavourite} = userFavourites(
@@ -67,7 +67,6 @@ const ProductList = ({singleMedia, navigation}) => {
   const getOwner = async () => {
     if (isLoggedIn) {
       try {
-        const token = await AsyncStorage.getItem('userToken');
         const owner = await getUserById(singleMedia.user_id, token);
         setOwner(owner);
       } catch (error) {
