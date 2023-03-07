@@ -80,7 +80,7 @@ const Message = ({navigation, route}) => {
     try {
       if (groupName != undefined) {
         const searchResponse = await searchMedia(groupName, token);
-        // console.log('Response length: ', searchResponse.length);
+        console.log('groupName: ', groupName);
 
         if (searchResponse.length > 0) {
           const commentResponse = await getCommentsByFileId(
@@ -107,23 +107,12 @@ const Message = ({navigation, route}) => {
     try {
       const response = await getFilesByTag(appId + messageId);
 
-      console.log('Response Length', response.length);
-
-      if (response.length > 0) {
-        response.every((element) => {
-          if (element.title === name1) {
-            setGroupName(name1);
-            setExistChatGroup(true);
-            return false;
-          } else {
-            if (element.title === name2) {
-              setExistChatGroup(true);
-              setGroupName(name2);
-              return false;
-            }
-            setGroupName(name2);
-          }
-        });
+      if (response.filter((obj) => obj.title === name1).length > 0) {
+        setGroupName(name1);
+        setExistChatGroup(true);
+      } else if (response.filter((obj) => obj.title === name2).length > 0) {
+        setExistChatGroup(true);
+        setGroupName(name2);
       } else {
         setGroupName(name2);
       }

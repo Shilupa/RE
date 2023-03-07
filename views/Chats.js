@@ -21,32 +21,70 @@ const Chats = ({navigation}) => {
 
   const description = {};
   description[id1] = false;
-  description[id2] = false;
+
+  description[id2]= false;
 
   console.log('Description Test: ', JSON.stringify(description));
  */
   const loadChatGroups = async () => {
     // console.log('load message function called');
     const title = user.user_id + messageId;
-    // console.log('Title: ', title);
+    console.log('Title : ', title);
 
     try {
       const chatGroups = await searchMedia(title, token);
-      // console.log('allChatGroups: ', chatGroups);
+
+      // console.log('all Chat Groups: ', chatGroups);
       const chatGroupWithComment = await Promise.all(
         chatGroups.map(async (group) => {
-          const fileId = group.title.split('_').pop();
+          /*           const fileId = group.title.split('_').pop();
           const id1 = group.title.split('_')[0].replace(messageId, '');
-          const id2 = group.title.split('_')[1].replace(messageId, '');
+          const id2 = group.title.split('_')[1].replace(messageId, ''); */
+
+          // console.log('group.file_id: ', group.file_id);
 
           const commentResponse = await getCommentsByFileId(group.file_id);
           group.allComments = await commentResponse;
           // console.log('COmment Response', commentResponse);
 
+          /*
           const fileResponse = await getMediaByFileId(fileId);
           group.file = await fileResponse;
 
-          // console.log('Group file Id: ', group.file_id);
+          //console.log('Group file Id: ', group.file_id);
+
+          if (id1 == user.user_id) {
+            const ownerResponse = await getUserById(id2, token);
+            group.owner = await ownerResponse;
+          } else {
+            const ownerResponse = await getUserById(id1, token);
+            group.owner = await ownerResponse;
+          } */
+          return await group;
+        })
+      );
+
+      console.log('chatGroupWithComment', chatGroupWithComment);
+
+      const filteredChatGroupWithComment = chatGroupWithComment.filter(
+        (obj) => obj.allComments.length != 0
+      );
+
+      console.log('filteredChatGroupWithComment', filteredChatGroupWithComment);
+
+      const chatGroupWithFile = await Promise.all(
+        filteredChatGroupWithComment.map(async (group) => {
+          const fileId = group.title.split('_').pop();
+          const fileResponse = await getMediaByFileId(fileId);
+          group.file = await fileResponse;
+          return await group;
+        })
+      );
+
+      const chatGroupWithOwner = await Promise.all(
+        chatGroupWithFile.map(async (group) => {
+          const id1 = group.title.split('_')[0].replace(messageId, '');
+          const id2 = group.title.split('_')[1].replace(messageId, '');
 
           if (id1 == user.user_id) {
             const ownerResponse = await getUserById(id2, token);
@@ -59,18 +97,18 @@ const Chats = ({navigation}) => {
         })
       );
 
-      chatGroupWithComment.sort((a, b) => {
+      chatGroupWithOwner.sort((a, b) => {
         return (
           b.allComments[b.allComments.length - 1].comment_id -
           a.allComments[a.allComments.length - 1].comment_id
         );
       });
 
-      setChatGroupList(chatGroupWithComment);
+      setChatGroupList(chatGroupWithOwner);
 
-      console.log('All file with comment: ', chatGroupWithComment);
+      console.log('All file with comment: ', chatGroupWithOwner);
     } catch (error) {
-      throw new Error('loadMessageGroup error: ' + error.message);
+      throw new Error('loadChatGroups error: ' + error.message);
     }
   };
 

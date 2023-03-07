@@ -1,9 +1,23 @@
-import {Image, StyleSheet, View, Text, TouchableOpacity} from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import PropTypes from 'prop-types';
 import {uploadsUrl, vw} from '../utils/variables';
+import {useContext} from 'react';
+import {MainContext} from '../contexts/MainContext';
+import {useMedia} from '../hooks/ApiHooks';
 
 const ChatListItem = ({navigation, singleChatGroup}) => {
   const item = singleChatGroup;
+  const {user, token, updateMessage, setUpdateMessage} =
+    useContext(MainContext);
+  const {deleteMedia} = useMedia();
+
   const {comment, time_added} = item.allComments[item.allComments.length - 1];
   const description = JSON.parse(item.file.description);
 
@@ -38,8 +52,30 @@ const ChatListItem = ({navigation, singleChatGroup}) => {
         navigation.navigate('Message', item);
       }}
       onLongPress={() => {
-        console.log('Long pressed');
+        Alert.alert(
+          'Delete',
+          'Are you sure you want to delete this conversation?',
+          [
+            {
+              text: 'Yes',
+              onPress: () => {
+                if (item.user_id === user.user_id) {
+                  deleteMedia(item.file_id, token);
+                  setUpdateMessage(updateMessage + 1);
+                } else {
+                  Alert.alert(
+                    'Info',
+                    "As you didn't start this conversation, you are not allowed to delete this converstaion!",
+                    [{text: 'Ok'}]
+                  );
+                }
+              },
+            },
+            {text: 'No'},
+          ]
+        );
       }}
+      activeOpacity={0.6}
     >
       <View style={styles.container}>
         <View style={styles.itemPicContainer}>

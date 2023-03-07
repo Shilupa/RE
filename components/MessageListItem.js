@@ -19,6 +19,7 @@ const MessageListItem = ({
   receiverAvatar,
 }) => {
   const item = singleMedia;
+  console.log('Single media ITM:::', item);
   const {user, token, updateMessage, setUpdateMessage} =
     useContext(MainContext);
   const {deleteComment} = useComments();
@@ -55,7 +56,7 @@ const MessageListItem = ({
     timeformat = formattedDate;
   }
 
-  const deleteComm = () => {
+  /*   const deleteComm = () => {
     !sender &&
       Alert.alert('Delete', 'Are you sure you want to delete your chat?', [
         {
@@ -71,13 +72,29 @@ const MessageListItem = ({
         },
         {text: 'No'},
       ]);
-  };
+  }; */
 
   return (
     <TouchableOpacity
       onLongPress={() => {
-        deleteComm();
+        Alert.alert('Delete', 'Are you sure you want to delete this message?', [
+          {
+            text: 'Yes',
+            onPress: () => {
+              if (item.user_id === user.user_id) {
+                deleteComment(item.comment_id, token);
+                setUpdateMessage(updateMessage + 1);
+              } else {
+                Alert.alert('Info', "You cannot delete other's message !", [
+                  {text: 'Ok'},
+                ]);
+              }
+            },
+          },
+          {text: 'No'},
+        ]);
       }}
+      activeOpacity={0.6}
     >
       <View style={sender ? styles.containerSender : styles.containerOwner}>
         <Image
