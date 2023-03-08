@@ -202,20 +202,26 @@ const Message = ({navigation, route}) => {
           'Create a media item with specificTag,  title and description'
         );
 
-        console.log(' group name', groupName);
+        console.log('group name', groupName);
 
         const formData = new FormData();
+
         formData.append('file', {
           uri: commentImage,
-          name: 'comment.jpg',
-          type: 'image/jpeg',
+          name: 'commentFile',
+          type: 'image/png',
         });
+
         formData.append('title', groupName);
+
         formData.append('description', '');
 
         console.log('form data object', formData);
 
         const result = await postMedia(formData, token);
+
+        console.log('post media response: ', result);
+
         const appTag = {
           file_id: result.file_id,
           tag: appId + messageId,
