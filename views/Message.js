@@ -14,6 +14,7 @@ import {
   uploadsUrl,
   appId,
   messageId,
+  avatarUrl,
 } from '../utils/variables';
 import MessageList from '../components/MessageList';
 import {Controller, useForm} from 'react-hook-form';
@@ -34,12 +35,8 @@ const Message = ({navigation, route}) => {
   const {title} = JSON.parse(file.description);
   const {postComment, getCommentsByFileId} = useComments();
   const {token, updateMessage, setUpdateMessage} = useContext(MainContext);
-  const assetImage = Image.resolveAssetSource(
-    require('../assets/avatar.png')
-  ).uri;
-  const commentImage = Image.resolveAssetSource(
-    require('../assets/comment.png')
-  ).uri;
+  const assetImage = avatarUrl;
+  const commentImage = 'http://placekitten.com/g/200/300';
   const {getFilesByTag} = useTag();
   const [senderAvatar, setSenderAvatar] = useState(assetImage);
   const [receiverAvatar, setReceiverAvatar] = useState(assetImage);

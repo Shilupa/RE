@@ -18,7 +18,6 @@ const Favourite = ({navigation}) => {
     try {
       const response = await getFavouritesByUser(token);
       setFavourites(response);
-      console.log('Favourite: ', favourites);
     } catch (error) {
       throw new Error('fetchFavourite error, ' + error.message);
     }

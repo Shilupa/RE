@@ -15,7 +15,7 @@ import EditProfile from '../views/EditProfile';
 import Message from '../views/Message';
 import GoLogin from '../views/GoLogin';
 import {useComments, useMedia, useRating, useTag} from '../hooks/ApiHooks';
-import {messageId, uploadsUrl} from '../utils/variables';
+import {avatarUrl, messageId, uploadsUrl} from '../utils/variables';
 import {StyleSheet, View} from 'react-native';
 import ProductDetails from '../components/product/ProductDetails';
 import ModifyProduct from '../components/product/ModifyProduct';
@@ -26,9 +26,7 @@ const Stack = createNativeStackNavigator();
 
 const TabScreen = ({navigation}) => {
   const {isLoggedIn, user, token, updateMessage} = useContext(MainContext);
-  const assetImage = Image.resolveAssetSource(
-    require('../assets/avatar.png')
-  ).uri;
+  const assetImage = avatarUrl;
   const [avatar, setAvatar] = useState(assetImage);
   const [unseenNumber, setUnseenNumber] = useState();
   const {getFilesByTag} = useTag();
@@ -50,7 +48,7 @@ const TabScreen = ({navigation}) => {
   };
 
   const numberOfUnreadMessage = async () => {
-    if (isLoggedIn) {
+    if (isLoggedIn && token != null) {
       const title = user.user_id + messageId;
       const userIdNumber = user.user_id;
 
@@ -134,7 +132,7 @@ const TabScreen = ({navigation}) => {
           0
         );
 
-        console.log('numberUnseen: ', numberUnseen);
+        // console.log('numberUnseen: ', numberUnseen);
 
         setUnseenNumber(numberUnseen);
       } catch (error) {
@@ -151,7 +149,6 @@ const TabScreen = ({navigation}) => {
 
   useEffect(() => {
     loadAvatar();
-    numberOfUnreadMessage();
   }, [user, isLoggedIn]);
 
   useEffect(() => {

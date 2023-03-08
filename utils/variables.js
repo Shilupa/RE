@@ -2,6 +2,7 @@ import {Dimensions} from 'react-native';
 
 const baseUrl = 'https://media.mw.metropolia.fi/wbma/';
 const uploadsUrl = 'https://media.mw.metropolia.fi/wbma/uploads/';
+const avatarUrl = 'https://users.metropolia.fi/~surajr/avatar.png';
 // const appId = 'Trinity-recycle-app';
 const appId = 'abjfjabjdvcuayvavsucs';
 const messageId = 'trinityChatGroup';
@@ -29,4 +30,5 @@ export {
   categoryList,
   messageId,
   availibilityList,
+  avatarUrl,
 };

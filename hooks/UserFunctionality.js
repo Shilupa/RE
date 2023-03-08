@@ -1,17 +1,15 @@
 import {useContext, useEffect, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
-import {uploadsUrl} from '../utils/variables';
-import {useFavourite, useRating, useTag} from './ApiHooks';
-import {Image} from 'react-native';
+import {useFavourite, useRating} from './ApiHooks';
 import * as ScreenOrientation from 'expo-screen-orientation';
 
 /**
  * User can add or remove favourite
  * @param {*} fileId: clicked file Id
- * @returns functions and states
+ * @return {*} functions and states
  */
 const userFavourites = (fileId) => {
-  const {updateFavourite, setUpdateFavourite, token, update, setUpdate} =
+  const {updateFavourite, setUpdateFavourite, token, update, setUpdate, user} =
     useContext(MainContext);
   const [favourites, setFavourites] = useState([]);
   const {getFavouritesByFileId, postFavourite, deleteFavourite} =
@@ -24,7 +22,7 @@ const userFavourites = (fileId) => {
   const getFavouriteList = async () => {
     try {
       const response = await getFavouritesByFileId(fileId);
-      setFavourites(response);
+      setFavourites(response.filter((item) => item.user_id === user.user_id));
     } catch (error) {
       console.log('Product details [getFavourites]', error);
     }
@@ -41,7 +39,7 @@ const userFavourites = (fileId) => {
       setUpdate(!update);
     } catch (error) {
       // note: you cannot like same file multiple times
-      console.log('addFavourite: ', error);
+      console.error('addFavourite: ', error.message);
     }
   };
 
@@ -56,7 +54,7 @@ const userFavourites = (fileId) => {
       setUpdate(!update);
     } catch (error) {
       // note: you cannot like same file multiple times
-      console.log('removeFavourite: ', error);
+      console.error('removeFavourite: ', error.message);
     }
   };
 
@@ -71,7 +69,7 @@ const userFavourites = (fileId) => {
  * User can like, dislike media / can remove existing own like or dislike in media file
  * @param {*} userId: current user Id
  * @param {*} fileId: cliked file Id
- * @returns functions and states
+ * @return {*}functions and states
  */
 const userRatings = (userId, fileId) => {
   const {updateRating, setUpdateRating, update, token} =
@@ -146,7 +144,7 @@ const userRatings = (userId, fileId) => {
    * Removes file having rating 2 if exists
    * Adds file with rating  value 1
    * @param {*} file_id: id of media which is clicked
-   * @returns Nothing
+   * @return {*} Nothing
    */
   const addLike = async (file_id) => {
     try {
@@ -184,7 +182,7 @@ const userRatings = (userId, fileId) => {
    * Removes file having rating 1 if exists
    * Adds file with rating  value 2
    * @param {*} file_id : id of media clicked
-   * @returns Nothing
+   * @return {*} Nothing
    */
   const addDisLike = async (file_id) => {
     try {
@@ -224,7 +222,7 @@ const userRatings = (userId, fileId) => {
    * @param {*} file_id: id of media file whose ratings ot be checked
    * @param {*} value: either rating 1 or rating 2
    * @param {*} user_id: current user
-   * @returns file object if found else returns undefined
+   * @return {*}file object if found else returns undefined
    */
   const findFile = (allLikes, file_id, value, user_id) => {
     return allLikes.find(

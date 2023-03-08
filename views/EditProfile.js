@@ -18,16 +18,14 @@ import FormButton from '../components/formComponent/FormButton';
 import FormInput from '../components/formComponent/FormInput';
 import {MainContext} from '../contexts/MainContext';
 import {useMedia, useTag, useUser} from '../hooks/ApiHooks';
-import {primaryColour, uploadsUrl, vh} from '../utils/variables';
+import {avatarUrl, primaryColour, uploadsUrl, vh} from '../utils/variables';
 import * as ImagePicker from 'expo-image-picker';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import {ScrollView} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const EditProfile = ({navigation}) => {
-  const assetImage = Image.resolveAssetSource(
-    require('../assets/avatar.png')
-  ).uri;
+  const assetImage = avatarUrl;
   const [image, setImage] = useState();
   const {getFilesByTag, postTag} = useTag(assetImage);
   const {postMedia} = useMedia();

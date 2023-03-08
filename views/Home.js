@@ -17,7 +17,7 @@ const Home = ({navigation}) => {
   const [index, setIndex] = useState();
   const {isLoggedIn} = useContext(MainContext);
 
-  console.log('Is logged in fromhome: ', isLoggedIn);
+  // console.log('Is logged in fromhome: ', isLoggedIn);
 
   return (
     <SafeAreaView style={styles.container}>

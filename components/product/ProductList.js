@@ -11,18 +11,15 @@ import PropTypes from 'prop-types';
 import {Icon} from '@rneui/themed';
 import {Card} from '@rneui/base';
 import {useContext, useEffect, useRef, useState} from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useTag, useUser} from '../../hooks/ApiHooks';
 import {MainContext} from '../../contexts/MainContext';
-import {uploadsUrl} from '../../utils/variables';
+import {avatarUrl, uploadsUrl} from '../../utils/variables';
 import Availibility from '../Availibility';
 import {userFavourites, userRatings} from '../../hooks/UserFunctionality';
 import {Video} from 'expo-av';
 
 const ProductList = ({singleMedia, navigation}) => {
-  const assetImage = Image.resolveAssetSource(
-    require('../../assets/avatar.png')
-  ).uri;
+  const assetImage = avatarUrl;
   const {getFilesByTag} = useTag();
   const [avatar, setAvatar] = useState(assetImage);
   const {getUserById} = useUser();
@@ -56,7 +53,7 @@ const ProductList = ({singleMedia, navigation}) => {
           'avatar_' + singleMedia.user_id
         );
         if (avatarArray.length > 0) {
-          setAvatar(uploadsUrl + avatarArray.pop().filename);
+          setAvatar(uploadsUrl + avatarArray[avatarArray.length - 1].filename);
         }
       } catch (error) {
         console.error('user avatar fetch failed', error.message);
@@ -66,13 +63,9 @@ const ProductList = ({singleMedia, navigation}) => {
 
   const getOwner = async () => {
     // console.log('isLoggedin:', isLoggedIn);
-    if (isLoggedIn) {
+    if (token != null) {
       try {
-        //console.log('singleMedia.user_id: ', singleMedia.user_id, token);
         const owner = await getUserById(singleMedia.user_id, token);
-
-        // console.log('OWNER::', owner);
-
         setOwner(owner);
       } catch (error) {
         console.error('owner set failed', error.message);
@@ -96,10 +89,12 @@ const ProductList = ({singleMedia, navigation}) => {
   };
 
   useEffect(() => {
-    getOwner();
     loadAvatar();
-    // getFile();
   }, [isLoggedIn]);
+
+  useEffect(() => {
+    getOwner();
+  }, [token]);
 
   return (
     <View style={styles.mainContainer} elevation={5}>

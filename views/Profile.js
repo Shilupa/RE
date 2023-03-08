@@ -10,7 +10,7 @@ import {
 import PropTypes from 'prop-types';
 import {Tab, TabView, Text, Button, Icon} from '@rneui/themed';
 import {useTag, useUser} from '../hooks/ApiHooks';
-import {primaryColour, uploadsUrl, vw} from '../utils/variables';
+import {avatarUrl, primaryColour, uploadsUrl, vw} from '../utils/variables';
 import React, {useContext, useEffect, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -19,9 +19,7 @@ import Favourite from '../components/userList/Favourite';
 import MyList from '../components/userList/MyList';
 
 const Profile = ({navigation, route}) => {
-  const assetImage = Image.resolveAssetSource(
-    require('../assets/avatar.png')
-  ).uri;
+  const assetImage = avatarUrl;
   const {getFilesByTag} = useTag();
   const {setIsLoggedIn, isLoggedIn, updateUser, user, setUser, token} =
     useContext(MainContext);
@@ -38,7 +36,6 @@ const Profile = ({navigation, route}) => {
 
   const getOwner = async () => {
     try {
-      // const token = await AsyncStorage.getItem('userToken');
       const owner = await getUserById(userId, token);
       setOwner(owner);
     } catch (error) {
@@ -52,10 +49,6 @@ const Profile = ({navigation, route}) => {
         console.log('Load avatar from profile called');
 
         const avatarArray = await getFilesByTag('avatar_' + userId);
-        console.log(
-          'avatar Array',
-          uploadsUrl + avatarArray[avatarArray.length - 1].filename
-        );
 
         if (avatarArray.length > 0) {
           setAvatarIng(
@@ -291,6 +284,7 @@ const styles = StyleSheet.create({
 
 Profile.propTypes = {
   navigation: PropTypes.object,
+  route: PropTypes.object,
 };
 
 export default Profile;

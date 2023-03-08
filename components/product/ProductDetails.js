@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useRef, useState} from 'react';
-import {primaryColour, uploadsUrl, vw} from '../../utils/variables';
+import {avatarUrl, primaryColour, uploadsUrl, vw} from '../../utils/variables';
 import PropTypes from 'prop-types';
 import {Card, Icon, Button, Image} from '@rneui/themed';
 import {
@@ -21,9 +21,7 @@ import {userFavourites, userRatings} from '../../hooks/UserFunctionality';
 import {Video} from 'expo-av';
 
 const ProductDetails = ({navigation, route}) => {
-  const assetImage = Image.resolveAssetSource(
-    require('../../assets/avatar.png')
-  ).uri;
+  const assetImage = avatarUrl;
   const {isLoggedIn, token} = useContext(MainContext);
   const {getUserById} = useUser();
   const [owner, setOwner] = useState({});
