@@ -19,6 +19,7 @@ import {useMedia, useTag, useUser} from '../../hooks/ApiHooks';
 import {userFavourites, userRatings} from '../../hooks/UserFunctionality';
 import {Video} from 'expo-av';
 import * as ScreenOrientation from 'expo-screen-orientation';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ProductDetails = ({navigation, route}) => {
   const assetImage = Image.resolveAssetSource(
@@ -29,7 +30,7 @@ const ProductDetails = ({navigation, route}) => {
   const [owner, setOwner] = useState({});
   const [avatar, setAvatar] = useState(assetImage);
   const {getFilesByTag} = useTag();
-  const {user, token} = useContext(MainContext);
+  const {user} = useContext(MainContext);
 
   const {
     title,
@@ -43,8 +44,6 @@ const ProductDetails = ({navigation, route}) => {
   // console.log('FileID: ', fileId);
 
   const video = useRef(null);
-  const [fullScreen, setFullScreen] = useState(false);
-
   const [modalVisible, setModalVisible] = useState(false);
   const {favourites, addFavourite, removeFavourite} = userFavourites(fileId);
   const {
@@ -117,7 +116,7 @@ const ProductDetails = ({navigation, route}) => {
 
   const getOwner = async () => {
     try {
-      // const token = await AsyncStorage.getItem('userToken');
+      const token = await AsyncStorage.getItem('userToken');
       const owner = await getUserById(userId, token);
       setOwner(owner);
     } catch (error) {
@@ -142,24 +141,6 @@ const ProductDetails = ({navigation, route}) => {
     if (playbackStatus.didJustFinish) {
       video.current.setPositionAsync(0); // Set the video position  back to the start of the video
       video.current.pauseAsync(); // Pause the video instead of restarting it
-    }
-  };
-
-  const unlock = async () => {
-    try {
-      await ScreenOrientation.unlockAsync();
-    } catch (error) {
-      console.error('unlock', error.message);
-    }
-  };
-
-  const lock = async () => {
-    try {
-      await ScreenOrientation.lockAsync(
-        ScreenOrientation.OrientationLock.PORTRAIT_UP
-      );
-    } catch (error) {
-      console.error('lock', error.message);
     }
   };
 
@@ -199,7 +180,7 @@ const ProductDetails = ({navigation, route}) => {
             <Video
               ref={video}
               source={{uri: uploadsUrl + filename}}
-              resizeMode="cover"
+              resizeMode="contain"
               style={{
                 position: 'absolute',
                 top: 0,
@@ -212,12 +193,19 @@ const ProductDetails = ({navigation, route}) => {
               onError={(error) => {
                 console.log(error);
               }}
-              onFullscreenUpdate={async (event) => {
-                setFullScreen(event.fullscreen);
-                if (event.fullscreen) {
-                  unlock();
-                } else {
-                  lock();
+              onFullscreenUpdate={async ({fullscreenUpdate}) => {
+                console.log('fullscreen', fullscreenUpdate, Video[0]);
+                if (Platform.OS === 'android') {
+                  switch (fullscreenUpdate) {
+                    case 1:
+                      await ScreenOrientation.unlockAsync();
+                      break;
+                    default:
+                      await ScreenOrientation.lockAsync(
+                        ScreenOrientation.OrientationLock.PORTRAIT
+                      );
+                      break;
+                  }
                 }
               }}
             />
@@ -228,9 +216,6 @@ const ProductDetails = ({navigation, route}) => {
             >
               <Icon name="arrow-back" color="black" />
             </Button>
-            {/* <TouchableOpacity style={{position: 'absolute', top: 20, left: 20}}>
-              <Text style={{color: 'white'}}>Play/Pause</Text>
-            </TouchableOpacity> */}
           </View>
         )}
       </View>
