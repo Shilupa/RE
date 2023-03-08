@@ -3,9 +3,15 @@ import {useMedia} from '../hooks/ApiHooks';
 import PropTypes from 'prop-types';
 import SearchListItem from './SearchListItem';
 import {categoryList} from '../utils/variables';
+import { userRatings } from '../hooks/UserFunctionality';
+import { useContext } from 'react';
+import { MainContext } from '../contexts/MainContext';
 
 const SearchList = ({navigation, search, category, selectedSortOption}) => {
+
+  const {user, token} = useContext(MainContext);
   const {mediaArray} = useMedia();
+  const {likeCount} = userRatings()
   // sort mediaArray based on selectedSortOption, default
   const sortedMedia = mediaArray
     .map((media) => ({
@@ -32,7 +38,7 @@ const SearchList = ({navigation, search, category, selectedSortOption}) => {
     });
 
   const filteredMedia = sortedMedia.filter((media) => media.title === category);
-  // console.log('sort', selectedSortOption);
+   console.log('sort', sortedMedia);
   return (
     <FlatList
       horizontal={false}

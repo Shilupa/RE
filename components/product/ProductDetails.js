@@ -16,9 +16,9 @@ import {
 } from 'react-native';
 import {MainContext} from '../../contexts/MainContext';
 import {useMedia, useTag, useUser} from '../../hooks/ApiHooks';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {userFavourites, userRatings} from '../../hooks/UserFunctionality';
 import {Video} from 'expo-av';
+import * as ScreenOrientation from 'expo-screen-orientation';
 
 const ProductDetails = ({navigation, route}) => {
   const assetImage = Image.resolveAssetSource(
@@ -29,7 +29,7 @@ const ProductDetails = ({navigation, route}) => {
   const [owner, setOwner] = useState({});
   const [avatar, setAvatar] = useState(assetImage);
   const {getFilesByTag} = useTag();
-  const {user} = useContext(MainContext);
+  const {user, token} = useContext(MainContext);
 
   const {
     title,
@@ -40,9 +40,11 @@ const ProductDetails = ({navigation, route}) => {
     user_id: userId,
     media_type: type,
   } = route.params;
-  console.log('FileID: ', fileId);
+  // console.log('FileID: ', fileId);
 
   const video = useRef(null);
+  const [fullScreen, setFullScreen] = useState(false);
+
   const [modalVisible, setModalVisible] = useState(false);
   const {favourites, addFavourite, removeFavourite} = userFavourites(fileId);
   const {
@@ -54,6 +56,7 @@ const ProductDetails = ({navigation, route}) => {
     disLikeCount,
   } = userRatings(user.user_id, fileId);
 
+  // using image's uploded time to display the time since the item was posted
   const mediaUploded = new Date(timeAdded);
   const timeNow = new Date();
   const timeDiff = timeNow.getTime() - mediaUploded.getTime();
@@ -69,6 +72,7 @@ const ProductDetails = ({navigation, route}) => {
     time = Math.floor(timeDiff / 1e3) + 's ';
   }
 
+  // navigates to ModifyProduct component
   const editItem = () => {
     navigation.navigate('ModifyProduct', {
       file: {
@@ -113,7 +117,7 @@ const ProductDetails = ({navigation, route}) => {
 
   const getOwner = async () => {
     try {
-      const token = await AsyncStorage.getItem('userToken');
+      // const token = await AsyncStorage.getItem('userToken');
       const owner = await getUserById(userId, token);
       setOwner(owner);
     } catch (error) {
@@ -136,8 +140,26 @@ const ProductDetails = ({navigation, route}) => {
 
   const handlePlaybackStatusUpdate = (playbackStatus) => {
     if (playbackStatus.didJustFinish) {
-      video.current.setPositionAsync(0); // Set the video position to 0 (start of the video)
+      video.current.setPositionAsync(0); // Set the video position  back to the start of the video
       video.current.pauseAsync(); // Pause the video instead of restarting it
+    }
+  };
+
+  const unlock = async () => {
+    try {
+      await ScreenOrientation.unlockAsync();
+    } catch (error) {
+      console.error('unlock', error.message);
+    }
+  };
+
+  const lock = async () => {
+    try {
+      await ScreenOrientation.lockAsync(
+        ScreenOrientation.OrientationLock.PORTRAIT_UP
+      );
+    } catch (error) {
+      console.error('lock', error.message);
     }
   };
 
@@ -185,12 +207,19 @@ const ProductDetails = ({navigation, route}) => {
                 bottom: 0,
                 right: 0,
               }}
-              useNativeControls
+              useNativeControls={true}
               onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
               onError={(error) => {
                 console.log(error);
               }}
-              isLooping
+              onFullscreenUpdate={async (event) => {
+                setFullScreen(event.fullscreen);
+                if (event.fullscreen) {
+                  unlock();
+                } else {
+                  lock();
+                }
+              }}
             />
             <Button
               type="solid"

@@ -87,7 +87,7 @@ const Profile = ({navigation, route}) => {
   useEffect(() => {
     getOwner();
     loadAvatar();
-  }, [userId, updateUser]);
+  }, [userId, updateUser, isLoggedIn]);
 
   const UserTab = () => {
     return (
