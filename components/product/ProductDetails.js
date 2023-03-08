@@ -24,7 +24,7 @@ const ProductDetails = ({navigation, route}) => {
   const assetImage = Image.resolveAssetSource(
     require('../../assets/avatar.png')
   ).uri;
-  const {isLoggedIn} = useContext(MainContext);
+  const {isLoggedIn, token} = useContext(MainContext);
   const {getUserById} = useUser();
   const [owner, setOwner] = useState({});
   const [avatar, setAvatar] = useState(assetImage);
@@ -112,12 +112,14 @@ const ProductDetails = ({navigation, route}) => {
   };
 
   const getOwner = async () => {
-    try {
-      const token = await AsyncStorage.getItem('userToken');
-      const owner = await getUserById(userId, token);
-      setOwner(owner);
-    } catch (error) {
-      throw new Error('getOwner error, ' + error.message);
+    if (isLoggedIn) {
+      try {
+        // const token = await AsyncStorage.getItem('userToken');
+        const owner = await getUserById(userId, token);
+        setOwner(owner);
+      } catch (error) {
+        console.error('getOwner error, ' + error.message);
+      }
     }
   };
 

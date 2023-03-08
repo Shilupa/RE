@@ -102,6 +102,8 @@ const Upload = ({navigation}) => {
         type: mimeType,
       });
 
+      console.log('Form data from uoload', formData);
+
       try {
         const result = await postMedia(formData, token);
         console.log('result', result);

@@ -65,12 +65,17 @@ const ProductList = ({singleMedia, navigation}) => {
   };
 
   const getOwner = async () => {
+    // console.log('isLoggedin:', isLoggedIn);
     if (isLoggedIn) {
       try {
+        //console.log('singleMedia.user_id: ', singleMedia.user_id, token);
         const owner = await getUserById(singleMedia.user_id, token);
+
+        // console.log('OWNER::', owner);
+
         setOwner(owner);
       } catch (error) {
-        console.error('owner set failed', error);
+        console.error('owner set failed', error.message);
       }
     }
   };

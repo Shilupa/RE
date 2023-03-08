@@ -7,13 +7,14 @@ import {
   Alert,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import {uploadsUrl, vw} from '../utils/variables';
+import {messageId, uploadsUrl, vw} from '../utils/variables';
 import {useContext} from 'react';
 import {MainContext} from '../contexts/MainContext';
 import {useMedia} from '../hooks/ApiHooks';
 
 const ChatListItem = ({navigation, singleChatGroup}) => {
   const item = singleChatGroup;
+  // console.log('Chat list Item:::', item);
   const {user, token, updateMessage, setUpdateMessage} =
     useContext(MainContext);
   const {deleteMedia} = useMedia();
@@ -46,6 +47,55 @@ const ChatListItem = ({navigation, singleChatGroup}) => {
     timeformat = formattedDate;
   }
 
+  // const isSeenOld = JSON.parse(item.description)[user.user_id];
+  //console.log('Is Seen: ', isSeen);
+
+  // Check if the message has been read
+  const isSeen = () => {
+    const userIdNumber = user.user_id;
+    const id1 = item.title.split('_')[0].replace(messageId, '');
+    const id2 = item.title.split('_')[1].replace(messageId, '');
+
+    // console.log('Id1: ', id1);
+    // console.log('Id2: ', id2);
+
+    // console.log('UserId: ', userIdNumber);
+
+    const otherId = id1 == userIdNumber ? id2 : id1;
+    // console.log('OtherId: ', otherId);
+
+    const userRating = item.rating.find(
+      (singleRating) => singleRating.user_id == userIdNumber
+    );
+    console.log('user rating: ', userRating ? userRating.rating : null);
+
+    const otherRating = item.rating.find(
+      (singleRating) => singleRating.user_id == otherId
+    );
+
+    console.log('Other rating: ', otherRating ? otherRating.rating : null);
+
+    if (otherRating === undefined) {
+      return true;
+    } else if (otherRating === undefined && userRating === undefined) {
+      return true;
+    } else if (otherRating != undefined && userRating === undefined) {
+      return false;
+    } else if (userRating.rating === 3 && otherRating.rating === 4) {
+      return false;
+    } else if (userRating.rating === 4 && otherRating.rating === 5) {
+      return false;
+    } else if (userRating.rating === 5 && otherRating.rating === 3) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
+  console.log('Is seen new: ', isSeen());
+
+  isSeen();
+
   return (
     <TouchableOpacity
       onPress={() => {
@@ -77,7 +127,7 @@ const ChatListItem = ({navigation, singleChatGroup}) => {
       }}
       activeOpacity={0.6}
     >
-      <View style={styles.container}>
+      <View style={isSeen() ? styles.containerSeen : styles.containerUnseen}>
         <View style={styles.itemPicContainer}>
           <Image
             style={styles.itemPic}
@@ -101,10 +151,20 @@ const ChatListItem = ({navigation, singleChatGroup}) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
+  containerSeen: {
     flex: 1,
     flexDirection: 'row',
     backgroundColor: '#F2F0F0',
+    marginHorizontal: 20,
+    marginVertical: 5,
+    padding: 10,
+    borderRadius: 10,
+    position: 'relative',
+  },
+  containerUnseen: {
+    flex: 1,
+    flexDirection: 'row',
+    backgroundColor: '#A7EDAD',
     marginHorizontal: 20,
     marginVertical: 5,
     padding: 10,

@@ -15,7 +15,9 @@ import MainView from '../components/product/MainView';
 
 const Home = ({navigation}) => {
   const [index, setIndex] = useState();
-  const {isLoggedIn, user} = useContext(MainContext);
+  const {isLoggedIn} = useContext(MainContext);
+
+  console.log('Is logged in fromhome: ', isLoggedIn);
 
   return (
     <SafeAreaView style={styles.container}>

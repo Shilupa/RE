@@ -19,7 +19,7 @@ const MessageListItem = ({
   receiverAvatar,
 }) => {
   const item = singleMedia;
-  console.log('Single media ITM:::', item);
+  // console.log('Single media ITM:::', item);
   const {user, token, updateMessage, setUpdateMessage} =
     useContext(MainContext);
   const {deleteComment} = useComments();
@@ -55,24 +55,6 @@ const MessageListItem = ({
   } else {
     timeformat = formattedDate;
   }
-
-  /*   const deleteComm = () => {
-    !sender &&
-      Alert.alert('Delete', 'Are you sure you want to delete your chat?', [
-        {
-          text: 'Yes',
-          onPress: async () => {
-            try {
-              await deleteComment(item.commentId, token);
-              setUpdateMessage(!updateMessage);
-            } catch (error) {
-              throw new Error('deleteComment error, ' + error.message);
-            }
-          },
-        },
-        {text: 'No'},
-      ]);
-  }; */
 
   return (
     <TouchableOpacity

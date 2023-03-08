@@ -25,12 +25,16 @@ const Profile = ({navigation, route}) => {
   const {getFilesByTag} = useTag();
   const {setIsLoggedIn, isLoggedIn, updateUser, user, setUser, token} =
     useContext(MainContext);
-  const [avatar, setAvatar] = useState(assetImage);
+  const [avatarImg, setAvatarIng] = useState(assetImage);
   const [index, setIndex] = useState();
   const {getUserById} = useUser();
   const [owner, setOwner] = useState({});
 
+  console.log('Route Params from profile: ', route.params);
+
   const userId = route.params !== undefined ? route.params : user.user_id;
+
+  console.log('User id form profile:', userId);
 
   const getOwner = async () => {
     try {
@@ -45,10 +49,18 @@ const Profile = ({navigation, route}) => {
   const loadAvatar = async () => {
     if (isLoggedIn) {
       try {
+        console.log('Load avatar from profile called');
+
         const avatarArray = await getFilesByTag('avatar_' + userId);
-        // Checking if user has added avatar previously
+        console.log(
+          'avatar Array',
+          uploadsUrl + avatarArray[avatarArray.length - 1].filename
+        );
+
         if (avatarArray.length > 0) {
-          setAvatar(uploadsUrl + avatarArray.pop().filename);
+          setAvatarIng(
+            uploadsUrl + avatarArray[avatarArray.length - 1].filename
+          );
         }
       } catch (error) {
         console.error('user avatar fetch failed', error.message);
@@ -69,11 +81,11 @@ const Profile = ({navigation, route}) => {
       {
         text: 'Yes',
         onPress: () => {
-          removeToken();
-          setUser({});
           setIsLoggedIn(false);
+          setUser({});
           setIndex(0);
           navigation.navigate('Home');
+          removeToken();
         },
       },
       {text: 'No'},
@@ -164,7 +176,7 @@ const Profile = ({navigation, route}) => {
       )}
 
       <View style={styles.userProfile}>
-        <Image style={styles.avatar} source={{uri: avatar}} />
+        <Image style={styles.avatar} source={{uri: avatarImg}} />
         <Text style={{textAlign: 'center', fontSize: 18}}>
           {owner !== null ? owner.username : ''}
         </Text>

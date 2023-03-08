@@ -14,22 +14,27 @@ import Upload from '../views/Upload';
 import EditProfile from '../views/EditProfile';
 import Message from '../views/Message';
 import GoLogin from '../views/GoLogin';
-import {useTag} from '../hooks/ApiHooks';
-import {uploadsUrl} from '../utils/variables';
-import {StyleSheet} from 'react-native';
+import {useComments, useMedia, useRating, useTag} from '../hooks/ApiHooks';
+import {messageId, uploadsUrl} from '../utils/variables';
+import {StyleSheet, View} from 'react-native';
 import ProductDetails from '../components/product/ProductDetails';
 import ModifyProduct from '../components/product/ModifyProduct';
+import {Text} from 'react-native';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 const TabScreen = ({navigation}) => {
-  const {isLoggedIn, user} = useContext(MainContext);
+  const {isLoggedIn, user, token, updateMessage} = useContext(MainContext);
   const assetImage = Image.resolveAssetSource(
     require('../assets/avatar.png')
   ).uri;
   const [avatar, setAvatar] = useState(assetImage);
+  const [unseenNumber, setUnseenNumber] = useState();
   const {getFilesByTag} = useTag();
+  const {searchMedia} = useMedia();
+  const {getRatingsByFileId} = useRating();
+  const {getCommentsByFileId} = useComments();
 
   const loadAvatar = async () => {
     if (isLoggedIn) {
@@ -44,6 +49,100 @@ const TabScreen = ({navigation}) => {
     }
   };
 
+  const numberOfUnreadMessage = async () => {
+    if (isLoggedIn) {
+      const title = user.user_id + messageId;
+      const userIdNumber = user.user_id;
+
+      try {
+        // console.log('title: ', title);
+        const chatGroups = await searchMedia(title, token);
+        // console.log('chatGroups: ', chatGroups);
+        const chatGroupWithComment = await Promise.all(
+          chatGroups.map(async (group) => {
+            const commentResponse = await getCommentsByFileId(group.file_id);
+            group.allComments = await commentResponse;
+            return await group;
+          })
+        );
+        const filteredChatGroupWithComment = chatGroupWithComment.filter(
+          (obj) => obj.allComments.length != 0
+        );
+
+        /* console.log(
+          'filteredChatGroupWithComment: ',
+          filteredChatGroupWithComment
+        ); */
+
+        // Map data for ratings
+
+        const chatGroupWithRatings = await Promise.all(
+          filteredChatGroupWithComment.map(async (group) => {
+            const ratingResponse = await getRatingsByFileId(group.file_id);
+            group.rating = await ratingResponse;
+            return await group;
+          })
+        );
+
+        // console.log('chatGroupWithRatings: ', chatGroupWithRatings);
+
+        const numberUnseen = chatGroupWithRatings.reduce(
+          (accumulator, current) => {
+            const id1 = current.title.split('_')[0].replace(messageId, '');
+            const id2 = current.title.split('_')[1].replace(messageId, '');
+
+            // console.log('Id1: ', id1);
+            // console.log('Id2: ', id2);
+
+            // console.log('UserId: ', userIdNumber);
+
+            const otherId = id1 == userIdNumber ? id2 : id1;
+            // console.log('OtherId: ', otherId);
+
+            // const isSeen = JSON.parse(current.description);
+            const userRating = current.rating.find(
+              (singleRating) => singleRating.user_id == userIdNumber
+            );
+
+            /* console.log('user rating: ', userRating ? userRating.rating : null); */
+
+            const otherRating = current.rating.find(
+              (singleRating) => singleRating.user_id == otherId
+            );
+
+            /* console.log(
+              'Otherrating: ',
+              otherRating ? otherRating.rating : null
+            ); */
+
+            if (otherRating === undefined) {
+              return accumulator;
+            } else if (otherRating === undefined && userRating === undefined) {
+              return accumulator;
+            } else if (otherRating != undefined && userRating === undefined) {
+              return accumulator + 1;
+            } else if (userRating.rating === 3 && otherRating.rating === 4) {
+              return accumulator + 1;
+            } else if (userRating.rating === 4 && otherRating.rating === 5) {
+              return accumulator + 1;
+            } else if (userRating.rating === 5 && otherRating.rating === 3) {
+              return accumulator + 1;
+            } else {
+              return accumulator;
+            }
+          },
+          0
+        );
+
+        console.log('numberUnseen: ', numberUnseen);
+
+        setUnseenNumber(numberUnseen);
+      } catch (error) {
+        console.error('loadChatGroups from navigator error: ' + error.message);
+      }
+    }
+  };
+
   const navigateScreen = (destinationScreen) => {
     !isLoggedIn
       ? navigation.navigate('Login')
@@ -52,7 +151,12 @@ const TabScreen = ({navigation}) => {
 
   useEffect(() => {
     loadAvatar();
+    numberOfUnreadMessage();
   }, [user, isLoggedIn]);
+
+  useEffect(() => {
+    numberOfUnreadMessage();
+  }, [user, isLoggedIn, updateMessage]);
 
   return (
     <Tab.Navigator
@@ -95,7 +199,36 @@ const TabScreen = ({navigation}) => {
           name="Chats"
           component={Chats}
           options={{
-            tabBarIcon: ({color}) => <Icon name="chat" color={color} />,
+            tabBarIcon: ({color}) => (
+              <>
+                <Icon
+                  containerStyle={{position: 'absolute'}}
+                  name="chat"
+                  color={color}
+                />
+                {unseenNumber > 0 && (
+                  <View
+                    style={{
+                      position: 'relative',
+                      top: -8,
+                      right: -12,
+                      backgroundColor: 'red',
+                      borderRadius: 8,
+                      width: 16,
+                      height: 16,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Text
+                      style={{color: 'white', fontSize: 10, fontWeight: 'bold'}}
+                    >
+                      {unseenNumber}
+                    </Text>
+                  </View>
+                )}
+              </>
+            ),
           }}
         />
       )}

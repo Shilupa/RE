@@ -230,8 +230,6 @@ const useUser = () => {
   };
 
   const getUserById = async (id, token) => {
-    console.log('ID::', id);
-    console.log('TOKEN::', token);
     try {
       return await doFetch(baseUrl + 'users/' + id, {
         headers: {'x-access-token': token},
