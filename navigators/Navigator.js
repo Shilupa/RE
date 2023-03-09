@@ -5,6 +5,7 @@ import {Icon, Image} from '@rneui/themed';
 import {useContext, useEffect, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
 import PropTypes from 'prop-types';
+import CoverPage from '../views/CoverPage';
 import Chats from '../views/Chats';
 import Home from '../views/Home';
 import Login from '../views/Login';
@@ -20,7 +21,14 @@ import {StyleSheet, View} from 'react-native';
 import ProductDetails from '../components/product/ProductDetails';
 import ModifyProduct from '../components/product/ModifyProduct';
 import {Text} from 'react-native';
-
+import Animated, {
+  useAnimatedGestureHandler,
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  Easing,
+} from 'react-native-reanimated';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
@@ -254,6 +262,14 @@ const TabScreen = ({navigation}) => {
 };
 
 const StackScreen = () => {
+  const [showComponent, setShowComponent] = useState(true);
+
+  useEffect(() => {
+    setInterval(() => {
+      setShowComponent(false);
+    }, 5000);
+  }, []);
+
   return (
     <Stack.Navigator
       screenOptions={{
@@ -261,17 +277,24 @@ const StackScreen = () => {
       }}
     >
       <>
-        <Stack.Screen
-          name="Tabs"
-          component={TabScreen}
-          screenOptions={{headerShown: false}}
-        />
-        <Stack.Screen name="ProductDetails" component={ProductDetails} />
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="ModifyProduct" component={ModifyProduct} />
-        <Stack.Screen name="EditProfile" component={EditProfile} />
-        <Stack.Screen name="Message" component={Message} />
-        <Stack.Screen name="GoLogin" component={GoLogin} />
+        {showComponent ? (
+          <Stack.Screen name="CoverPage" component={CoverPage} />
+        ) : (
+          <>
+            <Stack.Screen
+              name="Tabs"
+              component={TabScreen}
+              screenOptions={{headerShown: false}}
+            />
+
+            <Stack.Screen name="ProductDetails" component={ProductDetails} />
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="ModifyProduct" component={ModifyProduct} />
+            <Stack.Screen name="EditProfile" component={EditProfile} />
+            <Stack.Screen name="Message" component={Message} />
+            <Stack.Screen name="GoLogin" component={GoLogin} />
+          </>
+        )}
       </>
     </Stack.Navigator>
   );
