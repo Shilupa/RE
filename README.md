@@ -88,10 +88,8 @@ $ npm install
 $ npm start
 
 ## Screenshots
-Some of our RE view
-<img src="/recycle-app/assets/coverpage.png" alt="coverpage" title="Cover-Page">
-<img src="/recycle-app/assets/home.png" alt="home" title="Home">
-<img src="/recycle-app/assets/profile.png" alt="profile" title="Profile">
+Some of our RE view:
+<img src="/assets/home.png" width="250"> <img src="/assets/coverpage.png" width="250"> <img src="/assets/profile.png" width="250">
 
 ### Contributors
     Bibek Shrestha
