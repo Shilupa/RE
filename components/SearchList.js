@@ -46,7 +46,7 @@ const SearchList = ({navigation, search, category, selectedSortOption}) => {
   }, []);
 
   // sort mediaArray based on selectedSortOption, default
-  const sortedMedia = mediaWithLike
+  const sortedMedia = mediaArray
     .map((media) => ({
       ...media,
       parsedDescription: JSON.parse(media.description),
