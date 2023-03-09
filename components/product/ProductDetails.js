@@ -20,6 +20,7 @@ import {userFavourites, userRatings} from '../../hooks/UserFunctionality';
 import {Video} from 'expo-av';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {androidRipple} from '@rneui/base';
 
 const ProductDetails = ({navigation, route}) => {
   const assetImage = avatarUrl;
@@ -176,47 +177,62 @@ const ProductDetails = ({navigation, route}) => {
             </Button>
           </View>
         ) : (
-          <View style={{flex: 1}}>
-            <Video
-              ref={video}
-              source={{uri: uploadsUrl + filename}}
-              resizeMode="contain"
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                bottom: 0,
-                right: 0,
-              }}
-              useNativeControls={true}
-              onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
-              onError={(error) => {
-                console.log(error);
-              }}
-              onFullscreenUpdate={async ({fullscreenUpdate}) => {
-                console.log('fullscreen', fullscreenUpdate, Video[0]);
-                if (Platform.OS === 'android') {
-                  switch (fullscreenUpdate) {
-                    case 1:
-                      await ScreenOrientation.unlockAsync();
-                      break;
-                    default:
-                      await ScreenOrientation.lockAsync(
-                        ScreenOrientation.OrientationLock.PORTRAIT
-                      );
-                      break;
+          <>
+            {Platform.OS != 'android' && (
+              <Button
+                type="solid"
+                buttonStyle={styles.backBtn}
+                onPress={() => navigation.goBack()}
+              >
+                <Icon name="arrow-back" color="black" />
+              </Button>
+            )}
+
+            <View style={{flex: 1}}>
+              <Video
+                ref={video}
+                source={{uri: uploadsUrl + filename}}
+                resizeMode="contain"
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  bottom: 0,
+                  right: 0,
+                  backgroundColor: 'black',
+                }}
+                useNativeControls={true}
+                onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
+                onError={(error) => {
+                  console.log(error);
+                }}
+                onFullscreenUpdate={async ({fullscreenUpdate}) => {
+                  console.log('fullscreen', fullscreenUpdate, Video[0]);
+                  if (Platform.OS === 'android') {
+                    switch (fullscreenUpdate) {
+                      case 1:
+                        await ScreenOrientation.unlockAsync();
+                        break;
+                      default:
+                        await ScreenOrientation.lockAsync(
+                          ScreenOrientation.OrientationLock.PORTRAIT
+                        );
+                        break;
+                    }
                   }
-                }
-              }}
-            />
-            <Button
-              type="solid"
-              buttonStyle={styles.backBtn}
-              onPress={() => navigation.goBack()}
-            >
-              <Icon name="arrow-back" color="black" />
-            </Button>
-          </View>
+                }}
+              />
+              {Platform.OS === 'android' && (
+                <Button
+                  type="solid"
+                  buttonStyle={styles.backBtn}
+                  onPress={() => navigation.goBack()}
+                >
+                  <Icon name="arrow-back" color="black" />
+                </Button>
+              )}
+            </View>
+          </>
         )}
       </View>
       <ScrollView
@@ -478,7 +494,7 @@ const styles = StyleSheet.create({
   backBtn: {
     borderRadius: 25,
     padding: 0,
-    marginTop: 10,
+    marginVertical: 10,
     width: 45,
     height: 45,
     left: -40 * vw,

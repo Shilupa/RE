@@ -63,10 +63,10 @@ const SearchList = ({navigation, search, category, selectedSortOption}) => {
         return titleA.localeCompare(titleB);
       } else if (selectedSortOption === 'titleDesc') {
         return titleB.localeCompare(titleA);
-      } else if (selectedSortOption === 'Most-popular') {
+      } else if (selectedSortOption === 'Least-popular') {
         // no sort option selected
         return a.likeDifference - b.likeDifference;
-      } else if (selectedSortOption === 'Least-popular') {
+      } else if (selectedSortOption === 'Most-popular') {
         // no sort option selected
         return b.likeDifference - a.likeDifference;
       } else {
