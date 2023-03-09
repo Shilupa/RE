@@ -158,7 +158,7 @@ const Message = ({navigation, route}) => {
         }
       }
     } catch (error) {
-      throw new Error('loadAllMessage error: ' + error.message);
+      console.error('loadAllMessage error: ' + error.message);
     }
   };
 
@@ -184,7 +184,7 @@ const Message = ({navigation, route}) => {
         setGroupName(name2);
       }
     } catch (error) {
-      throw new Error('searchSetGroupName error: ' + error.message);
+      console.error('searchSetGroupName error: ' + error.message);
     }
   };
 
@@ -299,7 +299,7 @@ const Message = ({navigation, route}) => {
 
       setUpdateMessage(updateMessage + 1);
     } catch (error) {
-      throw new Error('sendMessage error: ' + error.message);
+      console.error('sendMessage error: ' + error.message);
     }
   };
 
@@ -397,6 +397,7 @@ const Message = ({navigation, route}) => {
           </View>
         </View>
       </KeyboardAvoidingView>
+      <></>
     </SafeAreaView>
   );
 };
@@ -451,7 +452,7 @@ const styles = StyleSheet.create({
   },
 
   sendMessage: {
-    width: '85%',
+    width: '80%',
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'baseline',

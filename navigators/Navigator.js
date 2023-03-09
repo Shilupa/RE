@@ -42,7 +42,7 @@ const TabScreen = ({navigation}) => {
           setAvatar(uploadsUrl + avatarArray.pop().filename);
         }
       } catch (error) {
-        throw new Error('load avatar from tab navigator, ' + error.message);
+        console.error('load avatar from tab navigator, ' + error.message);
       }
     }
   };
@@ -115,8 +115,6 @@ const TabScreen = ({navigation}) => {
 
             if (otherRating === undefined) {
               return accumulator;
-            } else if (otherRating === undefined && userRating === undefined) {
-              return accumulator;
             } else if (otherRating != undefined && userRating === undefined) {
               return accumulator + 1;
             } else if (userRating.rating === 3 && otherRating.rating === 4) {
@@ -152,8 +150,15 @@ const TabScreen = ({navigation}) => {
   }, [user, isLoggedIn]);
 
   useEffect(() => {
-    numberOfUnreadMessage();
+    const interval = setInterval(() => {
+      numberOfUnreadMessage();
+    }, 10000);
+    return () => clearInterval(interval);
   }, [user, isLoggedIn, updateMessage]);
+
+  /*   useEffect(() => {
+    numberOfUnreadMessage();
+  }, [user, isLoggedIn, updateMessage]); */
 
   return (
     <Tab.Navigator

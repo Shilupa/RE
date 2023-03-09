@@ -3,7 +3,6 @@ import {useFavourite} from '../../hooks/ApiHooks';
 import PropTypes from 'prop-types';
 import {useContext, useEffect, useState} from 'react';
 import {MainContext} from '../../contexts/MainContext';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {loadMediaById} from '../../hooks/ApiHooks';
 import UserList from './UserList';
 
@@ -19,7 +18,7 @@ const Favourite = ({navigation}) => {
       const response = await getFavouritesByUser(token);
       setFavourites(response);
     } catch (error) {
-      throw new Error('fetchFavourite error, ' + error.message);
+      console.error('fetchFavourite error, ' + error.message);
     }
   };
 
@@ -36,7 +35,7 @@ const Favourite = ({navigation}) => {
       setFavouriteList(media);
       // console.log('set List from favourite:', media);
     } catch (error) {
-      throw new Error('setList error, ' + error.message);
+      console.error('setList error, ' + error.message);
     }
   };
 

@@ -46,7 +46,7 @@ const useMedia = (myFilesOnly, userId) => {
        */
       setMediaArray(media);
     } catch (error) {
-      console.error('List, loadMedia', error);
+      throw new Error('List, loadMedia', error);
     }
   };
 

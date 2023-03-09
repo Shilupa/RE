@@ -110,7 +110,7 @@ const ModifyProduct = ({navigation, route}) => {
         },
       ]);
     } catch (error) {
-      throw new Error('deleteFile error, ' + error.message);
+      console.error('deleteFile error, ' + error.message);
     }
   };
 

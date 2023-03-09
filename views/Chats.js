@@ -102,16 +102,16 @@ const Chats = ({navigation}) => {
     }
   };
 
-  /*   useEffect(() => {
+  useEffect(() => {
     const interval = setInterval(() => {
-      getAllComment();
+      loadChatGroups();
     }, 10000);
     return () => clearInterval(interval);
-  }, []); */
-
-  useEffect(() => {
-    loadChatGroups();
   }, [updateMessage]);
+
+  /*   useEffect(() => {
+    loadChatGroups();
+  }, [updateMessage]); */
 
   return (
     <SafeAreaView style={styles.container}>
