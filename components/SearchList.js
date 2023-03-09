@@ -3,14 +3,12 @@ import {useMedia} from '../hooks/ApiHooks';
 import PropTypes from 'prop-types';
 import SearchListItem from './SearchListItem';
 import {useRating} from '../hooks/ApiHooks';
-import {useEffect, useRef, useState} from 'react';
+import {useEffect, useState} from 'react';
 
 const SearchList = ({navigation, search, category, selectedSortOption}) => {
   const {mediaArray} = useMedia();
   const {getRatingsByFileId} = useRating();
   const [mediaWithLike, setMediaWithLike] = useState();
-  const {ind, setInd} = useState(0);
-  const listRef = useRef();
 
   const combine = async () => {
     try {
@@ -28,14 +26,14 @@ const SearchList = ({navigation, search, category, selectedSortOption}) => {
             (singleRating) => singleRating.rating === 2
           ).length;
           // console.log('Likes', likes);
-          const likeDifference = (await likes) - dislike;
+          // const likeDifference = (await likes) - dislike;
 
-          console.log('likesDfference', media.file_id, likeDifference);
+          // console.log('likesDfference', media.file_id, likeDifference);
           media.likeDifference = (await likes) - dislike;
           return media;
         })
       );
-      console.log('mediaWithLikeCount', mediaWithLikeCount);
+      // console.log('mediaWithLikeCount', mediaWithLikeCount);
       setMediaWithLike(mediaWithLikeCount);
     } catch (error) {
       console.error('combine', error.message);
@@ -45,10 +43,6 @@ const SearchList = ({navigation, search, category, selectedSortOption}) => {
   useEffect(() => {
     combine();
   }, []);
-
-  const scrollToTop = () => {
-    listRef.current.scrollToIndex({animated: true, index: 0});
-  };
 
   // sort mediaArray based on selectedSortOption, default
   const sortedMedia = mediaArray
@@ -61,22 +55,18 @@ const SearchList = ({navigation, search, category, selectedSortOption}) => {
       const titleA = a.parsedDescription.title.toLowerCase();
       const titleB = b.parsedDescription.title.toLowerCase();
       if (selectedSortOption === 'Oldest') {
-        scrollToTop();
         return new Date(a.time_added) - new Date(b.time_added);
       } else if (selectedSortOption === 'Newest') {
-        scrollToTop();
         return new Date(b.time_added) - new Date(a.time_added);
       } else if (selectedSortOption === 'titleAsc') {
-        scrollToTop();
         return titleA.localeCompare(titleB);
       } else if (selectedSortOption === 'titleDesc') {
-        scrollToTop();
         return titleB.localeCompare(titleA);
-      } else if (selectedSortOption === 'Least-popular') {
-        scrollToTop();
-        return a.likeDifference - b.likeDifference;
       } else if (selectedSortOption === 'Most-popular') {
-        scrollToTop();
+        // no sort option selected
+        return a.likeDifference - b.likeDifference;
+      } else if (selectedSortOption === 'Least-popular') {
+        // no sort option selected
         return b.likeDifference - a.likeDifference;
       } else {
         return 0;
@@ -88,9 +78,7 @@ const SearchList = ({navigation, search, category, selectedSortOption}) => {
   return (
     <FlatList
       horizontal={false}
-      ref={listRef}
       numColumns={2}
-      initialScrollIndex={ind}
       data={category === '' ? sortedMedia : filteredMedia}
       keyExtractor={(item, index) => index.toString()}
       renderItem={({item}) => {
