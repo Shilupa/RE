@@ -1,5 +1,5 @@
 import React from 'react';
-import {Image, StyleSheet, View} from 'react-native';
+import {Image, SafeAreaView, StyleSheet, View} from 'react-native';
 import LottieView from 'lottie-react-native';
 import {vh, vw} from '../utils/variables';
 
@@ -7,15 +7,20 @@ const CoverPage = () => {
   const assetImage = 'https://users.metropolia.fi/~shilpasy/recycle.png';
 
   return (
-    <View>
+    <SafeAreaView style={{backgroundColor: 'white'}}>
       <Image style={styles.image} source={{uri: assetImage}} />
       <LottieView
         source={require('../lottie/recycle.json')}
-        style={{width: 10 * vw, height: 30 * vh, alignSelf: 'center'}}
+        style={{
+          width: 10 * vw,
+          height: 30 * vh,
+          alignSelf: 'center',
+          backgroundColor: 'white',
+        }}
         autoPlay
         loop={true}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 
