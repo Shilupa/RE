@@ -2,49 +2,10 @@ import {FlatList} from 'react-native';
 import {useMedia} from '../hooks/ApiHooks';
 import PropTypes from 'prop-types';
 import SearchListItem from './SearchListItem';
-import {useRating} from '../hooks/ApiHooks';
-import {useEffect, useState} from 'react';
 
 const SearchList = ({navigation, search, category, selectedSortOption}) => {
   const {mediaArray} = useMedia();
-  const {getRatingsByFileId} = useRating();
-  const [mediaWithLike, setMediaWithLike] = useState();
 
-  const combine = async () => {
-    try {
-      const mediaWithLikeCount = await Promise.all(
-        mediaArray.map(async (media) => {
-          const ratingResponse = await getRatingsByFileId(media.file_id);
-          console.log('ratingResponse', ratingResponse);
-          // console.log('findLikesCount', findLikesCount);
-
-          const likes = ratingResponse.filter(
-            (singleRating) => singleRating.rating === 1
-          ).length;
-
-          const dislike = ratingResponse.filter(
-            (singleRating) => singleRating.rating === 2
-          ).length;
-          // console.log('Likes', likes);
-          // const likeDifference = (await likes) - dislike;
-
-          // console.log('likesDfference', media.file_id, likeDifference);
-          media.likeDifference = (await likes) - dislike;
-          return media;
-        })
-      );
-      // console.log('mediaWithLikeCount', mediaWithLikeCount);
-      setMediaWithLike(mediaWithLikeCount);
-    } catch (error) {
-      console.error('combine', error.message);
-    }
-  };
-
-  useEffect(() => {
-    combine();
-  }, []);
-
-  // sort mediaArray based on selectedSortOption, default
   const sortedMedia = mediaArray
     .map((media) => ({
       ...media,
@@ -74,7 +35,7 @@ const SearchList = ({navigation, search, category, selectedSortOption}) => {
     });
 
   const filteredMedia = sortedMedia.filter((media) => media.title === category);
-  // console.log('sort', sortedMedia);
+
   return (
     <FlatList
       horizontal={false}
@@ -102,6 +63,7 @@ const SearchList = ({navigation, search, category, selectedSortOption}) => {
 
 SearchList.propTypes = {
   navigation: PropTypes.object,
+  combinedMedia: PropTypes.object,
   search: PropTypes.string,
   category: PropTypes.string,
   selectedSortOption: PropTypes.string,

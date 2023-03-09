@@ -40,7 +40,7 @@ const Search = ({navigation}) => {
         )}
       </View>
       <View style={{marginBottom: 10}}>
-        <Tab
+        {/* <Tab
           value={searchIndex}
           scrollable={true}
           onChange={(e) => {
@@ -68,7 +68,7 @@ const Search = ({navigation}) => {
             title="Miscellaneous"
             titleStyle={{fontSize: 12, color: 'black'}}
           />
-        </Tab>
+        </Tab> */}
       </View>
 
       <View
@@ -101,7 +101,14 @@ const Search = ({navigation}) => {
       </View>
 
       <Card.Divider />
-      <TabView
+      <SearchList
+        navigation={navigation}
+        search={search}
+        setSearch={setSearch}
+        selectedSortOption={selectedSortOptions}
+        category={''}
+      />
+      {/* <TabView
         value={searchIndex}
         onChange={setSearchIndex}
         animationType="spring"
@@ -151,7 +158,7 @@ const Search = ({navigation}) => {
             category={categoryList[3]}
           />
         </TabView.Item>
-      </TabView>
+      </TabView> */}
       <Modal
         animationType="slide"
         transparent={true}
