@@ -24,13 +24,13 @@ const Profile = ({navigation, route}) => {
   const {setIsLoggedIn, isLoggedIn, updateUser, user, setUser, token} =
     useContext(MainContext);
   const [avatarImg, setAvatarImg] = useState(assetImage);
-  const [index, setIndex] = useState();
+  const [index, setIndex] = useState(0);
   const {getUserById} = useUser();
   const [owner, setOwner] = useState({});
 
   console.log('Route Params from profile: ', route.params);
 
-  const userId = route.params !== undefined ? route.params : user.user_id;
+  const userId = route.params;
 
   console.log('User id form profile:', userId);
 
@@ -139,7 +139,7 @@ const Profile = ({navigation, route}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {route.params !== undefined && route.params !== user.user_id ? (
+      {userId !== user.user_id ? (
         <Button
           type="solid"
           buttonStyle={styles.backBtn}
@@ -153,7 +153,7 @@ const Profile = ({navigation, route}) => {
         ''
       )}
       <View style={styles.titleBar}>
-        {route.params !== undefined && route.params !== user.user_id ? (
+        {userId !== user.user_id ? (
           ''
         ) : (
           <>
@@ -165,11 +165,7 @@ const Profile = ({navigation, route}) => {
         )}
       </View>
 
-      {route.params !== undefined && route.params !== user.user_id ? (
-        ''
-      ) : (
-        <Divider />
-      )}
+      {userId !== user.user_id ? '' : <Divider />}
 
       <View style={styles.userProfile}>
         <Image style={styles.avatar} source={{uri: avatarImg}} />
@@ -179,7 +175,7 @@ const Profile = ({navigation, route}) => {
         <Text style={{textAlign: 'center', fontSize: 12}}>
           {owner !== null ? owner.email : ''}
         </Text>
-        {route.params !== undefined && route.params !== user.user_id ? (
+        {userId !== user.user_id ? (
           ''
         ) : (
           <Button
@@ -198,25 +194,17 @@ const Profile = ({navigation, route}) => {
           />
         )}
       </View>
-      {route.params !== undefined && route.params !== user.user_id ? (
-        <OwnerTab />
-      ) : (
-        <UserTab />
-      )}
+      {userId !== user.user_id ? <OwnerTab /> : <UserTab />}
       <TabView
         value={index}
         onChange={setIndex}
         animationType="spring"
-        disableSwipe={
-          route.params !== undefined && route.params !== user.user_id
-            ? true
-            : false
-        }
+        disableSwipe={userId !== user.user_id ? true : false}
       >
         <TabView.Item>
           <MyList navigation={navigation} userId={owner.user_id} />
         </TabView.Item>
-        {route.params !== undefined ? (
+        {userId != user.user_id ? (
           ''
         ) : (
           <TabView.Item>
