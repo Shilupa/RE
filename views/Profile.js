@@ -8,7 +8,7 @@ import {
   StatusBar,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import {Tab, TabView, Text, Button, Icon} from '@rneui/themed';
+import {TabView, Text, Button, Icon} from '@rneui/themed';
 import {useTag, useUser} from '../hooks/ApiHooks';
 import {avatarUrl, primaryColour, uploadsUrl, vw} from '../utils/variables';
 import React, {useContext, useEffect, useState} from 'react';
@@ -23,7 +23,7 @@ const Profile = ({navigation, route}) => {
   const {getFilesByTag} = useTag();
   const {setIsLoggedIn, isLoggedIn, updateUser, user, setUser, token} =
     useContext(MainContext);
-  const [avatarImg, setAvatarIng] = useState(assetImage);
+  const [avatarImg, setAvatarImg] = useState(assetImage);
   const [index, setIndex] = useState();
   const {getUserById} = useUser();
   const [owner, setOwner] = useState({});
@@ -39,7 +39,7 @@ const Profile = ({navigation, route}) => {
       const owner = await getUserById(userId, token);
       setOwner(owner);
     } catch (error) {
-      throw new Error('getOwner error, ' + error.message);
+      console.error('getOwner error, ' + error.message);
     }
   };
 
@@ -51,7 +51,7 @@ const Profile = ({navigation, route}) => {
         const avatarArray = await getFilesByTag('avatar_' + userId);
 
         if (avatarArray.length > 0) {
-          setAvatarIng(
+          setAvatarImg(
             uploadsUrl + avatarArray[avatarArray.length - 1].filename
           );
         }
@@ -91,12 +91,16 @@ const Profile = ({navigation, route}) => {
 
   useEffect(() => {
     getOwner();
-    loadAvatar();
   }, [userId, updateUser]);
+
+  useEffect(() => {
+    loadAvatar();
+  }, [userId, updateUser, avatarImg]);
 
   const UserTab = () => {
     return (
-      <Tab
+      <></>
+      /*  <Tab
         value={index}
         onChange={(e) => setIndex(e)}
         indicatorStyle={{
@@ -112,13 +116,14 @@ const Profile = ({navigation, route}) => {
           title="My Favourites."
           titleStyle={{fontSize: 12, color: 'black'}}
         />
-      </Tab>
+      </Tab> */
     );
   };
 
   const OwnerTab = () => {
     return (
-      <Tab
+      <></>
+      /*  <Tab
         value={index}
         onChange={(e) => setIndex(e)}
         indicatorStyle={{
@@ -130,7 +135,7 @@ const Profile = ({navigation, route}) => {
           title={`${owner.username}'s Listings`}
           titleStyle={{fontSize: 16, color: primaryColour}}
         />
-      </Tab>
+      </Tab> */
     );
   };
 
