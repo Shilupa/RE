@@ -6,6 +6,8 @@ import {
   StatusBar,
   Modal,
   TouchableOpacity,
+  Image,
+  TouchableNativeFeedback,
   TouchableWithoutFeedback,
 } from 'react-native';
 import PropTypes from 'prop-types';
@@ -16,11 +18,10 @@ import {MainContext} from '../contexts/MainContext';
 import SearchList from '../components/SearchList';
 
 const Search = ({navigation}) => {
-  const [searchIndex, setSearchIndex] = useState(0);
   const {isLoggedIn} = useContext(MainContext);
   const [search, setSearch] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedSortOptions, setSelectedSortoptions] = useState('Newest');
+  const [selectedSortOptions, setSelectedSortoptions] = useState('');
 
   const updateSearch = (search) => {
     setSearch(search);
@@ -39,38 +40,6 @@ const Search = ({navigation}) => {
           </Text>
         )}
       </View>
-      <View style={{marginBottom: 10}}>
-        <Tab
-          value={searchIndex}
-          scrollable={true}
-          onChange={(e) => {
-            setSearchIndex(e);
-          }}
-          indicatorStyle={{
-            backgroundColor: 'green',
-            height: 3,
-          }}
-        >
-          <Tab.Item title="All" titleStyle={{fontSize: 12, color: 'black'}} />
-          <Tab.Item
-            title="Furniture"
-            titleStyle={{fontSize: 12, color: 'black'}}
-          />
-          <Tab.Item
-            title="Clothing"
-            titleStyle={{fontSize: 12, color: 'black'}}
-          />
-          <Tab.Item
-            title="Electronics"
-            titleStyle={{fontSize: 12, color: 'black'}}
-          />
-          <Tab.Item
-            title="Miscellaneous"
-            titleStyle={{fontSize: 12, color: 'black'}}
-          />
-        </Tab>
-      </View>
-
       <View
         style={{
           alignItems: 'center',
@@ -101,57 +70,11 @@ const Search = ({navigation}) => {
       </View>
 
       <Card.Divider />
-      <TabView
-        value={searchIndex}
-        onChange={setSearchIndex}
-        animationType="spring"
-      >
-        <TabView.Item style={{width: '100%'}}>
-          <SearchList
-            navigation={navigation}
-            search={search}
-            setSearch={setSearch}
-            selectedSortOption={selectedSortOptions}
-            category={''}
-          />
-        </TabView.Item>
-        <TabView.Item style={{backgroundColor: 'none', width: '100%'}}>
-          <SearchList
-            navigation={navigation}
-            search={search}
-            setSearch={setSearch}
-            selectedSortOption={selectedSortOptions}
-            category={categoryList[1]}
-          />
-        </TabView.Item>
-        <TabView.Item style={{backgroundColor: 'none', width: '100%'}}>
-          <SearchList
-            navigation={navigation}
-            search={search}
-            setSearch={setSearch}
-            selectedSortOption={selectedSortOptions}
-            category={categoryList[0]}
-          />
-        </TabView.Item>
-        <TabView.Item style={{backgroundColor: 'none', width: '100%'}}>
-          <SearchList
-            navigation={navigation}
-            search={search}
-            setSearch={setSearch}
-            selectedSortOption={selectedSortOptions}
-            category={categoryList[2]}
-          />
-        </TabView.Item>
-        <TabView.Item style={{backgroundColor: 'none', width: '100%'}}>
-          <SearchList
-            navigation={navigation}
-            search={search}
-            setSearch={setSearch}
-            selectedSortOption={selectedSortOptions}
-            category={categoryList[3]}
-          />
-        </TabView.Item>
-      </TabView>
+      <SearchList
+        navigation={navigation}
+        search={search}
+        selectedSortOption={selectedSortOptions}
+      />
       <Modal
         animationType="slide"
         transparent={true}
