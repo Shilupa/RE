@@ -83,13 +83,13 @@ RE application is built as a part of school project and the API services are pro
 
 ## Setup
 To make the project working, installed npm and used it:
-$ cd ../recycle-app
-$ npm install
-$ npm start
+- $ cd ../recycle-app
+- $ npm install
+- $ npm start
 
 ## Screenshots
-Some of our RE view:
-<img src="/assets/home.png" width="250"> <img src="/assets/coverpage.png" width="250"> <img src="/assets/profile.png" width="250">
+###Some of our RE view:
+<img src="/assets/home.png" width="200"> <img src="/assets/coverpage.png" width="200"> <img src="/assets/profile.png" width="200">
 
 ### Contributors
     Bibek Shrestha
