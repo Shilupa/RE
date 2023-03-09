@@ -5,6 +5,7 @@ import {Icon, Image} from '@rneui/themed';
 import {useContext, useEffect, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
 import PropTypes from 'prop-types';
+import CoverPage from '../views/CoverPage';
 import Chats from '../views/Chats';
 import Home from '../views/Home';
 import Login from '../views/Login';
@@ -20,6 +21,7 @@ import {StyleSheet, View} from 'react-native';
 import ProductDetails from '../components/product/ProductDetails';
 import ModifyProduct from '../components/product/ModifyProduct';
 import {Text} from 'react-native';
+import LottieView from 'lottie-react-native';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -199,9 +201,23 @@ const TabScreen = ({navigation}) => {
           component={Upload}
           options={{
             tabBarIcon: ({color}) => (
-              <Icon
-                name="cloud-upload"
-                color={color}
+              // <Icon
+
+              //   name="cloud-upload"
+              //   color={color}
+              //   onPress={() => navigateScreen('Upload')}
+              // />
+              <LottieView
+                source={require('../lottie/upload.json')}
+                style={{
+                  width: 30,
+                  height: 30,
+                  alignSelf: 'center',
+                  backgroundColor: color,
+                  borderRadius: '100%',
+                }}
+                autoPlay
+                loop={false}
                 onPress={() => navigateScreen('Upload')}
               />
             ),
@@ -266,6 +282,15 @@ const TabScreen = ({navigation}) => {
 };
 
 const StackScreen = () => {
+  const [showComponent, setShowComponent] = useState(true);
+
+  // Shows cover page for 5 secs
+  useEffect(() => {
+    setInterval(() => {
+      setShowComponent(false);
+    }, 3000);
+  }, []);
+
   return (
     <Stack.Navigator
       screenOptions={{
@@ -273,17 +298,24 @@ const StackScreen = () => {
       }}
     >
       <>
-        <Stack.Screen
-          name="Tabs"
-          component={TabScreen}
-          screenOptions={{headerShown: false}}
-        />
-        <Stack.Screen name="ProductDetails" component={ProductDetails} />
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="ModifyProduct" component={ModifyProduct} />
-        <Stack.Screen name="EditProfile" component={EditProfile} />
-        <Stack.Screen name="Message" component={Message} />
-        <Stack.Screen name="GoLogin" component={GoLogin} />
+        {showComponent ? (
+          <Stack.Screen name="CoverPage" component={CoverPage} />
+        ) : (
+          <>
+            <Stack.Screen
+              name="Tabs"
+              component={TabScreen}
+              screenOptions={{headerShown: false}}
+            />
+
+            <Stack.Screen name="ProductDetails" component={ProductDetails} />
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="ModifyProduct" component={ModifyProduct} />
+            <Stack.Screen name="EditProfile" component={EditProfile} />
+            <Stack.Screen name="Message" component={Message} />
+            <Stack.Screen name="GoLogin" component={GoLogin} />
+          </>
+        )}
       </>
     </Stack.Navigator>
   );
