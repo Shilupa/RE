@@ -4,12 +4,14 @@ import PropTypes from 'prop-types';
 import SearchListItem from './SearchListItem';
 import {categoryList} from '../utils/variables';
 import {useRating} from '../hooks/ApiHooks';
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 
 const SearchList = ({navigation, search, category, selectedSortOption}) => {
   const {mediaArray} = useMedia();
   const {getRatingsByFileId} = useRating();
   const [mediaWithLike, setMediaWithLike] = useState();
+  const {ind, setInd} = useState(0);
+  const listRef = useRef();
 
   const combine = async () => {
     try {
@@ -45,6 +47,10 @@ const SearchList = ({navigation, search, category, selectedSortOption}) => {
     combine();
   }, []);
 
+  const scrollToTop = () => {
+    listRef.current.scrollToIndex({animated: true, index: 0});
+  };
+
   // sort mediaArray based on selectedSortOption, default
   const sortedMedia = mediaArray
     .map((media) => ({
@@ -56,18 +62,22 @@ const SearchList = ({navigation, search, category, selectedSortOption}) => {
       const titleA = a.parsedDescription.title.toLowerCase();
       const titleB = b.parsedDescription.title.toLowerCase();
       if (selectedSortOption === 'Oldest') {
+        scrollToTop();
         return new Date(a.time_added) - new Date(b.time_added);
       } else if (selectedSortOption === 'Newest') {
+        scrollToTop();
         return new Date(b.time_added) - new Date(a.time_added);
       } else if (selectedSortOption === 'titleAsc') {
+        scrollToTop();
         return titleA.localeCompare(titleB);
       } else if (selectedSortOption === 'titleDesc') {
+        scrollToTop();
         return titleB.localeCompare(titleA);
       } else if (selectedSortOption === 'Least-popular') {
-        // no sort option selected
+        scrollToTop();
         return a.likeDifference - b.likeDifference;
       } else if (selectedSortOption === 'Most-popular') {
-        // no sort option selected
+        scrollToTop();
         return b.likeDifference - a.likeDifference;
       } else {
         return 0;
@@ -79,7 +89,9 @@ const SearchList = ({navigation, search, category, selectedSortOption}) => {
   return (
     <FlatList
       horizontal={false}
+      ref={listRef}
       numColumns={2}
+      initialScrollIndex={ind}
       data={category === '' ? sortedMedia : filteredMedia}
       keyExtractor={(item, index) => index.toString()}
       renderItem={({item}) => {
