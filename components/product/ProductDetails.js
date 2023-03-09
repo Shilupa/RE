@@ -16,9 +16,10 @@ import {
 } from 'react-native';
 import {MainContext} from '../../contexts/MainContext';
 import {useMedia, useTag, useUser} from '../../hooks/ApiHooks';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {userFavourites, userRatings} from '../../hooks/UserFunctionality';
 import {Video} from 'expo-av';
+import * as ScreenOrientation from 'expo-screen-orientation';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ProductDetails = ({navigation, route}) => {
   const assetImage = avatarUrl;
@@ -38,7 +39,7 @@ const ProductDetails = ({navigation, route}) => {
     user_id: userId,
     media_type: type,
   } = route.params;
-  console.log('FileID: ', fileId);
+  // console.log('FileID: ', fileId);
 
   const video = useRef(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -52,6 +53,7 @@ const ProductDetails = ({navigation, route}) => {
     disLikeCount,
   } = userRatings(user.user_id, fileId);
 
+  // using image's uploded time to display the time since the item was posted
   const mediaUploded = new Date(timeAdded);
   const timeNow = new Date();
   const timeDiff = timeNow.getTime() - mediaUploded.getTime();
@@ -67,6 +69,7 @@ const ProductDetails = ({navigation, route}) => {
     time = Math.floor(timeDiff / 1e3) + 's ';
   }
 
+  // navigates to ModifyProduct component
   const editItem = () => {
     navigation.navigate('ModifyProduct', {
       file: {
@@ -136,7 +139,7 @@ const ProductDetails = ({navigation, route}) => {
 
   const handlePlaybackStatusUpdate = (playbackStatus) => {
     if (playbackStatus.didJustFinish) {
-      video.current.setPositionAsync(0); // Set the video position to 0 (start of the video)
+      video.current.setPositionAsync(0); // Set the video position  back to the start of the video
       video.current.pauseAsync(); // Pause the video instead of restarting it
     }
   };
@@ -177,7 +180,7 @@ const ProductDetails = ({navigation, route}) => {
             <Video
               ref={video}
               source={{uri: uploadsUrl + filename}}
-              resizeMode="cover"
+              resizeMode="contain"
               style={{
                 position: 'absolute',
                 top: 0,
@@ -185,12 +188,26 @@ const ProductDetails = ({navigation, route}) => {
                 bottom: 0,
                 right: 0,
               }}
-              useNativeControls
+              useNativeControls={true}
               onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
               onError={(error) => {
                 console.log(error);
               }}
-              isLooping
+              onFullscreenUpdate={async ({fullscreenUpdate}) => {
+                console.log('fullscreen', fullscreenUpdate, Video[0]);
+                if (Platform.OS === 'android') {
+                  switch (fullscreenUpdate) {
+                    case 1:
+                      await ScreenOrientation.unlockAsync();
+                      break;
+                    default:
+                      await ScreenOrientation.lockAsync(
+                        ScreenOrientation.OrientationLock.PORTRAIT
+                      );
+                      break;
+                  }
+                }
+              }}
             />
             <Button
               type="solid"
@@ -199,9 +216,6 @@ const ProductDetails = ({navigation, route}) => {
             >
               <Icon name="arrow-back" color="black" />
             </Button>
-            {/* <TouchableOpacity style={{position: 'absolute', top: 20, left: 20}}>
-              <Text style={{color: 'white'}}>Play/Pause</Text>
-            </TouchableOpacity> */}
           </View>
         )}
       </View>
