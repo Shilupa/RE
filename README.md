@@ -89,7 +89,7 @@ $ npm start
 
 ## Screenshots
 Some of our RE view:
-<img src="/assets/home.png" width="250"> <img src="/assets/coverpage.png" width="250"> <img src="/assets/profile.png" width="250">
+<img src="/assets/home.png" width="200"> <img src="/assets/coverpage.png" width="200"> <img src="/assets/profile.png" width="200">
 
 ### Contributors
     Bibek Shrestha
