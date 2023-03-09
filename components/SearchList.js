@@ -22,9 +22,15 @@ const SearchList = ({navigation, search, category, selectedSortOption}) => {
           const likes = ratingResponse.filter(
             (singleRating) => singleRating.rating === 1
           ).length;
-          console.log('Likes', likes);
 
-          media.likeNumber = await likes;
+          const dislike = ratingResponse.filter(
+            (singleRating) => singleRating.rating === 2
+          ).length;
+          // console.log('Likes', likes);
+          const likeDifference = (await likes) - dislike;
+
+          console.log('likesDfference', media.file_id, likeDifference);
+          media.likeDifference = (await likes) - dislike;
           return media;
         })
       );
@@ -35,8 +41,12 @@ const SearchList = ({navigation, search, category, selectedSortOption}) => {
     }
   };
 
+  useEffect(() => {
+    combine();
+  }, []);
+
   // sort mediaArray based on selectedSortOption, default
-  const sortedMedia = mediaArray
+  const sortedMedia = mediaWithLike
     .map((media) => ({
       ...media,
       parsedDescription: JSON.parse(media.description),
@@ -53,19 +63,19 @@ const SearchList = ({navigation, search, category, selectedSortOption}) => {
         return titleA.localeCompare(titleB);
       } else if (selectedSortOption === 'titleDesc') {
         return titleB.localeCompare(titleA);
-      } else {
+      } else if (selectedSortOption === 'Most-popular') {
         // no sort option selected
+        return a.likeDifference - b.likeDifference;
+      } else if (selectedSortOption === 'Least-popular') {
+        // no sort option selected
+        return b.likeDifference - a.likeDifference;
+      } else {
         return 0;
       }
     });
 
   const filteredMedia = sortedMedia.filter((media) => media.title === category);
   // console.log('sort', sortedMedia);
-
-  useEffect(() => {
-    combine();
-  }, []);
-
   return (
     <FlatList
       horizontal={false}

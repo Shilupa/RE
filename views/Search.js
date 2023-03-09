@@ -154,16 +154,20 @@ const Search = ({navigation}) => {
           />
         </TabView.Item>
       </TabView>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          style={{flex: 1}}
-          onRequestClose={() => {
-            setModalVisible(!modalVisible);
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        style={{flex: 1}}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <TouchableWithoutFeedback
+          onPress={() => {
+            setModalVisible(false);
           }}
         >
-          <TouchableWithoutFeedback onPress={() => {setModalVisible(false)}}>
           <View
             style={{
               flex: 1,
@@ -175,7 +179,7 @@ const Search = ({navigation}) => {
             <View
               style={{
                 width: '80%',
-                height: 200,
+                height: 300,
                 borderRadius: 10,
                 backgroundColor: '#fff',
               }}
@@ -187,7 +191,11 @@ const Search = ({navigation}) => {
                   setModalVisible(false);
                 }}
               >
-                <Text style={(selectedSortOptions === 'Newest' && styles.selected)}>Newest</Text>
+                <Text
+                  style={selectedSortOptions === 'Newest' && styles.selected}
+                >
+                  Newest
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.sortOptions}
@@ -196,7 +204,11 @@ const Search = ({navigation}) => {
                   setModalVisible(false);
                 }}
               >
-                <Text style={(selectedSortOptions === 'Oldest' && styles.selected)}>Oldest</Text>
+                <Text
+                  style={selectedSortOptions === 'Oldest' && styles.selected}
+                >
+                  Oldest
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.sortOptions}
@@ -205,7 +217,11 @@ const Search = ({navigation}) => {
                   setModalVisible(false);
                 }}
               >
-                <Text style={(selectedSortOptions === 'titleAsc' && styles.selected)}>Title (A-Z)</Text>
+                <Text
+                  style={selectedSortOptions === 'titleAsc' && styles.selected}
+                >
+                  Title (A-Z)
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.sortOptions}
@@ -214,12 +230,46 @@ const Search = ({navigation}) => {
                   setModalVisible(false);
                 }}
               >
-                <Text style={(selectedSortOptions === 'titleDesc' && styles.selected)}>Title (Z-A)</Text>
+                <Text
+                  style={selectedSortOptions === 'titleDesc' && styles.selected}
+                >
+                  Title (Z-A)
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.sortOptions}
+                onPress={() => {
+                  setSelectedSortoptions('Most-popular');
+                  setModalVisible(false);
+                }}
+              >
+                <Text
+                  style={
+                    selectedSortOptions === 'Most-popular' && styles.selected
+                  }
+                >
+                  Most popular
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.sortOptions}
+                onPress={() => {
+                  setSelectedSortoptions('Least-popular');
+                  setModalVisible(false);
+                }}
+              >
+                <Text
+                  style={
+                    selectedSortOptions === 'Least-popular' && styles.selected
+                  }
+                >
+                  Least popular
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
-          </TouchableWithoutFeedback>
-        </Modal>
+        </TouchableWithoutFeedback>
+      </Modal>
     </SafeAreaView>
   );
 };
