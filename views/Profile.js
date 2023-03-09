@@ -28,11 +28,7 @@ const Profile = ({navigation, route}) => {
   const {getUserById} = useUser();
   const [owner, setOwner] = useState({});
 
-  console.log('Route Params from profile: ', route.params);
-
   const userId = route.params;
-
-  console.log('User id form profile:', userId);
 
   const getOwner = async () => {
     try {
@@ -46,8 +42,6 @@ const Profile = ({navigation, route}) => {
   const loadAvatar = async () => {
     if (isLoggedIn) {
       try {
-        console.log('Load avatar from profile called');
-
         const avatarArray = await getFilesByTag('avatar_' + userId);
 
         if (avatarArray.length > 0) {
@@ -65,7 +59,7 @@ const Profile = ({navigation, route}) => {
     try {
       await AsyncStorage.clear();
     } catch (error) {
-      console.log('removeToken: ', error.message);
+      console.error('removeToken: ', error.message);
     }
   };
 
@@ -96,46 +90,6 @@ const Profile = ({navigation, route}) => {
   useEffect(() => {
     loadAvatar();
   }, [userId, updateUser, avatarImg]);
-
-  const UserTab = () => {
-    return (
-      <Tab
-        value={index}
-        onChange={(e) => setIndex(e)}
-        indicatorStyle={{
-          backgroundColor: 'black',
-          height: 3,
-        }}
-      >
-        <Tab.Item
-          title="My Listings."
-          titleStyle={{fontSize: 12, color: 'black'}}
-        />
-        <Tab.Item
-          title="My Favourites."
-          titleStyle={{fontSize: 12, color: 'black'}}
-        />
-      </Tab>
-    );
-  };
-
-  const OwnerTab = () => {
-    return (
-      <Tab
-        value={index}
-        onChange={(e) => setIndex(e)}
-        indicatorStyle={{
-          backgroundColor: 'black',
-          height: 3,
-        }}
-      >
-        <Tab.Item
-          title={`${owner.username}'s Listings`}
-          titleStyle={{fontSize: 16, color: primaryColour}}
-        />
-      </Tab>
-    );
-  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -194,7 +148,34 @@ const Profile = ({navigation, route}) => {
           />
         )}
       </View>
-      {userId !== user.user_id ? <OwnerTab /> : <UserTab />}
+
+      <Tab
+        value={index}
+        scrollable={false}
+        onChange={(e) => setIndex(e)}
+        indicatorStyle={{
+          backgroundColor: userId === user.user_id ? 'black' : 'white',
+          height: 3,
+        }}
+      >
+        <Tab.Item
+          title={
+            userId === user.user_id
+              ? 'My Listings.'
+              : `${owner.username}'s Listings`
+          }
+          titleStyle={{fontSize: 14, fontWeight: 'bold', color: 'black'}}
+        />
+        {userId === user.user_id ? (
+          <Tab.Item
+            title="My Favourites."
+            titleStyle={{fontSize: 14, fontWeight: 'bold', color: 'black'}}
+          />
+        ) : (
+          <></>
+        )}
+      </Tab>
+
       <TabView
         value={index}
         onChange={setIndex}
@@ -204,12 +185,12 @@ const Profile = ({navigation, route}) => {
         <TabView.Item>
           <MyList navigation={navigation} userId={owner.user_id} />
         </TabView.Item>
-        {userId != user.user_id ? (
-          ''
-        ) : (
+        {userId === user.user_id ? (
           <TabView.Item>
             <Favourite navigation={navigation} />
           </TabView.Item>
+        ) : (
+          <></>
         )}
       </TabView>
     </SafeAreaView>

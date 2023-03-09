@@ -29,18 +29,6 @@ const Home = ({navigation}) => {
             Sign In
           </Text>
         )}
-        {/*         {!isLoggedIn ? (
-          <Text
-            style={styles.logIn}
-            onPress={() => navigation.navigate('Login')}
-          >
-            Sign In
-          </Text>
-        ) : (
-          <Text style={styles.logIn}>
-            Hi {user !== null ? user.username : 'User'}!
-          </Text>
-        )} */}
       </View>
 
       <Tab
