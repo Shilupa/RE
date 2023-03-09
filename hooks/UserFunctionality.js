@@ -24,7 +24,7 @@ const userFavourites = (fileId) => {
       const response = await getFavouritesByFileId(fileId);
       setFavourites(response.filter((item) => item.user_id === user.user_id));
     } catch (error) {
-      console.log('Product details [getFavourites]', error);
+      console.error('Product details [getFavourites]', error.message);
     }
   };
 
@@ -116,7 +116,7 @@ const userRatings = (userId, fileId) => {
         // Sets total dislike counts for a media
         setDisLikeCount(countDislike.length);
       } catch (error) {
-        console.log('Get All Likes: ', error);
+        console.error('Get All Likes: ', error.message);
       }
     }
   };
@@ -126,7 +126,7 @@ const userRatings = (userId, fileId) => {
     try {
       return await postRating(file_id, likeValue);
     } catch (error) {
-      console.log('Post Like: ', error);
+      console.error('Post Like: ', error.message);
     }
   };
 
@@ -135,7 +135,7 @@ const userRatings = (userId, fileId) => {
     try {
       return await postRating(file_id, disLikeValue);
     } catch (error) {
-      console.log('Post Like: ', error);
+      console.error('Post Like: ', error.message);
     }
   };
 
@@ -173,7 +173,7 @@ const userRatings = (userId, fileId) => {
       setUpdateRating(!updateRating);
     } catch (error) {
       // note: you cannot like same file multiple times
-      console.log('Add Rating: ', error);
+      console.error('Add Rating: ', error.message);
     }
   };
 
@@ -211,7 +211,7 @@ const userRatings = (userId, fileId) => {
       setUpdateRating(!updateRating);
     } catch (error) {
       // note: you cannot un-like same file multiple times
-      console.log('Remove rating: ', error);
+      console.error('Remove rating: ', error.messag);
     }
   };
 
@@ -279,7 +279,6 @@ const videoOrientation = ({video}) => {
     unlock();
 
     const orientSub = ScreenOrientation.addOrientationChangeListener((evt) => {
-      console.log('orientation', evt);
       if (evt.orientationInfo.orientation > 2) {
         // show video in fullscreen
         if (video.current) showVideoInFullScreen();

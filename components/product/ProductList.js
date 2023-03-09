@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Alert,
   ImageBackground,
+  Platform,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import {Icon} from '@rneui/themed';
@@ -17,7 +18,9 @@ import {avatarUrl, uploadsUrl} from '../../utils/variables';
 import Availibility from '../Availibility';
 import {userFavourites, userRatings} from '../../hooks/UserFunctionality';
 import {Video} from 'expo-av';
+import * as ScreenOrientation from 'expo-screen-orientation';
 
+// single product Card displayed in the home screen
 const ProductList = ({singleMedia, navigation}) => {
   const assetImage = avatarUrl;
   const {getFilesByTag} = useTag();
@@ -46,6 +49,7 @@ const ProductList = ({singleMedia, navigation}) => {
   // Parsing string object to json object
   const descriptionObj = JSON.parse(singleMedia.description);
 
+  // loads the avatar of the user
   const loadAvatar = async () => {
     if (isLoggedIn) {
       try {
@@ -61,8 +65,8 @@ const ProductList = ({singleMedia, navigation}) => {
     }
   };
 
+  // getOwner the user Id of the user who has uploaded the file and sets the user as the owner of the file
   const getOwner = async () => {
-    // console.log('isLoggedin:', isLoggedIn);
     if (token != null) {
       try {
         const owner = await getUserById(singleMedia.user_id, token);
@@ -73,6 +77,7 @@ const ProductList = ({singleMedia, navigation}) => {
     }
   };
 
+  // when chat icon is pressed user is navigated to chat/message
   const navigateToMessage = () => {
     if (user.user_id === singleMedia.user_id) {
       navigation.navigate('Chats', singleMedia); // opens a new chat
@@ -81,6 +86,7 @@ const ProductList = ({singleMedia, navigation}) => {
     }
   };
 
+  // when the video is finished playing, video is set at starting position at pause mode
   const handlePlaybackStatusUpdate = (playbackStatus) => {
     if (playbackStatus.didJustFinish) {
       video.current.setPositionAsync(0); // Set the video position to 0 (start of the video)
@@ -106,11 +112,25 @@ const ProductList = ({singleMedia, navigation}) => {
                 ref={video}
                 source={{uri: uploadsUrl + singleMedia.filename}}
                 style={styles.video}
-                resizeMode="cover"
+                resizeMode="contain"
                 useNativeControls
                 onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
                 onError={(error) => {
-                  console.log(error);
+                  console.error(error.message);
+                }}
+                onFullscreenUpdate={async ({fullscreenUpdate}) => {
+                  if (Platform.OS === 'android') {
+                    switch (fullscreenUpdate) {
+                      case 1:
+                        await ScreenOrientation.unlockAsync();
+                        break;
+                      default:
+                        await ScreenOrientation.lockAsync(
+                          ScreenOrientation.OrientationLock.PORTRAIT
+                        );
+                        break;
+                    }
+                  }
                 }}
               />
               <Availibility text={descriptionObj.status} />
@@ -264,11 +284,6 @@ const styles = StyleSheet.create({
   videoContainer: {
     width: '100%',
     height: 300,
-  },
-  rowBigbox: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 10,
   },
   userInfo: {
     padding: 10,

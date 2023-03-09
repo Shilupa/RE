@@ -94,7 +94,6 @@ const Upload = ({navigation}) => {
       let fileExt = filename.split('.').pop();
       if (fileExt === 'jpg') fileExt = 'jpeg';
       const mimeType = mediafile.type + '/' + fileExt;
-      console.log('MimeType:', filename);
 
       formData.append('file', {
         uri: mediafile.uri,
@@ -102,11 +101,8 @@ const Upload = ({navigation}) => {
         type: mimeType,
       });
 
-      console.log('Form data from uoload', formData);
-
       try {
         const result = await postMedia(formData, token);
-        console.log('result', result);
         const appTag = {
           file_id: result.file_id,
           tag: appId,
@@ -117,18 +113,13 @@ const Upload = ({navigation}) => {
           {
             text: 'OK',
             onPress: () => {
-              console.log('OK Pressed');
-              // update 'update' state in context
               setUpdate(!update);
-              // reset form
-              // reset();
-              // TODO: navigate to home
               navigation.navigate('Home');
             },
           },
         ]);
       } catch (error) {
-        console.error('file upload failed', error);
+        console.error('file upload failed', error.message);
       } finally {
         setLoading(false);
       }
@@ -151,7 +142,7 @@ const Upload = ({navigation}) => {
         trigger();
       }
     } catch (error) {
-      console.log(error);
+      console.error('pickFile', error.message);
     }
   };
 
@@ -190,7 +181,7 @@ const Upload = ({navigation}) => {
                   resizeMode="cover"
                   useNativeControls
                   onError={(error) => {
-                    console.log(error);
+                    console.error(error.message);
                   }}
                 />
               ) : (
@@ -295,6 +286,7 @@ const Upload = ({navigation}) => {
             text="Upload Item"
             submit={uploadFile}
             handleSubmit={handleSubmit}
+            loading={loading}
           />
         </View>
       </ScrollView>

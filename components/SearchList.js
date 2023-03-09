@@ -9,7 +9,8 @@ const SearchList = ({navigation, search, selectedSortOption}) => {
   const {mediaArray} = useMedia();
   const {getRatingsByFileId} = useRating();
   const [mediaWithLike, setMediaWithLike] = useState([]);
-  
+
+  // combing media array and like/dislike difference of each media to sort the media based on popularity
   const combine = async () => {
     try {
       const mediaWithLikeCount = await Promise.all(
@@ -27,6 +28,7 @@ const SearchList = ({navigation, search, selectedSortOption}) => {
           return media;
         })
       );
+
       // sort mediaArray based on selectedSortOption, default
       const sortedMedia = mediaWithLikeCount
         .map((media) => ({
@@ -46,10 +48,8 @@ const SearchList = ({navigation, search, selectedSortOption}) => {
           } else if (selectedSortOption === 'titleDesc') {
             return titleB.localeCompare(titleA);
           } else if (selectedSortOption === 'Most-popular') {
-            // no sort option selected
             return b.likeDifference - a.likeDifference;
           } else if (selectedSortOption === 'Least-popular') {
-            // no sort option selected
             return a.likeDifference - b.likeDifference;
           } else {
             return 0;

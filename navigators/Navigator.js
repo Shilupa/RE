@@ -14,7 +14,6 @@ import Search from '../views/Search';
 import Upload from '../views/Upload';
 import EditProfile from '../views/EditProfile';
 import Message from '../views/Message';
-import GoLogin from '../views/GoLogin';
 import {useComments, useMedia, useRating, useTag} from '../hooks/ApiHooks';
 import {avatarUrl, messageId, uploadsUrl} from '../utils/variables';
 import {Platform, StyleSheet, View} from 'react-native';
@@ -37,6 +36,7 @@ const TabScreen = ({navigation}) => {
   const {getRatingsByFileId} = useRating();
   const {getCommentsByFileId} = useComments();
 
+  // loads avatar of the user at the bottom tab
   const loadAvatar = async () => {
     if (isLoggedIn) {
       try {
@@ -50,15 +50,13 @@ const TabScreen = ({navigation}) => {
     }
   };
 
+  // number of un-read messages are indicated at the bottom tab
   const numberOfUnreadMessage = async () => {
     if (isLoggedIn && token != null) {
       const title = user.user_id + messageId;
       const userIdNumber = user.user_id;
-
       try {
-        // console.log('title: ', title);
         const chatGroups = await searchMedia(title, token);
-        // console.log('chatGroups: ', chatGroups);
         const chatGroupWithComment = await Promise.all(
           chatGroups.map(async (group) => {
             const commentResponse = await getCommentsByFileId(group.file_id);
@@ -70,13 +68,7 @@ const TabScreen = ({navigation}) => {
           (obj) => obj.allComments.length != 0
         );
 
-        /* console.log(
-          'filteredChatGroupWithComment: ',
-          filteredChatGroupWithComment
-        ); */
-
         // Map data for ratings
-
         const chatGroupWithRatings = await Promise.all(
           filteredChatGroupWithComment.map(async (group) => {
             const ratingResponse = await getRatingsByFileId(group.file_id);
@@ -85,36 +77,19 @@ const TabScreen = ({navigation}) => {
           })
         );
 
-        // console.log('chatGroupWithRatings: ', chatGroupWithRatings);
-
         const numberUnseen = chatGroupWithRatings.reduce(
           (accumulator, current) => {
             const id1 = current.title.split('_')[0].replace(messageId, '');
             const id2 = current.title.split('_')[1].replace(messageId, '');
-
-            // console.log('Id1: ', id1);
-            // console.log('Id2: ', id2);
-
-            // console.log('UserId: ', userIdNumber);
-
             const otherId = id1 == userIdNumber ? id2 : id1;
-            // console.log('OtherId: ', otherId);
 
-            // const isSeen = JSON.parse(current.description);
             const userRating = current.rating.find(
               (singleRating) => singleRating.user_id == userIdNumber
             );
 
-            /* console.log('user rating: ', userRating ? userRating.rating : null); */
-
             const otherRating = current.rating.find(
               (singleRating) => singleRating.user_id == otherId
             );
-
-            /* console.log(
-              'Otherrating: ',
-              otherRating ? otherRating.rating : null
-            ); */
 
             if (otherRating === undefined) {
               return accumulator;
@@ -132,9 +107,6 @@ const TabScreen = ({navigation}) => {
           },
           0
         );
-
-        // console.log('numberUnseen: ', numberUnseen);
-
         setUnseenNumber(numberUnseen);
       } catch (error) {
         console.error('loadChatGroups from navigator error: ' + error.message);
@@ -316,7 +288,6 @@ const StackScreen = () => {
             <Stack.Screen name="ModifyProduct" component={ModifyProduct} />
             <Stack.Screen name="EditProfile" component={EditProfile} />
             <Stack.Screen name="Message" component={Message} />
-            <Stack.Screen name="GoLogin" component={GoLogin} />
           </>
         )}
       </>

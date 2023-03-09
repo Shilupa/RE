@@ -20,7 +20,6 @@ import LeafSvg from '../components/LeafSvg';
 
 const Login = ({navigation}) => {
   const {toggleForm, setToggleForm} = useContext(MainContext);
-
   return (
     <SafeAreaView
       onPress={() => Keyboard.dismiss()}

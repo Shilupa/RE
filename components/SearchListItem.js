@@ -2,10 +2,10 @@ import {Image, StyleSheet, View, TouchableOpacity, Text} from 'react-native';
 import PropTypes from 'prop-types';
 import {uploadsUrl, vw} from '../utils/variables';
 
+// design of each item in the search list
 const SearchListItem = ({singleMedia, navigation}) => {
   const item = singleMedia;
   const descriptionObj = JSON.parse(item.description);
-  // console.log('Desc: ', descriptionObj);
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -42,12 +42,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     resizeMode: 'cover',
   },
-  /*   profilePic: {
-    height: 30,
-    aspectRatio: 1,
-    borderRadius: 15,
-    resizeMode: 'cover',
-  }, */
   profileAndInfo: {
     flexDirection: 'row',
     alignItems: 'center',

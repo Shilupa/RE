@@ -4,6 +4,7 @@ import {SafeAreaView, StyleSheet} from 'react-native';
 import PropTypes from 'prop-types';
 import {primaryColour} from '../../utils/variables';
 
+// custom button for forms in the app
 const FormButton = (props) => {
   return (
     <SafeAreaView>

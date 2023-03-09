@@ -1,8 +1,6 @@
 import {SafeAreaView, StyleSheet, View} from 'react-native';
 import React, {useContext, useState} from 'react';
-import {primaryColour} from '../utils/variables';
-import LeafSvg from './LeafSvg';
-import {Card, Icon} from '@rneui/themed';
+import {Icon} from '@rneui/themed';
 import PropTypes from 'prop-types';
 import {Controller, useForm} from 'react-hook-form';
 import FormInput from './formComponent/FormInput';
@@ -35,11 +33,8 @@ const LoginForm = ({navigation}) => {
   });
 
   const logIn = async (loginData) => {
-    console.log('Login button pressed', loginData);
-
     try {
       const loginResult = await postLogin(loginData);
-      console.log('logIn', loginResult);
       // Saving token and user data to async storage
       await AsyncStorage.setItem('userToken', loginResult.token);
       await AsyncStorage.setItem('user', JSON.stringify(loginResult.user));
@@ -47,7 +42,7 @@ const LoginForm = ({navigation}) => {
       setUpdateUser(updateUser + 1);
       navigation.navigate('Home');
     } catch (error) {
-      console.error('logIn', error);
+      console.error('logIn', error.message);
     }
   };
 

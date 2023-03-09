@@ -8,6 +8,7 @@ import {useContext, useEffect, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
 import {useComments, useMedia, useRating, useUser} from '../hooks/ApiHooks';
 
+// chat compponent displays the chats
 const Chats = ({navigation}) => {
   const {user, token, updateMessage} = useContext(MainContext);
   const {searchMedia} = useMedia();
@@ -17,39 +18,21 @@ const Chats = ({navigation}) => {
   const {getCommentsByFileId} = useComments();
   const {getUserById} = useUser();
 
-  /*   const id1 = 111;
-  const id2 = 222;
-
-  const description = {};
-  description[id1] = false;
-
-  description[id2]= false;
-
-  console.log('Description Test: ', JSON.stringify(description));
- */
   const loadChatGroups = async () => {
     const title = user.user_id + messageId;
-    console.log('Title : ', title);
-
     try {
       const chatGroups = await searchMedia(title, token);
-
       const chatGroupWithComment = await Promise.all(
         chatGroups.map(async (group) => {
           const commentResponse = await getCommentsByFileId(group.file_id);
           group.allComments = await commentResponse;
-
           return await group;
         })
       );
 
-      console.log('chatGroupWithComment', chatGroupWithComment);
-
       const filteredChatGroupWithComment = chatGroupWithComment.filter(
         (obj) => obj.allComments.length != 0
       );
-
-      // console.log('filteredChatGroupWithComment', filteredChatGroupWithComment);
 
       // Map data for ratings
       const chatGroupWithRatings = await Promise.all(
@@ -59,8 +42,6 @@ const Chats = ({navigation}) => {
           return await group;
         })
       );
-
-      // console.log('chatGroup With Ratings', chatGroupWithRatings);
 
       const chatGroupWithFile = await Promise.all(
         chatGroupWithRatings.map(async (group) => {
@@ -75,7 +56,6 @@ const Chats = ({navigation}) => {
         chatGroupWithFile.map(async (group) => {
           const id1 = group.title.split('_')[0].replace(messageId, '');
           const id2 = group.title.split('_')[1].replace(messageId, '');
-
           if (id1 == user.user_id) {
             const ownerResponse = await getUserById(id2, token);
             group.owner = await ownerResponse;
@@ -93,10 +73,7 @@ const Chats = ({navigation}) => {
           a.allComments[a.allComments.length - 1].comment_id
         );
       });
-
       setChatGroupList(chatGroupWithOwner);
-
-      console.log('All file with comment: ', chatGroupWithOwner);
     } catch (error) {
       console.error('loadChatGroups from chat error: ' + error.message);
     }

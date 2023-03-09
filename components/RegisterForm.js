@@ -1,14 +1,11 @@
-import {Card} from '@rneui/themed';
 import React, {useContext} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {Alert, StyleSheet, View} from 'react-native';
 import {SafeAreaView} from 'react-native';
 import {MainContext} from '../contexts/MainContext';
 import {useUser} from '../hooks/ApiHooks';
-import {primaryColour, vh} from '../utils/variables';
 import FormButton from './formComponent/FormButton';
 import FormInput from './formComponent/FormInput';
-import LeafSvg from './LeafSvg';
 
 const RegisterForm = () => {
   const {postUser, checkUsername} = useUser();
@@ -50,7 +47,6 @@ const RegisterForm = () => {
 
   // Alert message to display on screen if user is able or unable to created Account
   const alertMessage = (result) => {
-    console.log(result);
     let message = '';
     let notify = '';
 
@@ -67,7 +63,6 @@ const RegisterForm = () => {
       {
         text: 'OK',
         onPress: () => {
-          console.log('OK Pressed');
           setToggleForm(true);
         },
       },
@@ -82,14 +77,14 @@ const RegisterForm = () => {
       resetForm();
       alertMessage(registerResult.message);
     } catch (error) {
-      alertMessage(error.message);
+      alertMessage('register', error.message);
     }
   };
 
+  // check if the username is already taken
   const checkUser = async (username) => {
     try {
       const userAvailable = await checkUsername(username);
-      console.log('checkUser', userAvailable);
       return userAvailable || 'Username is already taken';
     } catch (error) {
       console.error('checkUser', error.message);

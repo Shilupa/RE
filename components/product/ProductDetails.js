@@ -19,9 +19,8 @@ import {useTag, useUser} from '../../hooks/ApiHooks';
 import {userFavourites, userRatings} from '../../hooks/UserFunctionality';
 import {Video} from 'expo-av';
 import * as ScreenOrientation from 'expo-screen-orientation';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {androidRipple} from '@rneui/base';
 
+// Product Details component presents user the details of a product to the user
 const ProductDetails = ({navigation, route}) => {
   const assetImage = avatarUrl;
   const {isLoggedIn, token} = useContext(MainContext);
@@ -40,7 +39,6 @@ const ProductDetails = ({navigation, route}) => {
     user_id: userId,
     media_type: type,
   } = route.params;
-  // console.log('FileID: ', fileId);
 
   const video = useRef(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -84,7 +82,11 @@ const ProductDetails = ({navigation, route}) => {
     });
   };
 
+  /* message seller button navigates the user to new chat if a conversation has not
+  been started before for the respective product but will be directed to the old
+  conversatin if any old conversations exists */
   const messageSeller = () => {
+    // checking if the user has logged in as this feature is only available to the logged in user
     if (!isLoggedIn) {
       Alert.alert(
         'Continue',
@@ -113,18 +115,19 @@ const ProductDetails = ({navigation, route}) => {
     }
   };
 
+  // getOwner the user Id of the user who has uploaded the file and sets the user as the owner of the file
   const getOwner = async () => {
     if (isLoggedIn) {
       try {
-        // const token = await AsyncStorage.getItem('userToken');
         const owner = await getUserById(userId, token);
         setOwner(owner);
       } catch (error) {
-        console.error('getOwner error, ' + error.message);
+        console.error('getOwner error', error.message);
       }
     }
   };
 
+  // loads the avatar of the user
   async function loadAvatar() {
     if (isLoggedIn) {
       try {
@@ -138,6 +141,7 @@ const ProductDetails = ({navigation, route}) => {
     }
   }
 
+  // when the video is finished playing, video is set at starting position at pause mode
   const handlePlaybackStatusUpdate = (playbackStatus) => {
     if (playbackStatus.didJustFinish) {
       video.current.setPositionAsync(0); // Set the video position  back to the start of the video
@@ -204,10 +208,9 @@ const ProductDetails = ({navigation, route}) => {
                 useNativeControls={true}
                 onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
                 onError={(error) => {
-                  console.log(error);
+                  console.error(error.message);
                 }}
                 onFullscreenUpdate={async ({fullscreenUpdate}) => {
-                  console.log('fullscreen', fullscreenUpdate, Video[0]);
                   if (Platform.OS === 'android') {
                     switch (fullscreenUpdate) {
                       case 1:
@@ -235,13 +238,7 @@ const ProductDetails = ({navigation, route}) => {
           </>
         )}
       </View>
-      <ScrollView
-      /* style={{
-          backgroundColor: 'beige',
-          borderTopLeftRadius: 40,
-          borderTopRightRadius: 40,
-        }} */
-      >
+      <ScrollView>
         <View
           style={{
             flexDirection: 'row',

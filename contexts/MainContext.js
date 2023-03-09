@@ -29,11 +29,9 @@ const MainProvider = (props) => {
         setIsLoggedIn(true);
       }
     } catch (error) {
-      console.error('logIn', error);
+      console.error('logIn', error.message);
     }
   };
-
-  // console.log(user);
 
   useEffect(() => {
     saveData();

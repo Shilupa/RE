@@ -2,6 +2,7 @@ import {FlatList} from 'react-native';
 import PropTypes from 'prop-types';
 import MessageListItem from './MessageListItem';
 
+// Message list displays the list of messages between two users
 const MessageList = ({
   navigation,
   singleItem,

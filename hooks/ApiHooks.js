@@ -3,7 +3,6 @@ import {MainContext} from '../contexts/MainContext';
 import {appId, baseUrl} from '../utils/variables';
 
 const doFetch = async (url, options) => {
-  console.log('Main do Fetch');
   const response = await fetch(url, options);
   const json = await response.json();
   if (!response.ok) {
@@ -17,7 +16,7 @@ const doFetch = async (url, options) => {
 
 const useMedia = (myFilesOnly, userId) => {
   const [mediaArray, setMediaArray] = useState([]);
-  const {update, user} = useContext(MainContext);
+  const {update} = useContext(MainContext);
 
   const loadMedia = async () => {
     try {
@@ -46,27 +45,10 @@ const useMedia = (myFilesOnly, userId) => {
        */
       setMediaArray(media);
     } catch (error) {
-      throw new Error('List, loadMedia', error);
+      throw new Error('List, loadMedia', error.message);
     }
   };
 
-  /**
-   * Sorting media files by time added
-   * returns files in descending order by time
-   */
-  // mediaArray.sort((a, b) => a.time_added < b.time_added);
-
-  /**
-   * Fetching data every 3 second from server
-   */
-  /* useEffect(() => {
-    loadMedia();
-    const interval = setInterval(() => {
-      // load media when update state changes in main context
-      // by adding update state to the array below
-    }, 3000);
-    return () => clearInterval(interval);
-  }, [update]); */
   useEffect(() => {
     // load media when update state changes in main context
     // by adding update state to the array below
@@ -96,7 +78,7 @@ const useMedia = (myFilesOnly, userId) => {
         method: 'delete',
       });
     } catch (error) {
-      throw new Error('deleteMedia, ' + error.message);
+      throw new Error('deleteMedia', error.message);
     }
   };
 
@@ -106,7 +88,7 @@ const useMedia = (myFilesOnly, userId) => {
         method: 'GET',
       });
     } catch (error) {
-      throw new Error('getMediaByFileId error, ' + error.message);
+      throw new Error('getMediaByFileId error', error.message);
     }
   };
 

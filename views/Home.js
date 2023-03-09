@@ -7,12 +7,12 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import {Tab, TabView, Text, Card} from '@rneui/themed';
-import {useContext, useEffect, useState} from 'react';
+import {useContext, useState} from 'react';
 import {categoryList, primaryColour} from '../utils/variables';
 import {MainContext} from '../contexts/MainContext';
-import {useMedia, useTag} from '../hooks/ApiHooks';
 import MainView from '../components/product/MainView';
 
+// Home component displays the Home view
 const Home = ({navigation}) => {
   const [index, setIndex] = useState(0);
   const {isLoggedIn} = useContext(MainContext);

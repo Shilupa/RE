@@ -3,6 +3,7 @@ import {useMedia} from '../../hooks/ApiHooks';
 import PropTypes from 'prop-types';
 import UserList from './UserList';
 
+// My list is used to display the media uploaded by the user in theri profile page
 const MyList = ({navigation, userId}) => {
   const {mediaArray} = useMedia(true, userId);
   return (
@@ -20,7 +21,7 @@ const MyList = ({navigation, userId}) => {
 
 MyList.propTypes = {
   navigation: PropTypes.object,
-  categoryList: PropTypes.object,
+  userId: PropTypes.any,
 };
 
 export default MyList;
