@@ -1,7 +1,7 @@
 # RE (RECYCLE, REDUCE & REUSE)
 ## Join the Second-Hand Movement and Help Save the Planet
 
-RE is  is a react-native marketplace application where users can find different varities of items for free. We believe that second hand trade is an important key to make the world more sustainable. At RE, we help people reuse by making second hand more fun and inspiring.
+RE is  is a react-native marketplace application where users can find different varities of items for free. We believe that second hand trade is an important key to make the world more sustainable. At RE, we help people reuse by making second hand more fun and inspiring. [RE video advertisement] (https://users.metropolia.fi/~surajr/Web_Based_Mobile_Application/Media/VideoEditing/)
 
 ## Who can use RE?
 - We believe in inclusion and our app is for everybody who value in sustainability.
@@ -76,11 +76,22 @@ RE is  is a react-native marketplace application where users can find different 
 - react-native-vector-icons: "^9.2.0"
 
 ## Backend and APIs service:
-RE application is built as a part of school project and the API services are provided by Metropolia UAS. ([https://media.mw.metropolia.fi/wbma/docs/])
+RE application is built as a part of school project and the API services are provided by Metropolia UAS. [Link to documents] (https://media.mw.metropolia.fi/wbma/docs/)
 
 - API service are tested with postman.
 - The expo was run on expo client.
 
+## Setup
+To make the project working, installed npm and used it:
+$ cd ../recycle-app
+$ npm install
+$ npm start
+
+## Screenshots
+Some of our RE view
+<img src="/recycle-app/assets/coverpage.png" alt="coverpage" title="Cover-Page">
+<img src="/recycle-app/assets/home.png" alt="home" title="Home">
+<img src="/recycle-app/assets/profile.png" alt="profile" title="Profile">
 
 ### Contributors
     Bibek Shrestha
