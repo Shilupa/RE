@@ -4,6 +4,7 @@ import {
   SafeAreaView,
   View,
   KeyboardAvoidingView,
+  Keyboard,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import {Button, Divider, Icon, Image, Input, Text} from '@rneui/themed';
@@ -85,7 +86,8 @@ const Message = ({navigation, route}) => {
         if (searchResponse.length > 0) {
           const chatFileId = searchResponse[0].file_id;
           const commentResponse = await getCommentsByFileId(chatFileId);
-          setAllMessage(commentResponse);
+          const reverseMessage = commentResponse.reverse();
+          setAllMessage(reverseMessage);
 
           const ratingResponse = await getRatingsByFileId(chatFileId);
 
@@ -315,89 +317,97 @@ const Message = ({navigation, route}) => {
     loadAllMessage();
   }, [groupName, updateMessage]);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      loadAllMessage();
+    }, 10000);
+    return () => clearInterval(interval);
+  }, [allMessage]);
+
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.titleBar}>
-        <View style={styles.backIcon}>
-          <Button
-            type="solid"
-            buttonStyle={styles.backBtn}
-            onPress={() => navigation.goBack()}
-          >
-            <Icon name="arrow-back" color="black" />
-          </Button>
-
-          {/*          <Icon
-            onPress={() => {
-              navigation.goBack();
-            }}
-            name="arrow-back"
-            color="black"
-          /> */}
+    <SafeAreaView
+      onPress={() => Keyboard.dismiss()}
+      style={{flex: 1}}
+      activeOpacity={1}
+    >
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.container}
+      >
+        <View style={styles.titleBar}>
+          <View style={styles.backIcon}>
+            <Button
+              type="solid"
+              buttonStyle={styles.backBtn}
+              onPress={() => navigation.goBack()}
+            >
+              <Icon name="arrow-back" color="black" />
+            </Button>
+          </View>
+          <View style={styles.itemContainer}>
+            <Image
+              onPress={() => {
+                navigation.navigate('ProductDetails', file);
+              }}
+              style={styles.itemPicture}
+              source={{uri: uploadsUrl + file.thumbnails?.w160}}
+            />
+            <Text style={styles.itemTitle}>{title}</Text>
+          </View>
         </View>
-        <View style={styles.itemContainer}>
-          <Image
-            onPress={() => {
-              navigation.navigate('ProductDetails', file);
-            }}
-            style={styles.itemPicture}
-            source={{uri: uploadsUrl + file.filename}}
-          />
-          <Text style={styles.itemTitle}>{title}</Text>
-        </View>
-      </View>
 
-      <Divider />
-      <MessageList
-        navigation={navigation}
-        singleItem={allMessage}
-        senderAvatar={senderAvatar}
-        receiverAvatar={receiverAvatar}
-      />
-      <Divider />
-      <KeyboardAvoidingView>
+        <Divider />
+        <MessageList
+          navigation={navigation}
+          singleItem={allMessage}
+          senderAvatar={senderAvatar}
+          receiverAvatar={receiverAvatar}
+        />
+        <Divider />
+
         <View style={styles.sendMessage}>
-          <Controller
-            control={control}
-            rules={{
-              required: {
-                value: true,
-              },
-              minLength: {
-                value: 1,
-              },
-            }}
-            render={({field: {onChange, onBlur, value}}) => (
-              <Input
-                inputContainerStyle={styles.inputContainerStyle}
-                inputStyle={styles.inputStyle}
-                placeholder={'Message'}
-                multiline={true}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-              />
-            )}
-            name="message"
-          />
+          <View style={styles.sendMessageInput}>
+            <Controller
+              control={control}
+              rules={{
+                required: {
+                  value: true,
+                },
+                minLength: {
+                  value: 1,
+                },
+              }}
+              render={({field: {onChange, onBlur, value}}) => (
+                <Input
+                  inputContainerStyle={styles.inputContainerStyle}
+                  inputStyle={styles.inputStyle}
+                  placeholder={'Message'}
+                  multiline={true}
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                />
+              )}
+              name="message"
+            />
+          </View>
           <View style={styles.sendIcon}>
             <Button
               containerStyle={{
-                width: 50,
+                width: 60,
                 height: 30,
                 borderRadius: 15,
               }}
               buttonStyle={{
                 backgroundColor: primaryColour,
               }}
-              titleStyle={{fontSize: 10}}
+              titleStyle={{fontSize: 12}}
               title="Send"
               onPress={handleSubmit(sendMessage)}
             />
           </View>
         </View>
       </KeyboardAvoidingView>
-      <></>
     </SafeAreaView>
   );
 };
@@ -452,11 +462,13 @@ const styles = StyleSheet.create({
   },
 
   sendMessage: {
-    width: '80%',
     flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'baseline',
-    position: 'relative',
+    justifyContent: 'space-evenly',
+    alignItems: 'flex-start',
+  },
+
+  sendMessageInput: {
+    width: '80%',
   },
 
   inputContainerStyle: {
@@ -469,14 +481,11 @@ const styles = StyleSheet.create({
 
   inputStyle: {
     textAlign: 'left',
-    textAlignVertical: 'center',
     fontSize: 14,
   },
 
   sendIcon: {
-    position: 'absolute',
-    right: -50,
-    top: 10,
+    paddingTop: 10,
   },
 });
 

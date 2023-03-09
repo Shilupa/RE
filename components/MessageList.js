@@ -8,7 +8,6 @@ const MessageList = ({
   senderAvatar,
   receiverAvatar,
 }) => {
-  singleItem ? singleItem.reverse() : singleItem;
   return (
     <FlatList
       inverted

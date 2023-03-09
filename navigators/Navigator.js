@@ -25,7 +25,8 @@ const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 const TabScreen = ({navigation}) => {
-  const {isLoggedIn, user, token, updateMessage} = useContext(MainContext);
+  const {isLoggedIn, user, token, updateMessage, update, setUpdate} =
+    useContext(MainContext);
   const assetImage = avatarUrl;
   const [avatar, setAvatar] = useState(assetImage);
   const [unseenNumber, setUnseenNumber] = useState();
@@ -42,7 +43,7 @@ const TabScreen = ({navigation}) => {
           setAvatar(uploadsUrl + avatarArray.pop().filename);
         }
       } catch (error) {
-        console.error('load avatar from tab navigator, ' + error.message);
+        console.error('loadavatar from tab navigator, ' + error.message);
       }
     }
   };
@@ -150,15 +151,15 @@ const TabScreen = ({navigation}) => {
   }, [user, isLoggedIn]);
 
   useEffect(() => {
+    numberOfUnreadMessage();
+  }, [user, isLoggedIn, updateMessage]);
+
+  useEffect(() => {
     const interval = setInterval(() => {
       numberOfUnreadMessage();
     }, 10000);
     return () => clearInterval(interval);
-  }, [user, isLoggedIn, updateMessage]);
-
-  /*   useEffect(() => {
-    numberOfUnreadMessage();
-  }, [user, isLoggedIn, updateMessage]); */
+  }, [unseenNumber]);
 
   return (
     <Tab.Navigator
@@ -171,7 +172,18 @@ const TabScreen = ({navigation}) => {
       <Tab.Screen
         name="Home"
         component={Home}
-        options={{tabBarIcon: ({color}) => <Icon name="home" color={color} />}}
+        options={{
+          tabBarIcon: ({color}) => (
+            <Icon
+              name="home"
+              color={color}
+              onPress={() => {
+                navigateScreen('Home');
+                setUpdate(!update);
+              }}
+            />
+          ),
+        }}
       />
       <Tab.Screen
         name="Search"

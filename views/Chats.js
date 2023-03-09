@@ -103,15 +103,15 @@ const Chats = ({navigation}) => {
   };
 
   useEffect(() => {
+    loadChatGroups();
+  }, [updateMessage]);
+
+  useEffect(() => {
     const interval = setInterval(() => {
       loadChatGroups();
     }, 10000);
     return () => clearInterval(interval);
-  }, [updateMessage]);
-
-  /*   useEffect(() => {
-    loadChatGroups();
-  }, [updateMessage]); */
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>

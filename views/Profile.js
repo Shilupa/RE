@@ -8,7 +8,7 @@ import {
   StatusBar,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import {TabView, Text, Button, Icon} from '@rneui/themed';
+import {TabView, Text, Button, Icon, Tab} from '@rneui/themed';
 import {useTag, useUser} from '../hooks/ApiHooks';
 import {avatarUrl, primaryColour, uploadsUrl, vw} from '../utils/variables';
 import React, {useContext, useEffect, useState} from 'react';
@@ -99,8 +99,7 @@ const Profile = ({navigation, route}) => {
 
   const UserTab = () => {
     return (
-      <></>
-      /*  <Tab
+      <Tab
         value={index}
         onChange={(e) => setIndex(e)}
         indicatorStyle={{
@@ -116,14 +115,13 @@ const Profile = ({navigation, route}) => {
           title="My Favourites."
           titleStyle={{fontSize: 12, color: 'black'}}
         />
-      </Tab> */
+      </Tab>
     );
   };
 
   const OwnerTab = () => {
     return (
-      <></>
-      /*  <Tab
+      <Tab
         value={index}
         onChange={(e) => setIndex(e)}
         indicatorStyle={{
@@ -135,7 +133,7 @@ const Profile = ({navigation, route}) => {
           title={`${owner.username}'s Listings`}
           titleStyle={{fontSize: 16, color: primaryColour}}
         />
-      </Tab> */
+      </Tab>
     );
   };
 

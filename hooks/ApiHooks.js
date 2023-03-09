@@ -3,7 +3,7 @@ import {MainContext} from '../contexts/MainContext';
 import {appId, baseUrl} from '../utils/variables';
 
 const doFetch = async (url, options) => {
-  // console.log('Main do Fetch');
+  console.log('Main do Fetch');
   const response = await fetch(url, options);
   const json = await response.json();
   if (!response.ok) {

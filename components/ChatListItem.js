@@ -48,7 +48,7 @@ const ChatListItem = ({navigation, singleChatGroup}) => {
   }
 
   // const isSeenOld = JSON.parse(item.description)[user.user_id];
-  //console.log('Is Seen: ', isSeen);
+  // console.log('Is Seen: ', isSeen);
 
   // Check if the message has been read
   const isSeen = () => {

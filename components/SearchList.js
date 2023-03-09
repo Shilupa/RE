@@ -2,7 +2,6 @@ import {FlatList} from 'react-native';
 import {useMedia} from '../hooks/ApiHooks';
 import PropTypes from 'prop-types';
 import SearchListItem from './SearchListItem';
-import {categoryList} from '../utils/variables';
 import {useRating} from '../hooks/ApiHooks';
 import {useEffect, useState} from 'react';
 
