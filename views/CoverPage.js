@@ -7,7 +7,7 @@ const CoverPage = () => {
   const assetImage = 'https://users.metropolia.fi/~shilpasy/recycle.png';
 
   return (
-    <SafeAreaView style={{backgroundColor: 'white'}}>
+    <SafeAreaView style={{}}>
       <Image style={styles.image} source={{uri: assetImage}} />
       <LottieView
         source={require('../lottie/recycle.json')}
@@ -15,7 +15,7 @@ const CoverPage = () => {
           width: 10 * vw,
           height: 30 * vh,
           alignSelf: 'center',
-          backgroundColor: 'white',
+          // backgroundColor: 'white',
         }}
         autoPlay
         loop={true}

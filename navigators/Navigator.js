@@ -17,7 +17,7 @@ import Message from '../views/Message';
 import GoLogin from '../views/GoLogin';
 import {useComments, useMedia, useRating, useTag} from '../hooks/ApiHooks';
 import {avatarUrl, messageId, uploadsUrl} from '../utils/variables';
-import {StyleSheet, View} from 'react-native';
+import {Platform, StyleSheet, View} from 'react-native';
 import ProductDetails from '../components/product/ProductDetails';
 import ModifyProduct from '../components/product/ModifyProduct';
 import {Text} from 'react-native';
@@ -200,27 +200,28 @@ const TabScreen = ({navigation}) => {
           name="Upload"
           component={Upload}
           options={{
-            tabBarIcon: ({color}) => (
-              // <Icon
-
-              //   name="cloud-upload"
-              //   color={color}
-              //   onPress={() => navigateScreen('Upload')}
-              // />
-              <LottieView
-                source={require('../lottie/upload.json')}
-                style={{
-                  width: 30,
-                  height: 30,
-                  alignSelf: 'center',
-                  backgroundColor: color,
-                  borderRadius: '100%',
-                }}
-                autoPlay
-                loop={false}
-                onPress={() => navigateScreen('Upload')}
-              />
-            ),
+            tabBarIcon: ({color}) =>
+              Platform.OS === 'android' ? (
+                <Icon
+                  name="cloud-upload"
+                  color={color}
+                  onPress={() => navigateScreen('Upload')}
+                />
+              ) : (
+                <LottieView
+                  source={require('../lottie/upload.json')}
+                  style={{
+                    width: 30,
+                    height: 30,
+                    alignSelf: 'center',
+                    backgroundColor: color,
+                    borderRadius: 15,
+                  }}
+                  autoPlay
+                  loop={false}
+                  onPress={() => navigateScreen('Upload')}
+                />
+              ),
           }}
         />
       )}
@@ -284,7 +285,7 @@ const TabScreen = ({navigation}) => {
 const StackScreen = () => {
   const [showComponent, setShowComponent] = useState(true);
 
-  // Shows cover page for 5 secs
+  // Shows cover page for 3 secs
   useEffect(() => {
     setInterval(() => {
       setShowComponent(false);
