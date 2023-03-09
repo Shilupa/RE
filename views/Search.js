@@ -18,7 +18,7 @@ import {MainContext} from '../contexts/MainContext';
 import SearchList from '../components/SearchList';
 
 const Search = ({navigation}) => {
-  const [searchIndex, setSearchIndex] = useState(0);
+  const [searchIndex, setSearchIndex] = useState();
   const {isLoggedIn, user} = useContext(MainContext);
   const [search, setSearch] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
@@ -121,7 +121,7 @@ const Search = ({navigation}) => {
           <SearchList
             navigation={navigation}
             search={search}
-            setSearch={setSearch}
+            // setSearch={setSearch}
             selectedSortOption={selectedSortOptions}
             category={categoryList[1]}
           />
@@ -130,7 +130,7 @@ const Search = ({navigation}) => {
           <SearchList
             navigation={navigation}
             search={search}
-            setSearch={setSearch}
+            // setSearch={setSearch}
             selectedSortOption={selectedSortOptions}
             category={categoryList[0]}
           />
@@ -139,7 +139,7 @@ const Search = ({navigation}) => {
           <SearchList
             navigation={navigation}
             search={search}
-            setSearch={setSearch}
+            // setSearch={setSearch}
             selectedSortOption={selectedSortOptions}
             category={categoryList[2]}
           />
@@ -148,12 +148,13 @@ const Search = ({navigation}) => {
           <SearchList
             navigation={navigation}
             search={search}
-            setSearch={setSearch}
+            // setSearch={setSearch}
             selectedSortOption={selectedSortOptions}
             category={categoryList[3]}
           />
         </TabView.Item>
       </TabView>
+
       <Modal
         animationType="slide"
         transparent={true}

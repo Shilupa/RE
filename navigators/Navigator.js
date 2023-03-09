@@ -187,13 +187,13 @@ const TabScreen = ({navigation}) => {
           ),
         }}
       />
-      {/*      <Tab.Screen
+      <Tab.Screen
         name="Search"
         component={Search}
         options={{
           tabBarIcon: ({color}) => <Icon name="search" color={color} />,
         }}
-      /> */}
+      />
 
       {isLoggedIn && (
         <Tab.Screen
