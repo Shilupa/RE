@@ -272,7 +272,9 @@ const TabScreen = ({navigation}) => {
               <Image
                 style={[styles.tabIcon, focused && styles.activeTabIcon]}
                 source={{uri: avatar}}
-                onPress={() => navigation.navigate('Profile', user.user_id)}
+                onPress={() => {
+                  navigation.navigate('Profile', user.user_id);
+                }}
               />
             ),
           }}
