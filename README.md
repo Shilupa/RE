@@ -37,7 +37,7 @@ RE is  is a react-native marketplace application where users can find different 
 - The website comprises of bottom tab with 5 pages: Home/front page, search, upload, chat and profile.
 - Bottom tab navigator has home, search, upload, chat and profile icon and clicking on the specific icon leads to respective page.
 - On the Front/Home page, there is list of the items and the items are divided into furniture, clothes, electronics and miscellaneous. Each item with title and description are visible to unregistered users. Avatar of user, like, dislike, chat and favourite are visible for the logged in users. Log in is possible from home.
--If you don't have account, you can register from login.
+- If you don't have account, you can register from login.
 - Detailed information can be viewed after clicking the item which leads to the other page from home. Modification of the information can be done. It is also possible to know when the item was posted.
 - On the search page, search can be filtered. On clicking the item, it takes to the next page where there is detail information of the product.
 - On the upload page, image of the product, title, condition and category can be uploaded.
