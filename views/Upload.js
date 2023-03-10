@@ -113,8 +113,8 @@ const Upload = ({navigation}) => {
           {
             text: 'OK',
             onPress: () => {
-              setUpdate(!update);
               navigation.navigate('Home');
+              setUpdate(!update);
             },
           },
         ]);

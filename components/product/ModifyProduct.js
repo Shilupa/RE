@@ -107,14 +107,8 @@ const ModifyProduct = ({navigation, route}) => {
         );
       } else {
         const result = await deleteMedia(file.file_id, token);
+
         Alert.alert('Success', result.message, [
-          {
-            text: 'Go Profile',
-            onPress: () => {
-              setUpdate(!update);
-              navigation.navigate('Profile');
-            },
-          },
           {
             text: 'Go Home',
             onPress: () => {

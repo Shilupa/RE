@@ -3,6 +3,7 @@ import {MainContext} from '../contexts/MainContext';
 import {appId, baseUrl} from '../utils/variables';
 
 const doFetch = async (url, options) => {
+  // console.log('Main Do fetch');
   const response = await fetch(url, options);
   const json = await response.json();
   if (!response.ok) {
@@ -50,8 +51,6 @@ const useMedia = (myFilesOnly, userId) => {
   };
 
   useEffect(() => {
-    // load media when update state changes in main context
-    // by adding update state to the array below
     loadMedia();
   }, [update, userId]);
 
