@@ -26,8 +26,8 @@ const LoginForm = ({navigation}) => {
     formState: {errors},
   } = useForm({
     defaultValues: {
-      username: 'bibekShrestha',
-      password: 'Test1234',
+      username: '',
+      password: '',
     },
     mode: 'onBlur',
   });

@@ -27,7 +27,9 @@ const ProductList = ({singleMedia, navigation}) => {
   const [avatar, setAvatar] = useState(assetImage);
   const {getUserById} = useUser();
   const [owner, setOwner] = useState({});
-  const {isLoggedIn, user, token} = useContext(MainContext);
+  const {isLoggedIn, user, token, update} = useContext(MainContext);
+
+  console.log('TOKEN: ', token);
 
   const video = useRef(null);
   const {favourites, addFavourite, removeFavourite} = userFavourites(
@@ -96,11 +98,11 @@ const ProductList = ({singleMedia, navigation}) => {
 
   useEffect(() => {
     loadAvatar();
-  }, [isLoggedIn]);
+  }, [owner, update]);
 
   useEffect(() => {
     getOwner();
-  }, [token]);
+  }, [isLoggedIn, update]);
 
   return (
     <View style={styles.mainContainer} elevation={5}>

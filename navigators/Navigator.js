@@ -259,11 +259,11 @@ const TabScreen = ({navigation}) => {
 const StackScreen = () => {
   const [showComponent, setShowComponent] = useState(true);
 
-  // Shows cover page for 3 secs
+  // Shows cover page for 5 secs
   useEffect(() => {
     setInterval(() => {
       setShowComponent(false);
-    }, 3000);
+    }, 5000);
   }, []);
 
   return (

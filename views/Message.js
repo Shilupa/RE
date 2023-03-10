@@ -16,6 +16,7 @@ import {
   appId,
   messageId,
   avatarUrl,
+  primaryColourDark,
 } from '../utils/variables';
 import MessageList from '../components/MessageList';
 import {Controller, useForm} from 'react-hook-form';
@@ -101,8 +102,6 @@ const Message = ({navigation, route}) => {
           );
 
           if (otherRating === undefined) {
-            // do nothing
-          } else if (otherRating === undefined && userRating === undefined) {
             // do nothing
           } else if (otherRating != undefined && userRating === undefined) {
             // Post rating same as other
@@ -323,17 +322,22 @@ const Message = ({navigation, route}) => {
           <View style={styles.sendIcon}>
             <Button
               containerStyle={{
-                width: 60,
-                height: 30,
-                borderRadius: 15,
+                width: 45,
+                height: 45,
+                borderRadius: 25,
               }}
               buttonStyle={{
-                backgroundColor: primaryColour,
+                backgroundColor: 'white',
               }}
-              titleStyle={{fontSize: 12}}
-              title="Send"
               onPress={handleSubmit(sendMessage)}
-            />
+            >
+              <Icon
+                style={{transform: [{rotateZ: '-30deg'}]}}
+                name="send"
+                size={30}
+                color={primaryColourDark}
+              />
+            </Button>
           </View>
         </View>
       </KeyboardAvoidingView>
@@ -392,12 +396,12 @@ const styles = StyleSheet.create({
 
   sendMessage: {
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    // justifyContent: 'space-evenly',
     alignItems: 'flex-start',
   },
 
   sendMessageInput: {
-    width: '80%',
+    width: '85%',
   },
 
   inputContainerStyle: {
@@ -411,10 +415,6 @@ const styles = StyleSheet.create({
   inputStyle: {
     textAlign: 'left',
     fontSize: 14,
-  },
-
-  sendIcon: {
-    paddingTop: 10,
   },
 });
 

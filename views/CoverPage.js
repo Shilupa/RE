@@ -4,7 +4,7 @@ import LottieView from 'lottie-react-native';
 import {vh, vw} from '../utils/variables';
 
 const CoverPage = () => {
-  const assetImage = 'https://users.metropolia.fi/~shilpasy/recycle.png';
+  const assetImage = 'https://users.metropolia.fi/~surajr/recycle.png';
 
   return (
     <SafeAreaView style={{}}>
