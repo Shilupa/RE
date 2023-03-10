@@ -91,11 +91,11 @@ $ npm start
 ```
 
 ## Screenshots
-###Some of our RE view:
-<img src="/assets/home.png" width="150"> <img src="/assets/coverpage.png" width="150"> <img src="/assets/profile.png" width="150">
-<img src="/assets/chat.png" width="150">
+### Some of our RE view:
+<img src="/assets/home.png" width="200"> <img src="/assets/coverpage.png" width="200"> <img src="/assets/profile.png" width="200">
+<img src="/assets/chat.png" width="200">
 
-### Contributors
-    [Bibek Shrestha](https://github.com/bekstha)
-    [Suraj Rana Bhat](https://github.com/SurajKRB)
-    [Shilpa Singh Yadav](https://github.com/Shilupa)
+## Contributors
+[Bibek Shrestha](https://github.com/bekstha)
+[Suraj Rana Bhat](https://github.com/SurajKRB)
+[Shilpa Singh Yadav](https://github.com/Shilupa)
