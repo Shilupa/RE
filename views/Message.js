@@ -324,7 +324,7 @@ const Message = ({navigation, route}) => {
             <Button
               containerStyle={{
                 width: 60,
-                height: 30,
+                height: 35,
                 borderRadius: 15,
               }}
               buttonStyle={{

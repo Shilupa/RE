@@ -96,11 +96,11 @@ const ProductList = ({singleMedia, navigation}) => {
 
   useEffect(() => {
     loadAvatar();
-  }, [isLoggedIn]);
+  }, [owner]);
 
   useEffect(() => {
     getOwner();
-  }, [token]);
+  }, [isLoggedIn]);
 
   return (
     <View style={styles.mainContainer} elevation={5}>

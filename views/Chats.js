@@ -46,6 +46,7 @@ const Chats = ({navigation}) => {
       const chatGroupWithFile = await Promise.all(
         chatGroupWithRatings.map(async (group) => {
           const fileId = group.title.split('_').pop();
+          console.log('first', fileId, group.title);
           const fileResponse = await getMediaByFileId(fileId);
           group.file = await fileResponse;
           return await group;
