@@ -44,13 +44,6 @@ RE is  is a react-native marketplace application where users can find different 
 -On the chat page, converation can be done with other user based on the specific item.
 - On the Profile page, you can edit the profile image. User's own listings and finding are visible. Logout can be done from profile.
 
-## Installation
-
-#### Cloning the repo
-
-```http
-  https://github.com/Shilupa/recycle-app.git
-```
 ### Dependencies:
 - react-native-async-storage/async-storage: "^1.17.11",
 - react-native-material/core: "^1.3.7",
@@ -79,6 +72,14 @@ RE application is built as a part of school project and the API services are pro
 
 - API service are tested with postman.
 - The expo was run on expo client.
+
+## Installation
+
+#### Cloning the repo
+
+```http
+  https://github.com/Shilupa/recycle-app.git
+```
 
 ## Setup
 To make the project working, installed npm and used it:
