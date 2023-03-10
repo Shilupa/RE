@@ -38,13 +38,6 @@ RE is  is a react-native marketplace application where users can find different 
 -On the chat page, converation can be done with other user based on the specific item.
 - On the Profile page, you can edit the profile image. User's own listings and finding are visible. Logout can be done from profile.
 
-## Website development using
-- Front-end: HTML and CSS for creating and styling all the pages. Javascript for changing the DOM and communicating with Back-end.
-- Back-end: NodeJS and Express
-- Database: MariaDB
-- For the app deployment in server: Microsoft Azure
-
-
 ## Installation
 
 #### Cloning the repo
@@ -97,5 +90,7 @@ $ npm start
 
 ## Contributors
 [Bibek Shrestha](https://github.com/bekstha)
+
 [Suraj Rana Bhat](https://github.com/SurajKRB)
+
 [Shilpa Singh Yadav](https://github.com/Shilupa)
