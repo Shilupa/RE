@@ -75,7 +75,6 @@ const EditProfile = ({navigation}) => {
       password: '',
       confirmPassword: '',
       email: '',
-      // full_name: '',
     },
     mode: 'onBlur',
   });
@@ -113,7 +112,6 @@ const EditProfile = ({navigation}) => {
          * Posting media to data base
          */
         const mediaResponse = await postMedia(formData, token);
-        console.log('media', mediaResponse);
         if (mediaResponse) {
           const tag = {
             file_id: mediaResponse.file_id,
@@ -147,10 +145,11 @@ const EditProfile = ({navigation}) => {
         ]);
       }
     } catch (error) {
-      console.log(error);
+      console.error('userResponse', error.message);
     }
   };
 
+  // checking if the username exists
   const checkUser = async (username) => {
     try {
       if (username !== user.username) {

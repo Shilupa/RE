@@ -3,6 +3,7 @@ import {StyleSheet} from 'react-native';
 import {vw} from '../utils/variables';
 import PropTypes from 'prop-types';
 
+// Availibility component is used to display the status of the product in the home screen
 const Availibility = (props) => {
   const buttonStyles = [
     styles.button,

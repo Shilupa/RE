@@ -6,13 +6,11 @@ import {
   StatusBar,
   Modal,
   TouchableOpacity,
-  Image,
-  TouchableNativeFeedback,
   TouchableWithoutFeedback,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import {Card, Icon, SearchBar, Tab, TabView, Text} from '@rneui/themed';
-import {categoryList, primaryColour} from '../utils/variables';
+import {Card, Icon, SearchBar, Text} from '@rneui/themed';
+import {primaryColour} from '../utils/variables';
 import {useContext, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
 import SearchList from '../components/SearchList';

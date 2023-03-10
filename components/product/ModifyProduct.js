@@ -1,8 +1,8 @@
 import React, {useContext, useState} from 'react';
 import {
-  appId,
   availibilityList,
   inputBackground,
+  messageId,
   primaryColour,
   uploadsUrl,
   vh,
@@ -25,19 +25,16 @@ import {Controller, useForm} from 'react-hook-form';
 import {useMedia} from '../../hooks/ApiHooks';
 import FormInput from '../formComponent/FormInput';
 import FormButton from '../formComponent/FormButton';
-import {
-  MultipleSelectList,
-  SelectList,
-} from 'react-native-dropdown-select-list';
-import {MultiSelect} from 'react-native-element-dropdown';
+import {SelectList} from 'react-native-dropdown-select-list';
 
 const ModifyProduct = ({navigation, route}) => {
   const {file} = route.params;
   const [loading, setLoading] = useState(false);
   const {token} = useContext(MainContext);
-  const {putMedia, deleteMedia} = useMedia();
+  const {putMedia, deleteMedia, searchMedia} = useMedia();
   const {update, setUpdate} = useContext(MainContext);
   const [selectedAvailibility, setSelectedAvailibility] = useState();
+
   // Converting json string to json object
   const descriptionObj = JSON.parse(file.description);
 
@@ -55,6 +52,7 @@ const ModifyProduct = ({navigation, route}) => {
     mode: 'onChange',
   });
 
+  // modifyFile function is  used to make changes in already uploaded media
   const modifyFile = async (data) => {
     const mediaDescription = {
       detail: data.description,
@@ -64,6 +62,7 @@ const ModifyProduct = ({navigation, route}) => {
         : descriptionObj.status,
       title: data.title,
     };
+
     // Converting json object to string
     const jsonObj = JSON.stringify(mediaDescription);
 
@@ -84,36 +83,53 @@ const ModifyProduct = ({navigation, route}) => {
         },
       ]);
     } catch (error) {
-      console.error('file modify failed', error);
+      console.error('file modify failed', error.message);
     } finally {
       setLoading(false);
     }
   };
 
+  // deletes file and then gives the user a choic of navigating to either Profile or Home screen
   const deleteFile = async () => {
     try {
-      const result = await deleteMedia(file.file_id, token);
-      Alert.alert('Success', result.message, [
-        {
-          text: 'Go Profile',
-          onPress: () => {
-            setUpdate(!update);
-            navigation.navigate('Profile');
+      const title = messageId + '_' + file.file_id;
+      const searchResponse = await searchMedia(title, token);
+      if (searchResponse.length > 0) {
+        Alert.alert(
+          'Alert',
+          'There are chats associated this file, please delete those chats first before deleting the file.',
+          [
+            {
+              text: 'OK',
+              onPress: () => {},
+            },
+          ]
+        );
+      } else {
+        const result = await deleteMedia(file.file_id, token);
+        Alert.alert('Success', result.message, [
+          {
+            text: 'Go Profile',
+            onPress: () => {
+              setUpdate(!update);
+              navigation.navigate('Profile');
+            },
           },
-        },
-        {
-          text: 'Go Home',
-          onPress: () => {
-            setUpdate(!update);
-            navigation.navigate('Home');
+          {
+            text: 'Go Home',
+            onPress: () => {
+              setUpdate(!update);
+              navigation.navigate('Home');
+            },
           },
-        },
-      ]);
+        ]);
+      }
     } catch (error) {
-      console.error('deleteFile error, ' + error.message);
+      console.error('deleteFile error', error.message);
     }
   };
 
+  // when the delete button is pressed, user is asked to confirm thier choice before deleting the file
   const deleteItem = () => {
     Alert.alert('Delete Item', 'Are you sure you want to delete this item?', [
       {
@@ -232,6 +248,7 @@ const ModifyProduct = ({navigation, route}) => {
           text="Modify"
           submit={modifyFile}
           handleSubmit={handleSubmit}
+          loading={loading}
         />
         <Button
           buttonStyle={styles.deleteButtonStyle}

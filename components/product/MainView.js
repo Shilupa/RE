@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {useMedia} from '../../hooks/ApiHooks';
 import ProductList from './ProductList';
 
+// Main View populates the Home component of the app
 const MainView = ({navigation, category}) => {
   const {mediaArray} = useMedia();
   // Filtering media by category

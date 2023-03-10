@@ -18,7 +18,7 @@ const Favourite = ({navigation}) => {
       const response = await getFavouritesByUser(token);
       setFavourites(response);
     } catch (error) {
-      console.error('fetchFavourite error, ' + error.message);
+      console.error('fetchFavourite error', error.message);
     }
   };
 
@@ -28,14 +28,12 @@ const Favourite = ({navigation}) => {
       const media = await Promise.all(
         favourites.map(async (favourite) => {
           const response = await loadMediaById(favourite.file_id);
-          // console.log('set List from response:', response);
           return response;
         })
       );
       setFavouriteList(media);
-      // console.log('set List from favourite:', media);
     } catch (error) {
-      console.error('setList error, ' + error.message);
+      console.error('setList error', error.message);
     }
   };
 

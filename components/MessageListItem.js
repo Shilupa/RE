@@ -12,6 +12,7 @@ import {useContext} from 'react';
 import {MainContext} from '../contexts/MainContext';
 import {useComments} from '../hooks/ApiHooks';
 
+// design of the message item that is displayed in the message list
 const MessageListItem = ({
   navigation,
   singleMedia,
@@ -19,17 +20,10 @@ const MessageListItem = ({
   receiverAvatar,
 }) => {
   const item = singleMedia;
-  // console.log('Single media ITM:::', item);
   const {user, token, updateMessage, setUpdateMessage} =
     useContext(MainContext);
   const {deleteComment} = useComments();
-
-  // console.log('Item, ', item);
   const sender = user.user_id === item.user_id ? false : true;
-
-  // console.log('Sender Avatar: ', senderAvatar);
-  // console.log('Receiver Avatar: ', receiverAvatar);
-
   const commentUploadTime = new Date(item.time_added);
   const month = commentUploadTime.toLocaleString('default', {month: 'short'});
   const day = commentUploadTime.getUTCDate();

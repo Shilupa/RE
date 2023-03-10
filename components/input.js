@@ -22,6 +22,7 @@ Input.propTypes = {
   placeholder: PropTypes.string,
   value: PropTypes.string,
   title: PropTypes.string,
+  onChange: PropTypes.bool,
 };
 
 export default Input;

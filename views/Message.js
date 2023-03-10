@@ -16,6 +16,7 @@ import {
   appId,
   messageId,
   avatarUrl,
+  primaryColourDark,
 } from '../utils/variables';
 import MessageList from '../components/MessageList';
 import {Controller, useForm} from 'react-hook-form';
@@ -26,8 +27,6 @@ import {MainContext} from '../contexts/MainContext';
 const Message = ({navigation, route}) => {
   const {file, owner} = route.params;
   const {user} = useContext(MainContext);
-
-  // console.log('Route Params: ', route.params);
 
   const senderId = user.user_id === file.user_id ? owner.user_id : file.user_id;
   const userId = user.user_id;
@@ -81,7 +80,6 @@ const Message = ({navigation, route}) => {
     try {
       if (groupName != undefined) {
         const searchResponse = await searchMedia(groupName, token);
-        // console.log('groupName: ', groupName);
 
         if (searchResponse.length > 0) {
           const chatFileId = searchResponse[0].file_id;
@@ -91,33 +89,19 @@ const Message = ({navigation, route}) => {
 
           const ratingResponse = await getRatingsByFileId(chatFileId);
 
-          // console.log('ratingResponse from Message: ', ratingResponse);
-
           const id1 = groupName.split('_')[0].replace(messageId, '');
           const id2 = groupName.split('_')[1].replace(messageId, '');
-
-          // console.log('Id1: ', id1);
-          // console.log('Id2: ', id2);
-
-          // console.log('UserId: ', userIdNumber);
-
           const otherId = id1 == userId ? id2 : id1;
-          // console.log('OtherId: ', otherId);
 
           const userRating = ratingResponse.find(
             (singleRating) => singleRating.user_id == userId
           );
-          // console.log('user rating: ', userRating ? userRating.rating : null);
 
           const otherRating = ratingResponse.find(
             (singleRating) => singleRating.user_id == otherId
           );
 
-          // console.log('Otherrating: ', otherRating ? otherRating.rating : null);
-
           if (otherRating === undefined) {
-            // do nothing
-          } else if (otherRating === undefined && userRating === undefined) {
             // do nothing
           } else if (otherRating != undefined && userRating === undefined) {
             // Post rating same as other
@@ -146,17 +130,6 @@ const Message = ({navigation, route}) => {
             // update the message
             setUpdateMessage(updateMessage + 1);
           }
-
-          // set message is seen by the user
-
-          /*  const isSeenData = JSON.parse(searchResponse[0].description);
-          isSeenData[user.user_id] = true;
-          const updatedData = {
-            description: isSeenData,
-          };
-          console.log('updatedData: ', updatedData);
- */
-          // putMedia(searchResponse[0].file_id, updatedData, token);
         }
       }
     } catch (error) {
@@ -169,10 +142,6 @@ const Message = ({navigation, route}) => {
       senderId + messageId + '_' + userId + messageId + '_' + fileId;
     const name2 =
       userId + messageId + '_' + senderId + messageId + '_' + fileId;
-
-    console.log('Name 1: ', name1);
-    console.log('Name 2: ', name2);
-
     try {
       const response = await getFilesByTag(appId + messageId);
 
@@ -190,19 +159,9 @@ const Message = ({navigation, route}) => {
     }
   };
 
-  // console.log('Group Name: ', groupName);
-
-  // console.log('All message', allMessage);
-
   const sendMessage = async (data) => {
     try {
       if (!existChatGroup) {
-        console.log(
-          'Create a media item with specificTag,  title and description'
-        );
-
-        console.log('group name', groupName);
-
         const formData = new FormData();
 
         formData.append('file', {
@@ -215,11 +174,7 @@ const Message = ({navigation, route}) => {
 
         formData.append('description', '');
 
-        console.log('form data object', formData);
-
         const result = await postMedia(formData, token);
-
-        console.log('post media response: ', result);
 
         const appTag = {
           file_id: result.file_id,
@@ -228,84 +183,57 @@ const Message = ({navigation, route}) => {
         await postTag(appTag, token);
       }
 
-      console.log('Group Name: ', groupName);
-
       // find the file with title with chatGroupName
       const ChatGroupFile = await searchMedia(groupName, token);
-      console.log('CHatGroup: ', ChatGroupFile);
       const chatFileId = ChatGroupFile[0].file_id;
 
       // post a comment / message
-      const send = await postComment(token, chatFileId, data.message);
-
-      console.log('message send', send);
+      await postComment(token, chatFileId, data.message);
       reset();
 
       // post and delete rating based on message
-
       const ratingResponse = await getRatingsByFileId(chatFileId);
-
-      // console.log('ratingResponse from Message: ', ratingResponse);
 
       const id1 = groupName.split('_')[0].replace(messageId, '');
       const id2 = groupName.split('_')[1].replace(messageId, '');
 
-      // console.log('Id1: ', id1);
-      // console.log('Id2: ', id2);
-
-      // console.log('UserId: ', userIdNumber);
-
       const otherId = id1 == userId ? id2 : id1;
-      // console.log('OtherId: ', otherId);
 
       const userRating = ratingResponse.find(
         (singleRating) => singleRating.user_id == userId
       );
-      console.log('user rating: ', userRating ? userRating.rating : null);
 
       const otherRating = ratingResponse.find(
         (singleRating) => singleRating.user_id == otherId
       );
 
-      console.log('Otherrating: ', otherRating ? otherRating.rating : null);
-      console.log('File Id', chatFileId);
-
       if (otherRating === undefined && userRating === undefined) {
-        console.log('case 1');
         // post rating 3
         await postRating(chatFileId, 3);
       } else if (otherRating === undefined && userRating != undefined) {
         // do nothing
-        console.log('case 2');
       } else if (otherRating != undefined && userRating === undefined) {
         // unlikely at this point but if happens then
         // Post rating same as other
-        console.log('case 3');
         await postRating(chatFileId, otherRating.rating);
       } else if (otherRating.rating === 5) {
-        console.log('case 4');
         // delete previous rating
         await deleteRating(chatFileId);
         // post same rating 3
         await postRating(chatFileId, 3);
       } else {
-        console.log('case 5', otherRating.rating + 1);
         // delete previous rating
         await deleteRating(chatFileId);
         // post same rating as other +1
-        const haha = await postRating(chatFileId, otherRating.rating + 1);
-        console.log('Case 5 response', haha);
+        await postRating(chatFileId, otherRating.rating + 1);
       }
 
       // post and delete rating ends here
-
       setUpdateMessage(updateMessage + 1);
     } catch (error) {
       console.error('sendMessage error: ' + error.message);
     }
   };
-
-  // console.log('All message: ', allMessage);
 
   useEffect(() => {
     sendAvatar();
@@ -394,17 +322,22 @@ const Message = ({navigation, route}) => {
           <View style={styles.sendIcon}>
             <Button
               containerStyle={{
-                width: 60,
-                height: 30,
-                borderRadius: 15,
+                width: 45,
+                height: 45,
+                borderRadius: 25,
               }}
               buttonStyle={{
-                backgroundColor: primaryColour,
+                backgroundColor: 'white',
               }}
-              titleStyle={{fontSize: 12}}
-              title="Send"
               onPress={handleSubmit(sendMessage)}
-            />
+            >
+              <Icon
+                style={{transform: [{rotateZ: '-30deg'}]}}
+                name="send"
+                size={30}
+                color={primaryColourDark}
+              />
+            </Button>
           </View>
         </View>
       </KeyboardAvoidingView>
@@ -463,12 +396,12 @@ const styles = StyleSheet.create({
 
   sendMessage: {
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    // justifyContent: 'space-evenly',
     alignItems: 'flex-start',
   },
 
   sendMessageInput: {
-    width: '80%',
+    width: '85%',
   },
 
   inputContainerStyle: {
@@ -482,10 +415,6 @@ const styles = StyleSheet.create({
   inputStyle: {
     textAlign: 'left',
     fontSize: 14,
-  },
-
-  sendIcon: {
-    paddingTop: 10,
   },
 });
 

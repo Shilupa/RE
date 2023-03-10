@@ -1,10 +1,10 @@
 import React from 'react';
-import {Image, SafeAreaView, StyleSheet, View} from 'react-native';
+import {Image, SafeAreaView, StyleSheet} from 'react-native';
 import LottieView from 'lottie-react-native';
 import {vh, vw} from '../utils/variables';
 
 const CoverPage = () => {
-  const assetImage = 'https://users.metropolia.fi/~shilpasy/recycle.png';
+  const assetImage = 'https://users.metropolia.fi/~surajr/recycle.png';
 
   return (
     <SafeAreaView style={{}}>
@@ -15,7 +15,6 @@ const CoverPage = () => {
           width: 10 * vw,
           height: 30 * vh,
           alignSelf: 'center',
-          // backgroundColor: 'white',
         }}
         autoPlay
         loop={true}
