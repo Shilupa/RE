@@ -11,6 +11,20 @@ RE is  is a react-native marketplace application where users can find different 
 - People who believes in "Don’t simply throw it away, be creative to use it some way".
 - Vintage trend lovers.
 
+## Our users are divided into:
+- Anonymous user: read-only
+
+- Logged-in users:
+      - read posts,
+      - make a post
+      - edit the post,
+      - delete your own post,
+      - update an account,
+      - chat with the other user,
+      - like, dislike,
+      - keep the item in your favorite.
+
+
 ## Features
 - Register, Login and Logout.
 - Add and change avatar.
