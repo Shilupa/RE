@@ -110,10 +110,10 @@ const ModifyProduct = ({navigation, route}) => {
 
         Alert.alert('Success', result.message, [
           {
-            text: 'Go Home',
+            text: 'Go Search',
             onPress: () => {
               setUpdate(!update);
-              navigation.navigate('Home');
+              navigation.navigate('Search');
             },
           },
         ]);
