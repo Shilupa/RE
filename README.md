@@ -96,7 +96,7 @@ $ npm start
 <img src="/assets/chat.png" width="200">
 
 # Video 
-<video src="https://users.metropolia.fi/~bibeks/2ndyear-3rdperiod/recyle-app/appDemo.html">
+[App DEMO](https://users.metropolia.fi/~bibeks/2ndyear-3rdperiod/recyle-app/appDemo.html)
 
 ## Contributors
 [Bibek Shrestha](https://github.com/bekstha)
