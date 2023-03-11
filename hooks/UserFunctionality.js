@@ -36,7 +36,7 @@ const userFavourites = (fileId) => {
     try {
       await postFavourite(fileId, token);
       setUpdateFavourite(!updateFavourite);
-      setUpdate(!update);
+      setUpdate(update + 1);
     } catch (error) {
       // note: you cannot like same file multiple times
       console.error('addFavourite: ', error.message);
@@ -51,7 +51,7 @@ const userFavourites = (fileId) => {
     try {
       await deleteFavourite(fileId, token);
       setUpdateFavourite(!updateFavourite);
-      setUpdate(!update);
+      setUpdate(update + 1);
     } catch (error) {
       // note: you cannot like same file multiple times
       console.error('removeFavourite: ', error.message);

@@ -1,49 +1,33 @@
 import {FlatList} from 'react-native';
-import {useFavourite} from '../../hooks/ApiHooks';
+import {useFavourite, useMedia} from '../../hooks/ApiHooks';
 import PropTypes from 'prop-types';
 import {useContext, useEffect, useState} from 'react';
 import {MainContext} from '../../contexts/MainContext';
-import {loadMediaById} from '../../hooks/ApiHooks';
 import UserList from './UserList';
 
 const Favourite = ({navigation}) => {
   const {getFavouritesByUser} = useFavourite();
-  const [favourites, setFavourites] = useState([]);
   const [favouriteList, setFavouriteList] = useState([]);
   const {update, updateFavourite, token} = useContext(MainContext);
+  const {mediaArray} = useMedia();
 
   // Fetching user favourite list
   const fetchFavourite = async () => {
     try {
-      const response = await getFavouritesByUser(token);
-      setFavourites(response);
+      const favouritesResponse = await getFavouritesByUser(token);
+
+      const media = mediaArray.filter((a) =>
+        favouritesResponse.some((b) => b.file_id === a.file_id)
+      );
+      setFavouriteList(media);
     } catch (error) {
       console.error('fetchFavourite error', error.message);
     }
   };
 
-  // Mapping favourites
-  const setList = async () => {
-    try {
-      const media = await Promise.all(
-        favourites.map(async (favourite) => {
-          const response = await loadMediaById(favourite.file_id);
-          return response;
-        })
-      );
-      setFavouriteList(media);
-    } catch (error) {
-      console.error('setList error', error.message);
-    }
-  };
-
   useEffect(() => {
     fetchFavourite();
-  }, [update, updateFavourite]);
-
-  useEffect(() => {
-    setList();
-  }, [update, favourites]);
+  }, [update, updateFavourite, token, mediaArray]);
 
   return (
     <FlatList

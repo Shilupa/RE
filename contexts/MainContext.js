@@ -7,7 +7,7 @@ const MainContext = React.createContext({});
 const MainProvider = (props) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState({});
-  const [update, setUpdate] = useState(true);
+  const [update, setUpdate] = useState(0);
   const [updateFavourite, setUpdateFavourite] = useState(true);
   const [updateRating, setUpdateRating] = useState(true);
   const [toggleForm, setToggleForm] = useState(true);

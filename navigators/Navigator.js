@@ -153,7 +153,7 @@ const TabScreen = ({navigation}) => {
               color={color}
               onPress={() => {
                 navigateScreen('Home');
-                setUpdate(!update);
+                setUpdate(update + 1);
               }}
             />
           ),

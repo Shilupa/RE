@@ -8,6 +8,7 @@ const MainView = ({navigation, category}) => {
   const {mediaArray} = useMedia();
   // Filtering media by category
   const filteredMedia = mediaArray.filter((media) => media.title === category);
+
   return (
     <FlatList
       data={category === '' ? mediaArray : filteredMedia}

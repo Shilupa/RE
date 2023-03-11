@@ -77,7 +77,7 @@ const ModifyProduct = ({navigation, route}) => {
         {
           text: 'OK',
           onPress: () => {
-            setUpdate(!update);
+            setUpdate(update + 1);
             navigation.navigate('Home');
           },
         },
@@ -110,10 +110,10 @@ const ModifyProduct = ({navigation, route}) => {
 
         Alert.alert('Success', result.message, [
           {
-            text: 'Go Search',
+            text: 'Go Home',
             onPress: () => {
-              setUpdate(!update);
-              navigation.navigate('Search');
+              navigation.navigate('Home');
+              setUpdate(update + 1);
             },
           },
         ]);
