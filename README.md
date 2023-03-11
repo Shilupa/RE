@@ -95,6 +95,9 @@ $ npm start
 <img src="/assets/home.png" width="200"> <img src="/assets/coverpage.png" width="200"> <img src="/assets/profile.png" width="200">
 <img src="/assets/chat.png" width="200">
 
+# Video 
+<video src="https://users.metropolia.fi/~bibeks/2ndyear-3rdperiod/recyle-app/appDemo.html">
+
 ## Contributors
 [Bibek Shrestha](https://github.com/bekstha)
 
